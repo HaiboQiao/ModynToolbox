@@ -1,4 +1,4 @@
-# Graphite Toolbox 项目协作约定
+# ModynToolbox 项目协作约定
 
 ## 先建立当前状态
 
@@ -53,3 +53,7 @@
 ## 非打扰验证
 
 用户要求开发时能继续使用电脑。默认通过 windows-check 独立输出、Qt offscreen、测试日志与离屏截图验证，禁止例行测试抢占前台焦点、鼠标和键盘。无需桌面操作就能完成的工作使用脚本。原生标题栏、系统交互、DPI 和多屏等保留真实验收记录，需要实际桌面操作时先说明具体场景并安排时机。不要为编译而关闭用户正在使用的程序。
+
+## 产品与界面约定
+
+产品名称为 ModynToolbox，默认浅色雾紫主题。主题集中 app/ui/theme，公共控件集中 app/ui/components，主窗与浮窗复用 app/ui/window/ChromeWindow。Windows 外框代码集中 app/platform/windows，业务工具不处理窗口消息。新工具先使用自己 integration/ui.json 的版本化控件描述，宿主不按 tool_id 分支绘制业务页面。完整规范实施前，预览布局与业务能力分别标记。

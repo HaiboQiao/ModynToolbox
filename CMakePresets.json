@@ -7,7 +7,7 @@
       "architecture": "x64",
       "binaryDir": "${sourceDir}/.local/build/windows-dev",
       "cacheVariables": {
-        "CMAKE_PREFIX_PATH": "$env{GRAPHITE_QT_ROOT}"
+        "CMAKE_PREFIX_PATH": "$env{MODYN_QT_ROOT}"
       }
     },
     {

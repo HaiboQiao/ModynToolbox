@@ -7,7 +7,8 @@
 #include <QDebug>
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
-    app.setApplicationName("GraphiteToolbox");
+    app.setApplicationName("ModynToolbox");
+    app.setApplicationVersion("0.2.0");
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addOption({"data-root", "Workspace data directory", "path"});

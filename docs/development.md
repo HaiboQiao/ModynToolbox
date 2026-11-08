@@ -4,7 +4,7 @@
 
 ## 1. 两种使用方式
 
-开发整个项目建议 VS Code，打开项目根目录或 GraphiteToolbox.code-workspace。安装 C++、CMake Tools 扩展，Python 扩展用于工具开发。VS Code 调用编译器和调试器，C++ 主程序先编译再运行。[VS Code CMake 指南](https://code.visualstudio.com/docs/cpp/cmake-quickstart)
+开发整个项目建议 VS Code，打开项目根目录或 ModynToolbox.code-workspace。安装 C++、CMake Tools 扩展，Python 扩展用于工具开发。VS Code 调用编译器和调试器，C++ 主程序先编译再运行。[VS Code CMake 指南](https://code.visualstudio.com/docs/cpp/cmake-quickstart)
 
 PyCharm 可单独打开 tools/<tool_id>，选择该工具解释器，运行 standalone 或测试。主程序和各工具共用公开契约，各工具核心不依赖具体编辑器。[PyCharm 项目与运行](https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html)
 
@@ -13,10 +13,10 @@ PyCharm 可单独打开 tools/<tool_id>，选择该工具解释器，运行 stan
 ## 2. 开发目录的目标结构
 
 ```text
-GraphiteToolbox/
+ModynToolbox/
   README.md
   AGENTS.md
-  GraphiteToolbox.code-workspace
+  ModynToolbox.code-workspace
   CMakeLists.txt                       # T01 创建
   CMakePresets.json                    # 公共预设，T01 创建
   CMakeUserPresets.json                # 忽略的本机预设，按工具约定生成
@@ -90,10 +90,10 @@ GraphiteToolbox/
 ## 3. 便携发布目录
 
 ```text
-GraphiteToolbox/
-  GraphiteToolbox.exe                  # 小型 Windows 启动器
+ModynToolbox/
+  ModynToolbox.exe                  # 小型 Windows 启动器
   app/
-    GraphiteToolbox.App.exe            # Qt 主程序
+    ModynToolbox.App.exe            # Qt 主程序
     Qt*.dll
     platforms/
     imageformats/
@@ -140,11 +140,11 @@ T01 创建 scripts/dev.ps1，兼容 Windows PowerShell 5.1。VS Code 任务和 C
 
 ### VS Code 的完成体验
 
-首次按开发指南安装环境，在工作区选择项目预设。按 F5 选择“GraphiteToolbox”，先运行构建任务，再启动 Qt 主程序进入石墨工作台。Ctrl+F5 对应无调试启动。构建失败保持错误与日志，程序启动失败明确说明。
+首次按开发指南安装环境，在工作区选择项目预设。按 F5 选择“ModynToolbox”，先运行构建任务，再启动 Qt 主程序进入 ModynToolbox 雾紫工作台。Ctrl+F5 对应无调试启动。构建失败保持错误与日志，程序启动失败明确说明。
 
-计划调试器为 MSVC 调试器，主目标为 GraphiteToolboxApp。程序路径由 CMake 目标解析，调试参数中的项目根使用 workspaceFolder。核心参数包括 --data-root、--packages-root、--runtimes-root。源码目录中的启动不写死某台机器路径。
+计划调试器为 MSVC 调试器，主目标为 ModynToolboxApp。程序路径由 CMake 目标解析，调试参数中的项目根使用 workspaceFolder。核心参数包括 --data-root、--packages-root、--runtimes-root。源码目录中的启动不写死某台机器路径。
 
-计划构建产物位于 .local/build/windows-dev/bin/GraphiteToolbox.App.exe，Qt 调试 DLL 与插件由构建/部署步骤放在该运行位置。F5 和 run 脚本使用一致的目录、参数与环境。release/便携启动器另有独立验证。
+计划构建产物位于 .local/build/windows-dev/bin/ModynToolbox.App.exe，Qt 调试 DLL 与插件由构建/部署步骤放在该运行位置。F5 和 run 脚本使用一致的目录、参数与环境。release/便携启动器另有独立验证。
 
 ## 5. 环境、版本和本机配置
 
@@ -203,16 +203,28 @@ AGENTS.md 是开放的项目指令格式，适用于多种编码 Agent，具体�
 
 Codex 的项目指令可通过 AGENTS.md 提供，具体发现和覆盖规则按其官方文档。本项目不会把 Codex 特定本机设置作为通用开发依赖。[官方 AGENTS 指南](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
 
-本轮 Context7 无可调用工具，API/编辑器行为按官方文档核对。当前规划中的任务、脚本和 F5 由实施阶段创建并真实验证，资料核对不能替代本项目运行证据。
+当前 Context7 无可调用工具，API/编辑器行为按官方文档核对。脚本与入口的实际状态以 STATUS 和验证报告为准。
 
 ## 11. 非打扰验证与当前工具目录预览
 
 后台入口为 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check。生成物在 .local/build/windows-check，不改写 windows-dev 中正在运行的程序。Qt 测试使用 offscreen，测试临时根位于相应构建目录/tests/tmp，设置 45 秒超时。测试部署额外复制 qoffscreend.dll，离屏字体从本机 Windows Fonts 加载，不复制系统字体到发行包。
 
-首次需要三个示例工具入口时执行 powershell -NoProfile -File scripts/prepare-preview.ps1。该动作只准备清单，已有版本目录保持原样。正常 run/F5 不自动安装。元数据布局为 .local/installed/tools/<id>/<version>/manifest.json。退出后删除对应安装工具目录，下次启动重新扫描，data 不在扫描/删除范围。当前尚无运行中刷新、忙碌卸载或完整安装事务。
+首次需要三个示例工具入口时执行 powershell -NoProfile -File scripts/prepare-preview.ps1。该动作准备清单与界面描述，已有版本目录保持原样。正常 run/F5 不自动安装。元数据布局为 .local/installed/tools/<id>/<version>/manifest.json。退出后删除对应安装工具目录，下次启动重新扫描，data 不在扫描/删除范围。当前尚无运行中刷新、忙碌卸载或完整安装事务。
 
 运行新版可执行 powershell -NoProfile -File scripts/dev.ps1 run -Preset windows-check。这会由使用者主动打开新窗口，现有实例占用同一 data 时提示占用，先自行关闭旧实例。后台测试不用生产 data。
 
-可选设置 GRAPHITE_PREVIEW_PATH 为项目 .local 下 PNG 绝对路径，再执行 test，保存中文示例的客户区离屏预览。此图无法验证系统标题栏。真实标题栏和 DPI/焦点体验单独验收。
+可选设置 MODYN_PREVIEW_PATH 为项目 .local 下 PNG 绝对路径，再执行 test，保存原生 Qt 窗口离屏预览，包含应用绘制的标题区域。系统合成的圆角与阴影仍须真实窗口验证。真实标题栏和 DPI/焦点体验单独验收。
 
 工具源目录中的 integration/manifest.json 为当前唯一源清单。manifest-preview.schema.json 只描述元数据子集，C++ catalog 做对应运行校验，完整执行规范仍在 T02。
+
+## 12. ModynToolbox 当前接入预览
+
+工具源清单使用 manifest-preview.schema.json，图标标识为 image/code/files。可选 view_file 固定为 ui.json，声明后文件缺失会显示局部错误。未声明的旧清单使用兼容文本布局。
+
+界面子集为 shared/protocol/ui-preview.schema.json，运行校验在 app/ui/view_spec.cpp。最大 64 KiB、12 个参数、每选项最多 20 项，支持 text/files 布局和 choice/range/text 参数。默认值、重复字段和范围有运行校验。完整 view-v1/actions/worker 协议仍待 T02/T03。
+
+文件添加只登记输入，最多 1000 个，扩展名由描述控制，不扫描图像内容。业务后端接入后实施完整扫描、取消、写入与恢复。当前处理按钮禁用。
+
+主窗与浮窗复用 ChromeWindow，Windows 消息隔离在 platform/windows/window_chrome。UI 主题集中 theme，公共控件集中 components。原生句柄测试始终隐藏，不用于替代真实拖拽/多屏验收。
+
+MODYN_QT_ROOT 指定 SDK，MODYN_PREVIEW_PATH 指定截图输出。配置与源码不引用个人机器的旧项目根。搬迁后重建 .local/build，Qt SDK 和数据按其恢复/迁移说明处理。

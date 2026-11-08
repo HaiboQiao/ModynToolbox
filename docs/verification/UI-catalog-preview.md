@@ -14,7 +14,7 @@
 
 执行 powershell -NoProfile -File scripts/prepare-preview.ps1，三个元数据包已准备。Windows PowerShell 5 读取中文清单显式指定 UTF8，避免系统默认编码。
 
-设置 GRAPHITE_PREVIEW_PATH 为项目 .local/preview-tools.png，然后执行 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check。
+设置 MODYN_PREVIEW_PATH 为项目 .local/preview-tools.png，然后执行 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check。
 最终 3/3 CTest 通过，耗时 1.38 秒，无跳过。
 
 - workbench 六个测试函数通过，含导航搜索、同工具选择/跨工具收回/搜索无匹配、独立会话输入、分离收回、截图、50 次迁移。

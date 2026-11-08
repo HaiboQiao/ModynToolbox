@@ -1,0 +1,33 @@
+{
+  "view_version": 1,
+  "kind": "files",
+  "input_title": "拖入图片，开始轻量处理",
+  "hint": "JPEG、PNG、WebP",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+  ],
+  "fields": [
+    {
+      "id": "quality",
+      "label": "图片质量",
+      "type": "range",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 80
+    },
+    {
+      "id": "format",
+      "label": "输出格式",
+      "type": "choice",
+      "options": [
+        "WebP",
+        "JPEG",
+        "PNG"
+      ],
+      "default": "WebP"
+    }
+  ]
+}

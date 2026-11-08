@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "GraphiteToolbox",
+      "name": "ModynToolbox",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/.local/build/windows-dev/bin/Debug/GraphiteToolbox.App.exe",
+      "program": "${workspaceFolder}/.local/build/windows-dev/bin/Debug/ModynToolbox.App.exe",
       "args": [
         "--data-root",
         "${workspaceFolder}/data",
@@ -13,7 +13,7 @@
         "${workspaceFolder}/.local/installed/tools"
       ],
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Graphite build",
+      "preLaunchTask": "ModynToolbox build",
       "console": "internalConsole"
     }
   ]

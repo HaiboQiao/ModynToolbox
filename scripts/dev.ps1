@@ -13,10 +13,10 @@ if (-not $vsRoot) { throw 'Install Visual Studio C++ desktop tools and Windows S
 $cmake = Join-Path $vsRoot 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe'
 $ctest = Join-Path (Split-Path $cmake) 'ctest.exe'
 $qtRoot = Join-Path $projectRoot '.local\toolchains\Qt\6.8.3\msvc2022_64'
-if ($env:GRAPHITE_QT_ROOT) { $qtRoot = $env:GRAPHITE_QT_ROOT }
-if (-not (Test-Path -LiteralPath (Join-Path $qtRoot 'lib\cmake\Qt6\Qt6Config.cmake'))) { throw 'Qt SDK missing. Set GRAPHITE_QT_ROOT or install the project Qt 6.8.3 SDK.' }
+if ($env:MODYN_QT_ROOT) { $qtRoot = $env:MODYN_QT_ROOT }
+if (-not (Test-Path -LiteralPath (Join-Path $qtRoot 'lib\cmake\Qt6\Qt6Config.cmake'))) { throw 'Qt SDK missing. Set MODYN_QT_ROOT or install the project Qt 6.8.3 SDK.' }
 if (-not (Test-Path -LiteralPath $cmake)) { throw 'Visual Studio CMake component is required.' }
-$env:GRAPHITE_QT_ROOT = $qtRoot
+$env:MODYN_QT_ROOT = $qtRoot
 function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     & $Program @Arguments
     if ($LASTEXITCODE -ne 0) { throw "$Program failed with exit code $LASTEXITCODE" }
@@ -35,7 +35,7 @@ try {
     Invoke-Checked $cmake @('--build','--preset',$Preset)
     $binaryRoot = Join-Path $projectRoot (".local\build\" + $Preset + "\bin\Debug")
     $deploy = Join-Path $qtRoot 'bin\windeployqt.exe'
-    Invoke-Checked $deploy @('--debug','--no-translations',(Join-Path $binaryRoot 'GraphiteToolbox.App.exe'))
+    Invoke-Checked $deploy @('--debug','--no-translations',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))
     foreach ($runtime in Get-ChildItem -LiteralPath (Join-Path $qtRoot 'bin') -Filter 'Qt6Test*.dll') {
         Copy-Item -LiteralPath $runtime.FullName -Destination $binaryRoot -Force
     }
@@ -44,7 +44,7 @@ try {
         Invoke-Checked $ctest @('--preset',$Preset)
     }
     if ($Action -eq 'run') {
-        & (Join-Path $binaryRoot 'GraphiteToolbox.App.exe') '--data-root' (Join-Path $projectRoot 'data') '--packages-root' (Join-Path $projectRoot '.local\installed\tools')
+        & (Join-Path $binaryRoot 'ModynToolbox.App.exe') '--data-root' (Join-Path $projectRoot 'data') '--packages-root' (Join-Path $projectRoot '.local\installed\tools')
         if ($LASTEXITCODE -ne 0) { throw "Application exited with $LASTEXITCODE" }
     }
     if ($Action -eq 'package') {

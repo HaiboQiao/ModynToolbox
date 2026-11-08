@@ -29,6 +29,17 @@
     "description": {
       "type": "string",
       "maxLength": 512
+    },
+    "icon": {
+      "type": "string",
+      "enum": [
+        "image",
+        "code",
+        "files"
+      ]
+    },
+    "view_file": {
+      "const": "ui.json"
     }
   }
 }

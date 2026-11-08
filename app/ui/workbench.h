@@ -1,12 +1,12 @@
 #pragma once
 #include "catalog/package_catalog.h"
-#include <QMainWindow>
+#include "ui/window/chrome_window.h"
 #include <QMap>
 class QListWidget;
 class QStackedWidget;
 class QPlainTextEdit;
 class QComboBox;
-class Workbench : public QMainWindow {
+class Workbench : public ChromeWindow {
     Q_OBJECT
 public:
     explicit Workbench(QVector<ToolDefinition> definitions, QWidget *parent = nullptr);
@@ -23,18 +23,18 @@ private:
         QString toolId;
         QWidget *view = nullptr;
         QPlainTextEdit *editor = nullptr;
-        QMainWindow *floating = nullptr;
+        ChromeWindow *floating = nullptr;
     };
     void openTool(const QString &toolId);
     void activateSession(int id);
     void updateSelector(int activeId);
     QVector<ToolDefinition> definitions;
-    QMap<int, Session> sessions;
-    QMap<QString, int> recentSessions;
-    QListWidget *navigation;
-    QStackedWidget *workspace;
-    QComboBox *selector;
-    QWidget *floatingNotice;
+    QMap<int,Session> sessions;
+    QMap<QString,int> recentSessions;
+    QListWidget *navigation = nullptr;
+    QStackedWidget *workspace = nullptr;
+    QComboBox *selector = nullptr;
+    QWidget *floatingNotice = nullptr;
     QString currentTool;
     int nextId = 1;
 };

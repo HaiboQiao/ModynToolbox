@@ -30,13 +30,15 @@ CatalogResult readCatalog(const QString &root) {
                 || object.value("manifest_version") != QJsonValue(1)
                 || !identifier.match(id).hasMatch() || id != toolFolder.fileName()
                 || !versionPattern.match(version).hasMatch() || version != versionFolder.fileName()
+                || (object.contains("icon") && (!object.value("icon").isString() || !QStringList{"image","code","files"}.contains(object.value("icon").toString())))
+                || (object.contains("view_file") && object.value("view_file") != QJsonValue("ui.json"))
                 || name.isEmpty() || name.size() > 80
                 || (object.contains("description") && !object.value("description").isString())
                 || object.value("description").toString().size() > 512) {
                 result.errors.append(manifestPath + ": invalid identity, version or schema");
                 continue;
             }
-            versions.append({id, name, version, object.value("description").toString().left(512), versionFolder.absoluteFilePath()});
+            versions.append({id, name, version, object.value("description").toString().left(512), versionFolder.absoluteFilePath(), object.value("icon").toString("files"), object.value("view_file").toString()});
         }
         if (!versions.isEmpty()) {
             std::sort(versions.begin(), versions.end(), [](const auto &a, const auto &b) {

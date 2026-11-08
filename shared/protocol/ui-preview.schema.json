@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModynToolbox bounded UI preview",
+  "description": "Versioned presentation subset. Business actions and full view-v1 remain separate development tasks.",
+  "type": "object",
+  "required": [
+    "view_version",
+    "kind"
+  ],
+  "properties": {
+    "view_version": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "text",
+        "files"
+      ]
+    },
+    "input_title": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "hint": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "placeholder": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "initial_text": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]{1,8}$"
+      }
+    },
+    "fields": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "type",
+          "default"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "type": {
+            "enum": [
+              "choice",
+              "range",
+              "text"
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "choice"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "options"
+              ],
+              "properties": {
+                "options": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 20,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                },
+                "default": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "range"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "minimum",
+                "maximum"
+              ],
+              "properties": {
+                "minimum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "default": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "text"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "default": {
+                  "type": "string",
+                  "maxLength": 512
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

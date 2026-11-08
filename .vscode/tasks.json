@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Graphite build",
+      "label": "ModynToolbox build",
       "type": "shell",
       "command": "powershell.exe",
       "args": [

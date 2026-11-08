@@ -1,29 +1,32 @@
 # 当前状态
 
-更新日期为 2026-11-08。用户授权按阶段连续实施，并要求后台验证避免占用桌面。
+更新日期为 2026-11-08。用户已批准浅色雾紫方案、全项目更名和实际优化开发。
 
 ## 当前阶段
 
-T01 原生试点进行中。T02 已先行实现独立的元数据目录发现子集，完整安装/执行规范待开发。宿主为 C++20 / Qt 6 Widgets。
+产品与有效项目目录已统一为 ModynToolbox。目录位于 D:/Workspace/01_Projects/ModynToolbox。旧根内容迁移后重新核验，旧目录已不存在。
 
-## 最新成果与证据
+T01、T02、T03 进行中。本轮 UI-R1 已实现主要代码并完成阶段回归，完整发布和系统交互验收待进行。
 
-- 导航按工具组织，搜索为“搜索工具”。同工具多会话独立，多于一份才显示切换入口。浮窗收回同步左侧选中工具。
-- Windows 原生深色标题栏接口已加入并编译，主窗与独立窗共用。此次没有前台原生视觉验收。
-- 从显式包根的 <id>/<version>/manifest.json 发现工具，校验元数据与数字版本排序。退出后删除安装工具目录，下次启动不再发现。开发运行不会自动恢复手动删除的工具。
-- windows-check 独立后台构建、离屏测试与截图可用。最终 CTest 为 3/3 通过，1.38 秒。界面六项、目录五项与跨语言三项测试通过，另有 Qt 初始化/清理记录。100 个元数据包被发现，尚未测资源预算。
-- 接入预览含 JSON、图片压缩、批量重命名，业务处理尚待开发。
+## 本轮实际实现
 
-证据见 verification/UI-catalog-preview.md。此前真实 GUI 证据见 verification/M0-architecture.md，涉及本轮改动的视觉行为需复验。
+- 主题、矢量绘制图标、下拉框和窗口组件集中复用，主窗与独立窗采用相同的一体化标题区域。
+- Windows 保留原生窗口样式，通过平台模块处理边缘、拖动区、最大化命中与按钮状态，并请求 DWM 圆角。真实拖动、Snap 菜单、阴影和 DPI 待人工验收。
+- 左侧搜索，单个工具标题，同工具多会话才显示选择器。支持多个独立窗，收回保留输入与设置，切回浮窗保留最大化状态，收回恢复已最小化的主窗。
+- 各工具 integration/ui.json 定义有界文件/文本界面，安装后为 ui.json。声明 view_file 的包缺文件显示局部错误，旧清单保留文本回退。
+- 导航只读轻量元数据与图标标识，打开工具时才读取界面和创建控件。
+- 文件页可选择/拖入文件、去重、过滤扩展名并限制 1000 个。文本页可编辑/复制/清空，业务处理按钮禁用并说明后端待接入。
 
-## 运行与验证
+## 验证
 
-项目根运行 powershell -NoProfile -File scripts/prepare-preview.ps1，明确准备三个元数据预览包，仅在需要时执行。
-随后运行 powershell -NoProfile -File scripts/dev.ps1 run。VS Code 的 F5 使用同一包根与数据根，按键本身待人工验收。
-后台验证运行 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check，不改写正在运行的 windows-dev 二进制。
+本轮采用 Qt 离屏截图、隐藏原生窗口消息测试、私有数据根的程序入口冒烟。测试不操纵桌面。windows-check 最终结果以 verification/UI-R1-ModynToolbox.md 为准，包含六组 CTest 和 27 个测试函数。windows-dev 已完成新路径全新构建，最终源码更新后再次增量构建。真实 F5 按键待验收。
 
-源码在 tools，开发安装副本在 .local/installed/tools，数据在 data。勿把源码目录删除等同于卸载安装副本。prepare-preview 是显式预览准备动作，再次执行会补回已删除的示例包。
+## 运行
 
-## 后续工作
+在新目录打开 ModynToolbox.code-workspace。项目根执行 powershell -NoProfile -File scripts/dev.ps1 run。
+首次准备预览包执行 scripts/prepare-preview.ps1。后台验证使用 scripts/dev.ps1 test -Preset windows-check。
 
-继续 T01 的 Windows Job Object、取消/任务通路、界面描述试点、Release 启动器、性能与真实 VS Code/DPI 验收。T02 后续补完整 manifest/view/messages、入口与运行时校验、暂存安装、版本引用和忙碌卸载。T03–T12 待开始。完整 44 项验收均未完成，保持未勾选。
+## 下一步与缺口
+
+继续 T01 的 Job Object 启动归属、受控任务/取消、性能与 Release 启动器。T02 补完整执行清单、消息规范、安装事务和忙碌版本引用。T03 继续完整受控组件树与绑定，当前只实现有界预览子集。
+三个工具的业务后端、持久化、完整迁移和发布测试仍待开发。完整 C01–C44 保持未完成，局部证据在本轮报告与 R 系列清单。

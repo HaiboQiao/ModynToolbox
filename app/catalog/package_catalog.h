@@ -8,6 +8,8 @@ struct ToolDefinition {
     QString version;
     QString description;
     QString packageRoot;
+    QString icon = "files";
+    QString viewFile;
 };
 struct CatalogResult {
     QVector<ToolDefinition> tools;

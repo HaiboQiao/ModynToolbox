@@ -1,4 +1,4 @@
-# 石墨工具工作台实施任务
+# ModynToolbox实施任务
 
 2026-11-08 更新。用户授权按阶段开发并继续下一阶段。T01 进行中，T02 的元数据目录发现先行实施，其他任务待开始。当前已有原生试点和部分测试，完整完成范围以 STATUS 与验证报告为准。
 
@@ -33,15 +33,15 @@
 
 完成条件为规范有真实校验调用方，本地版本导入/固定/移除行为符合 spec，包摘要校验不被说成来源信任验证。
 
-## T03 石墨原生组件与界面描述渲染
+## T03 雾紫原生组件与界面描述渲染
 
-状态为待开始。覆盖 F01,F03,F11,F12,F16,N02,N07,N09。AC01,AC03,AC14,AC17。
+状态为进行中，本轮先实现已批准的视觉与有界 UI 预览子集，完整规范继续依赖 T02。覆盖 F01,F03,F11,F12,F16,N02,N07,N09。AC01,AC03,AC14,AC17。
 
 新建 `app/ui/{main_window,navigation,workspace,theme,view_spec_validator,native_view_renderer}.h/.cpp`、`app/ui/components/`、本地图标及许可记录、`app/tests/unit/{test_view_spec,test_navigation}.cpp`。依赖 T02，契约见 plan §4、§11。
 
 实现受控组件树、字段/动作绑定、有限条件、表格模型/代理、文本编辑与图片预览角色。按用户选择落实搜索在左、单层标题、条件任务入口和无底部会话列表。未知组件/错误绑定给局部错误，UI 描述与结果均有负载限制。
 
-验证入口为 `ctest --test-dir .local/build/windows-dev -R "view_spec|navigation" --output-on-failure`。注入超深树、未知组件、超限节点、无匹配搜索和结果增量洪泛。真实图形环境观察石墨主题、键盘、DPI 和两种布局。
+验证入口为 `ctest --test-dir .local/build/windows-dev -R "view_spec|navigation" --output-on-failure`。注入超深树、未知组件、超限节点、无匹配搜索和结果增量洪泛。真实图形环境观察雾紫主题、键盘、DPI 和两种布局。
 
 完成条件为同一组件体系可渲染三类界面，主程序不按工具 ID 分支，输入状态与数据模型分开。
 
@@ -163,3 +163,9 @@
 | M3 交付 | T10–T12 | 扩展证据、离线包、多 DPI、资源回归及说明 |
 
 任务进度只在本文件维护，实际验收状态在 checklist，证据在 docs/verification。所有任务目前待开始。
+
+## 本轮执行包 UI-R1
+
+用户明确批准新设计并要求统一更名。先完成目录/产品名/环境变量/构建目标及文档更名，再实现公共主题、图标、窗口外框和元数据驱动的文件/文本预览。覆盖 F01,F02,F04,F12,F16,F21–F23 的局部范围。验证入口为 scripts/dev.ps1 test -Preset windows-check。回归包含搜索、独立输入、分离收回、窗口控制、UI 限额、旧清单回退、重命名后全新构建与新品牌扫描。业务与系统交互验收分别记状态。
+
+UI-R1 已完成更名、主题/外框、独立 UI 预览与阶段回归。旧根已清理，真实系统交互仍待验收，见 verification/UI-R1-ModynToolbox.md。T03 的完整规范与组件树未完成。

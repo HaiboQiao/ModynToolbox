@@ -1,0 +1,30 @@
+{
+  "view_version": 1,
+  "kind": "files",
+  "input_title": "拖入文件，准备命名预览",
+  "hint": "添加文件后设置命名规则",
+  "fields": [
+    {
+      "id": "prefix",
+      "label": "文件名前缀",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "suffix",
+      "label": "文件名后缀",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "numbering",
+      "label": "序号规则",
+      "type": "choice",
+      "options": [
+        "不添加序号",
+        "三位序号 · 从 001 开始"
+      ],
+      "default": "不添加序号"
+    }
+  ]
+}

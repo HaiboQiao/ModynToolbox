@@ -10,5 +10,9 @@ foreach ($id in @('json','image','rename')) {
     }
     New-Item -ItemType Directory -Path $target -Force | Out-Null
     Copy-Item -LiteralPath $source -Destination (Join-Path $target 'manifest.json')
-    Write-Output "Prepared metadata preview $id"
+    $viewSource = Join-Path $projectRoot "tools\$id\integration\ui.json"
+    if (Test-Path -LiteralPath $viewSource) {
+        Copy-Item -LiteralPath $viewSource -Destination (Join-Path $target 'ui.json')
+    }
+    Write-Output "Prepared UI preview $id"
 }

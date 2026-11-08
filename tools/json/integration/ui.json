@@ -1,0 +1,7 @@
+{
+  "view_version": 1,
+  "kind": "text",
+  "input_title": "JSON 内容",
+  "placeholder": "粘贴需要检查或格式化的 JSON。",
+  "fields": []
+}

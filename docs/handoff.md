@@ -49,3 +49,9 @@ AGENTS.md 是开放约定，不同工具自动读取的规则不同。未自动�
 任务状态集中 task，验收集中 checklist，STATUS 只做摘要。worklog 追加有意义阶段的实际过程，decisions 解释重要取舍，避免维护互相矛盾的多份进度。
 
 记录中不得把计划命令写成执行结果。报告避免包含密钥、正文或无必要的用户数据。自动生成的大日志放 .local，保留可复现的命令和必要摘要。
+
+## 本轮更名与 UI 交接
+
+当前根为 D:/Workspace/01_Projects/ModynToolbox，打开 ModynToolbox.code-workspace。先读 verification/UI-R1-ModynToolbox.md。旧根内容已迁入当前根，最终检查旧目录已不存在。所有有效命令与环境变量使用 ModynToolbox / MODYN 前缀。
+
+本轮六组后台测试覆盖 27 个函数。当前先完成雾紫外观、共享窗口与界面接入预览，接手时继续 Job Object/任务通路和完整包协议。界面可操作不代表图片/重命名/JSON 业务已完成。
