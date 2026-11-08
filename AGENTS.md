@@ -26,7 +26,7 @@
 
 ## 启动与验证
 
-当前应用命令待 T01 创建。未来统一使用 scripts/dev.ps1 的 doctor/configure/build/run/test/package 入口，参数与实际命令记录到开发指南。VS Code 和 CLI 使用同一 CMake Preset。不能为了让命令通过而跳过全部测试。
+应用入口已在 T01 建立，具体完成范围见 STATUS。统一使用 scripts/dev.ps1 的 doctor/configure/build/run/test/package 入口，参数与实际命令记录到开发指南。VS Code 和 CLI 使用同一 CMake Preset。不能为了让命令通过而跳过全部测试。
 
 文件写入、取消、部分成功、恢复、升级与协议变更需要对应回归。编译、自动测试、真实 Windows GUI/DPI/多窗口、干净机器发布包各记录自己的证据，不能相互替代。
 

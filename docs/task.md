@@ -1,12 +1,12 @@
 # 石墨工具工作台实施任务
 
-2026-11-08 按独立工具架构修订，全部任务待开始。用户本轮要求完整分析并形成后续开发依据，当前独立项目交付为完整规划、目录说明和编辑器工作区。具体实现、依赖安装及应用测试尚待实施。
+2026-11-08 按独立工具架构修订，T01 进行中，其他任务待开始。用户本轮要求完整分析并形成后续开发依据，当前独立项目交付为完整规划、目录说明和编辑器工作区。具体实现、依赖安装及应用测试尚待实施。
 
 依据为 [需求](spec.md) 和 [架构设计](plan.md)。文中路径均相对本项目。验证入口由相应任务创建，执行前确认用例实际收集，跳过不能计通过。
 
 ## T01 新工程环境、VS Code 启动与架构试点
 
-状态为待开始。覆盖 F04,F05,F16–F18,F20–F24,N08–N11，先行 AC04,AC18,AC20–AC24。
+状态为进行中，已完成可运行原型及部分验证，见 verification/M0-architecture.md。覆盖 F04,F05,F16–F18,F20–F24,N08–N11，先行 AC04,AC18,AC20–AC24。
 
 新建根 CMakeLists.txt/CMakePresets.json、本机配置流程、scripts/dev.ps1、.vscode/tasks.json/launch.json、app/main.cpp、app/launcher/、app/tests/fixtures/workers/ 与 docs/verification/M0-architecture.md。项目已经有规划和目录说明，源码从零建立。依赖无，契约见 plan §1、§4–7、§10、§13–18 及 development §2–6。
 
@@ -163,5 +163,3 @@
 | M3 交付 | T10–T12 | 扩展证据、离线包、多 DPI、资源回归及说明 |
 
 任务进度只在本文件维护，实际验收状态在 checklist，证据在 docs/verification。所有任务目前待开始。
-
-

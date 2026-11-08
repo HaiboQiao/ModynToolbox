@@ -14,10 +14,12 @@ private slots:
     }
     void detachAndReturn() {
         Workbench window;
+        window.show();
         auto *original = window.sessionView(1);
         window.editor(1)->setPlainText("preserved");
         window.detachSession(1);
         QVERIFY(window.isDetached(1));
+        QVERIFY(window.editor(1)->isVisible());
         QCOMPARE(window.sessionView(1), original);
         window.attachSession(1);
         QVERIFY(!window.isDetached(1));

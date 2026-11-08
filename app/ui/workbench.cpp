@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QVBoxLayout>
-#include <QTimer>
+#include <QApplication>
 #include <functional>
 namespace {
 class ToolWindow : public QMainWindow {
@@ -46,7 +46,7 @@ Workbench::Workbench(QWidget *parent) : QMainWindow(parent) {
     layout->addWidget(sidebar);
     layout->addWidget(workspace, 1);
     setCentralWidget(root);
-    setStyleSheet(QStringLiteral(
+    qApp->setStyleSheet(QStringLiteral(
         "QWidget{background:#25282e;color:#eff1f5;font-family:'Segoe UI','Microsoft YaHei UI';font-size:14px;}"
         "QWidget#sidebar,QListWidget{background:#1e2126;}"
         "QLineEdit,QPlainTextEdit{background:#2c3037;border:1px solid #748094;border-radius:5px;padding:8px;}"
@@ -102,6 +102,7 @@ int Workbench::addSession() {
     header->addWidget(heading);
     header->addStretch();
     auto *detach = new QPushButton(QStringLiteral("独立窗口"));
+    detach->setObjectName("locationAction");
     header->addWidget(detach);
     layout->addLayout(header);
     auto *description = new QLabel(QStringLiteral("原生窗口与状态保留试点。此处输入仅用于验证会话，业务工具将在后续阶段接入。"));
@@ -132,6 +133,8 @@ void Workbench::detachSession(int id) {
     workspace->removeWidget(it->view);
     window->setCentralWidget(it->view);
     it->floating = window;
+    it->view->findChild<QPushButton *>("locationAction")->setText(QStringLiteral("收回主窗口"));
+    it->view->show();
     window->show();
 }
 void Workbench::attachSession(int id) {
@@ -139,6 +142,7 @@ void Workbench::attachSession(int id) {
     if (it == sessions.end() || !it->floating) return;
     auto *window = it->floating;
     window->takeCentralWidget();
+    it->view->findChild<QPushButton *>("locationAction")->setText(QStringLiteral("独立窗口"));
     it->floating = nullptr;
     workspace->addWidget(it->view);
     workspace->setCurrentWidget(it->view);
