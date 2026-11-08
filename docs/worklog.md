@@ -66,3 +66,14 @@
 发布目录 .local/releases/ModynToolbox-1.0.0-b0803342，141.61 MiB，309 项文件摘要一致、初始 data 为空，包内 app 与冻结构建一致。七个资源场景已测，空载私有提交 12.22 MiB、工作集 33.79 MiB。原始数据在 .local/logs，随项目证据在 docs/verification/R2-evidence。截图与测量条件见 R2-complete。
 
 更新 README、AGENTS、STATUS、开发/使用/工具/交接指南、task、checklist、spec/plan 实现映射与 decisions。版本相关资料使用已安装 Qt 6.8.3 头文件和官方文档，Context7 当前无可调用工具。本轮无前台桌面控制。物理 DPI/多屏/Snap、系统对话框、VS Code F5、另一台干净机器、其他 Agent 实际接手继续保留给用户最终验收。
+
+## 2026-11-09 GitHub 首次上传
+
+用户在独立侧聊提供目标仓库并授权在主开发完成后检查、上传。主开发完成提交为 d3b5ece，确认主线程已结束后执行发布检查。
+
+- 远端为 https://github.com/HaiboQiao/ModynToolbox.git，分支 main。
+- 首次推送前工作区干净，176 个跟踪文件，历史共检查 282 个 blob。已使用凭据格式扫描，未发现匹配项，未纳入用户数据、生成物或超过 10 MiB 的文件。
+- 复核本地最终便携包的 309 项文件摘要全部一致，发布 data 为空。
+- 源码与历史已推送，远端 main 与本地完成提交 SHA 一致。此条记录单独提交后再次推送。
+- 本次上传源码、文档、测试与已有验证证据。便携二进制仍在本地 .local/releases，GitHub Releases 留待具体发布需求处理。
+- 原交付报告中的多屏 DPI、Snap、系统对话框、实际 F5、干净电脑和跨 Agent 接手仍按原范围保留人工验收。
