@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "GraphiteToolbox",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.local/build/windows-dev/bin/Debug/GraphiteToolbox.App.exe",
+      "args": [
+        "--data-root",
+        "${workspaceFolder}/data"
+      ],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Graphite build",
+      "console": "internalConsole"
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+<div class="viz-carousel" id="tb-concept" aria-label="工具工作台的三种设计方向" data-previous-label="上一种" data-next-label="下一种">
+  <section data-variant="清透" aria-label="清透：常驻导航与单层标题"><div id="tb-clear" class="tb-app tb-clear" aria-label="清透工作台"></div></section>
+  <section data-variant="分区" aria-label="分区：预览与参数检视器" hidden><div id="tb-inspector" class="tb-app tb-inspector" aria-label="分区工作台"></div></section>
+  <section data-variant="石墨" aria-label="石墨：收起导航的专注布局" hidden><div id="tb-graphite" class="tb-app tb-graphite" aria-label="石墨工作台"></div></section>
+</div>
+<style>
+  #tb-concept>section{min-height:665px}
+  #tb-concept .tb-app{--tb-bg:light-dark(#ffffff,#191c21);--tb-side:light-dark(#f4f5f7,#15181d);--tb-alt:light-dark(#fafbfc,#20242a);--tb-fg:light-dark(#22262d,#e7eaf0);--tb-muted:light-dark(#6c727c,#a4acb8);--tb-line:light-dark(#e7e9ed,#30363e);--tb-soft:light-dark(#e6e9ed,#2d343e);--tb-accent:light-dark(#353d49,#dce2ed);--tb-onaccent:light-dark(#ffffff,#1b2028);--tb-selected:light-dark(#e5e8ed,#303845);--tb-pad:24px;--tb-radius:10px;color:var(--tb-fg);font:14px/1.5 "Segoe UI Variable Text","Segoe UI","Microsoft YaHei UI",sans-serif;background:var(--tb-bg);border:1px solid var(--tb-line);border-radius:var(--tb-radius);position:relative;isolation:isolate;min-height:610px;overflow:clip;box-shadow:0 8px 28px #10182808}
+  #tb-concept .tb-inspector{--tb-side:light-dark(#e9edf3,#1a212c);--tb-alt:light-dark(#f4f6f9,#202731);--tb-accent:light-dark(#3c65aa,#b3ceff);--tb-onaccent:light-dark(#fff,#172334);--tb-selected:light-dark(#dce5f3,#2c3e58)}
+  #tb-concept .tb-graphite{--tb-bg:light-dark(#25282e,#1b1e23);--tb-side:light-dark(#1e2126,#16191e);--tb-alt:light-dark(#2c3037,#23272e);--tb-fg:light-dark(#eff1f5,#eff1f5);--tb-muted:light-dark(#a6aebc,#a6aebc);--tb-line:light-dark(#3c424d,#353b45);--tb-soft:light-dark(#343a45,#2e3540);--tb-accent:light-dark(#e2e7ef,#e2e7ef);--tb-onaccent:light-dark(#1d222a,#1d222a);--tb-selected:light-dark(#363e4a,#303946)}
+  #tb-concept .tb-app *{box-sizing:border-box}
+  #tb-concept .tb-app [hidden]{display:none!important}
+  #tb-concept .tb-app button,#tb-concept .tb-app input,#tb-concept .tb-app select,#tb-concept .tb-app textarea{font:inherit}
+  #tb-concept .tb-app button{cursor:default}
+  #tb-concept .tb-app button:focus-visible,#tb-concept .tb-app input:focus-visible,#tb-concept .tb-app select:focus-visible,#tb-concept .tb-app textarea:focus-visible{outline:2px solid var(--tb-accent);outline-offset:3px}
+  #tb-concept .tb-app button:disabled{opacity:.45}
+  #tb-concept .tb-app button svg,#tb-concept .tb-app i[data-lucide]{width:16px;height:16px;flex:none}
+  #tb-concept .tb-chrome{height:47px;padding:0 108px 0 20px;display:flex;align-items:center;gap:9px;background:var(--tb-side);border-bottom:1px solid var(--tb-line);font-size:12px;color:var(--tb-muted)}
+  #tb-concept .tb-chrome b{font-weight:600;letter-spacing:.09em;color:var(--tb-fg)}
+  #tb-concept .tb-chrome .tb-chrome-rule{width:1px;height:12px;background:var(--tb-line);margin:0 3px}
+  #tb-concept .tb-structure{display:grid;grid-template-columns:184px minmax(0,1fr);min-height:561px}
+  #tb-concept .tb-nav{background:var(--tb-side);padding:24px 12px 20px;border-right:1px solid var(--tb-line);min-width:0}
+  #tb-concept .tb-searchbox{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--tb-bg);border:1px solid var(--tb-line);border-radius:6px;color:var(--tb-muted);margin-bottom:25px}
+  #tb-concept .tb-searchbox input{width:100%;min-width:0;background:transparent;color:var(--tb-fg);border:0;outline-offset:6px;font-size:13px}
+  #tb-concept .tb-searchbox input::placeholder{color:var(--tb-muted)}
+  #tb-concept .tb-nav-caption{display:block;color:var(--tb-muted);font-size:11px;letter-spacing:.08em;margin:0 10px 9px}
+  #tb-concept .tb-navitem{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:transparent;border:0;border-radius:6px;color:var(--tb-muted);padding:11px 10px;margin:3px 0}
+  #tb-concept .tb-navitem:hover{color:var(--tb-fg);background:var(--tb-soft)}
+  #tb-concept .tb-navitem[aria-pressed=true]{color:var(--tb-fg);background:var(--tb-selected);font-weight:600}
+  #tb-concept .tb-navitem .tb-navtext{flex:1;min-width:0}
+  #tb-concept .tb-navshort{display:none}
+  #tb-concept .tb-windowmark{font-size:12px;font-weight:400}
+  #tb-concept .tb-main{min-width:0;background:var(--tb-bg)}
+  #tb-concept .tb-mainbar{padding:22px var(--tb-pad) 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--tb-line)}
+  #tb-concept .tb-heading{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;min-width:0}
+  #tb-concept .tb-heading h2{font-size:19px;line-height:1.35;font-weight:600;letter-spacing:-.035em;margin:0}
+  #tb-concept .tb-context{font-size:12px;color:var(--tb-muted)}
+  #tb-concept .tb-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  #tb-concept .tb-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;background:var(--tb-bg);color:var(--tb-fg);border:1px solid var(--tb-line);border-radius:5px;white-space:normal}
+  #tb-concept .tb-action:hover{background:var(--tb-alt)}
+  #tb-concept .tb-action[aria-pressed=true]{background:var(--tb-selected)}
+  #tb-concept .tb-quiet{border-color:transparent;background:transparent;color:var(--tb-muted)}
+  #tb-concept .tb-primary{background:var(--tb-accent);color:var(--tb-onaccent);border-color:var(--tb-accent);padding:9px 15px;font-weight:500}
+  #tb-concept .tb-primary:hover{background:var(--tb-accent);filter:brightness(.94)}
+  #tb-concept .tb-sessionpicker{border:0;background:var(--tb-bg);color:var(--tb-muted);padding:3px 16px 3px 0;max-width:190px}
+  #tb-concept .tb-more{position:relative}
+  #tb-concept .tb-more summary{list-style:none}
+  #tb-concept .tb-more summary::-webkit-details-marker{display:none}
+  #tb-concept .tb-menu{position:absolute;right:0;top:calc(100% + 7px);min-width:175px;background:var(--tb-bg);border:1px solid var(--tb-line);border-radius:7px;box-shadow:0 9px 25px #0002;padding:5px;z-index:5}
+  #tb-concept .tb-menu button{display:block;border:0;background:transparent;color:var(--tb-fg);padding:9px 10px;text-align:left;width:100%;border-radius:4px}
+  #tb-concept .tb-menu button:hover{background:var(--tb-alt)}
+  #tb-concept .tb-panes{display:grid;grid-template-columns:minmax(0,1fr);min-width:0}
+  #tb-concept .tb-panes.tb-paired{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #tb-concept .tb-pane{min-width:0;padding:24px var(--tb-pad) 20px}
+  #tb-concept .tb-paired .tb-pane+.tb-pane{border-left:1px solid var(--tb-line)}
+  #tb-concept .tb-pane-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+  #tb-concept .tb-pane-title h3{font-size:15px;font-weight:600;margin:0}
+  #tb-concept .tb-controls{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(95px,1fr);gap:12px;margin-bottom:27px}
+  #tb-concept .tb-controls label{font-size:12px;color:var(--tb-muted);display:block;min-width:0}
+  #tb-concept .tb-input{display:block;width:100%;min-width:0;padding:9px 10px;color:var(--tb-fg);background:var(--tb-bg);border:1px solid var(--tb-line);border-radius:5px;margin-top:7px}
+  #tb-concept .tb-input::placeholder{color:var(--tb-muted)}
+  #tb-concept .tb-filehead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:11px}
+  #tb-concept .tb-filelabel{font-weight:500;font-size:12px;color:var(--tb-muted)}
+  #tb-concept .tb-table{border-collapse:collapse;width:100%;table-layout:fixed;font-size:13px}
+  #tb-concept .tb-table th{font-weight:400;color:var(--tb-muted);text-align:left;font-size:12px;padding:11px 8px;background:var(--tb-alt);border-bottom:1px solid var(--tb-line)}
+  #tb-concept .tb-table td{padding:14px 8px;border-bottom:1px solid var(--tb-line);overflow-wrap:anywhere;vertical-align:middle}
+  #tb-concept .tb-table th:first-child,#tb-concept .tb-table td:first-child{width:30px;padding-left:6px;padding-right:4px}
+  #tb-concept .tb-table input[type=checkbox]{accent-color:var(--tb-accent);margin:0}
+  #tb-concept .tb-table .tb-newname{color:var(--tb-accent);font-weight:500}
+  #tb-concept .tb-format{font-size:10px;line-height:1.1;font-weight:600;color:var(--tb-muted);border:1px solid var(--tb-line);border-radius:3px;width:25px;min-height:28px;display:inline-flex;align-items:center;justify-content:center;margin-right:8px;vertical-align:middle;background:var(--tb-bg)}
+  #tb-concept .tb-file-name{overflow-wrap:anywhere}
+  #tb-concept .tb-bottomaction{margin-top:21px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  #tb-concept .tb-small{font-size:12px;color:var(--tb-muted)}
+  #tb-concept .tb-status{font-size:12px;color:var(--tb-muted);margin:12px 0 0;min-height:18px}
+  #tb-concept .tb-status:empty{display:none}
+  #tb-concept .tb-error{color:light-dark(#a43a34,#ffaaa2)}
+  #tb-concept .tb-textarea{min-height:195px;resize:vertical;font:13px/1.7 Consolas,monospace}
+  #tb-concept .tb-inspector .tb-tool-layout{display:grid;grid-template-columns:minmax(0,1fr) 184px;gap:24px}
+  #tb-concept .tb-inspector .tb-config{grid-column:2;grid-row:1;padding-left:21px;border-left:1px solid var(--tb-line)}
+  #tb-concept .tb-inspector .tb-preview{grid-column:1;grid-row:1;min-width:0}
+  #tb-concept .tb-inspector .tb-config .tb-controls{grid-template-columns:minmax(0,1fr)}
+  #tb-concept .tb-inspector .tb-parameter-title{font-size:12px;font-weight:500;margin:0 0 15px;color:var(--tb-muted)}
+  #tb-concept .tb-inspector .tb-paired .tb-tool-layout{display:block}
+  #tb-concept .tb-inspector .tb-paired .tb-config{padding:0;border:0}
+  #tb-concept .tb-inspector .tb-paired .tb-config .tb-controls{grid-template-columns:minmax(0,1fr)}
+  #tb-concept .tb-parameter-title{display:none}
+  #tb-concept .tb-inspector .tb-parameter-title{display:block}
+  #tb-concept .tb-graphite .tb-structure{grid-template-columns:64px minmax(0,1fr)}
+  #tb-concept .tb-graphite .tb-nav{padding:20px 7px;position:relative;z-index:3}
+  #tb-concept .tb-graphite .tb-navitem{padding:10px 4px;justify-content:center;flex-direction:column;gap:5px;margin:5px 0;position:relative}
+  #tb-concept .tb-graphite .tb-navshort{display:block;font-size:11px}
+  #tb-concept .tb-graphite .tb-navitem .tb-navtext,#tb-concept .tb-graphite .tb-nav-caption{display:none}
+  #tb-concept .tb-graphite .tb-navitem .tb-windowmark{position:absolute;right:0;bottom:1px;font-size:10px}
+  #tb-concept .tb-graphite .tb-searchbox{padding:9px;justify-content:center;margin:0 0 18px;border:0;background:transparent}
+  #tb-concept .tb-search-trigger{background:transparent;border:0;color:var(--tb-muted);padding:3px;display:flex;align-items:center}
+  #tb-concept .tb-graphite .tb-searchbox input{display:none}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-structure{grid-template-columns:184px minmax(0,1fr)}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-navitem{justify-content:initial;flex-direction:row;padding:11px 10px}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-navshort{display:none}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-navitem .tb-navtext,#tb-concept .tb-graphite.tb-nav-expanded .tb-nav-caption{display:block}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-searchbox{justify-content:initial;background:var(--tb-bg);border:1px solid var(--tb-line);padding:8px}
+  #tb-concept .tb-graphite.tb-nav-expanded .tb-searchbox input{display:block}
+  #tb-concept .tb-graphite .tb-table .tb-format{background:var(--tb-alt)}
+  #tb-concept .tb-graphite .tb-table td{padding-top:17px;padding-bottom:17px}
+  #tb-concept .tb-floatlayer{position:absolute;inset:0;z-index:8;pointer-events:none}
+  #tb-concept .tb-floating{position:absolute;top:95px;right:20px;width:min(520px,calc(100% - 32px));pointer-events:auto;border:1px solid var(--tb-line);border-radius:8px;background:var(--tb-bg);box-shadow:0 18px 55px #0004;overflow:clip}
+  #tb-concept .tb-floating .tb-pane{padding:18px}
+  #tb-concept .tb-floating .tb-tool-layout{display:block}
+  #tb-concept .tb-floating .tb-config{padding:0;border:0}
+  #tb-concept .tb-floating .tb-parameter-title{display:none}
+  #tb-concept .tb-floating .tb-config .tb-controls{grid-template-columns:minmax(0,1.5fr) minmax(90px,1fr)}
+  #tb-concept .tb-floating .tb-table td{padding:9px 5px}
+  #tb-concept .tb-floatbar{background:var(--tb-side);border-bottom:1px solid var(--tb-line);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  #tb-concept .tb-floatbar strong{font-size:13px;font-weight:500}
+  #tb-concept .tb-empty{padding:60px 25px;text-align:center;color:var(--tb-muted)}
+  #tb-concept .tb-navempty{font-size:12px;color:var(--tb-muted);padding:10px}
+  @media(max-width:850px){#tb-concept .tb-inspector .tb-tool-layout{display:block}#tb-concept .tb-inspector .tb-config{border:0;padding:0}#tb-concept .tb-inspector .tb-config .tb-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#tb-concept .tb-inspector .tb-parameter-title{display:none}#tb-concept .tb-format{display:none}}
+  @media(max-width:600px){#tb-concept>section{min-height:930px}#tb-concept .tb-app{min-height:875px;--tb-pad:16px}#tb-concept .tb-structure,#tb-concept .tb-graphite .tb-structure,#tb-concept .tb-graphite.tb-nav-expanded .tb-structure{display:block;min-height:0}#tb-concept .tb-nav{border-right:0;border-bottom:1px solid var(--tb-line);padding:12px}#tb-concept .tb-searchbox{margin-bottom:9px}#tb-concept .tb-nav-caption{display:none}#tb-concept .tb-navitems{display:flex;gap:4px;flex-wrap:wrap}#tb-concept .tb-navitem{width:auto;padding:9px 10px}#tb-concept .tb-navitem .tb-navtext{display:block}#tb-concept .tb-graphite .tb-nav{padding:10px}#tb-concept .tb-graphite .tb-navitems{display:flex}#tb-concept .tb-graphite .tb-searchbox{justify-content:initial;border:1px solid var(--tb-line);padding:8px;margin-bottom:10px}#tb-concept .tb-graphite .tb-searchbox input{display:block}#tb-concept .tb-graphite .tb-navitem .tb-navtext{display:block}#tb-concept .tb-mainbar{padding:20px 16px;gap:12px}#tb-concept .tb-mainbar>.tb-row{width:100%;justify-content:flex-end}#tb-concept .tb-chrome{padding-left:16px}#tb-concept .tb-panes.tb-paired{display:block}#tb-concept .tb-paired .tb-pane+.tb-pane{border-left:0;border-top:1px solid var(--tb-line)}#tb-concept .tb-controls,#tb-concept .tb-inspector .tb-config .tb-controls{grid-template-columns:minmax(0,1fr)}#tb-concept .tb-floating{position:static;width:auto;margin:12px}#tb-concept .tb-floatlayer{position:relative;inset:auto}#tb-concept .tb-floating .tb-controls{grid-template-columns:minmax(0,1fr)}#tb-concept .tb-floating .tb-table{font-size:12px}}
+  @media(pointer:coarse){#tb-concept .tb-action,#tb-concept .tb-navitem,#tb-concept .tb-input{min-height:44px}#tb-concept .tb-input{font-size:16px}}
+</style>
+<script>
+(()=>{
+  const root=document.getElementById('tb-concept');
+  const toolData=[{id:'rename',name:'批量重命名',icon:'files'},{id:'image',name:'图片压缩',icon:'image'},{id:'json',name:'JSON 检查',icon:'braces'}];
+  const files=[{name:'调研笔记.md',kind:'MD'},{name:'项目说明.docx',kind:'DOC'},{name:'交付清单.xlsx',kind:'XLS'},{name:'界面参考.png',kind:'PNG'}];
+  const descriptions={clear:'清透',inspector:'分区',graphite:'石墨'};
+  const controllers=[];
+  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const icon=name=>'<i data-lucide="'+name+'" aria-hidden="true"></i>';
+  const currentSaved=globalThis.openai?.widgetState?.privateContent;
+  function save(){const view={};controllers.forEach(c=>{view[c.key]={active:c.active,split:c.split,floats:c.sessions.filter(s=>s.floating).map(s=>s.id)}});const api=globalThis.openai;if(api?.setWidgetState)api.setWidgetState({modelContent:{设计方向:Object.values(descriptions),已打开独立窗口:controllers.flatMap(c=>c.sessions.filter(s=>s.floating).map(s=>descriptions[c.key]+'：'+toolData.find(t=>t.id===s.type).name))},privateContent:{version:2,views:view}}).catch(()=>{});}
+  function build(key){
+    const app=document.getElementById('tb-'+key);
+    const c={key,app,active:'r1',split:false,focusedFloat:null,next:4,query:'',options:{density:'舒适',radius:10},sessions:[{id:'r1',type:'rename',context:'项目资料',prefix:'项目_',format:'保留扩展名',quality:'80',json:'{\n  "workspace": "local",\n  "tools": 3\n}',floating:false},{id:'i1',type:'image',context:'网页素材',prefix:'素材_',format:'保留扩展名',quality:'80',json:'{}',floating:false},{id:'j1',type:'json',context:'接口数据',prefix:'',format:'保留扩展名',quality:'80',json:'{\n  "workspace": "local",\n  "tools": 3\n}',floating:false}]};
+    const find=id=>c.sessions.find(s=>s.id===id);
+    const title=s=>toolData.find(t=>t.id===s.type).name;
+    function restore(v){if(!v||typeof v!=='object')return;if(find(v.active))c.active=v.active;c.split=v.split===true;if(Array.isArray(v.floats))c.sessions.forEach(s=>{s.floating=v.floats.includes(s.id)});c.focusedFloat=c.sessions.find(s=>s.floating)?.id||null;}
+    if(currentSaved?.version===2)restore(currentSaved.views?.[key]);
+    app.innerHTML='<div class="tb-chrome">'+icon('panels-top-left')+'<b>TOOLBENCH</b><span class="tb-chrome-rule"></span><span>我的工作区</span></div><div class="tb-structure"><nav class="tb-nav" aria-label="工具导航"><div class="tb-searchbox">'+(key==='graphite'?'<button class="tb-search-trigger" type="button" aria-label="展开或收起工具导航" data-expand>'+icon('search')+'</button>':icon('search'))+'<input type="search" placeholder="搜索工具" aria-label="搜索工具"></div><span class="tb-nav-caption">工具</span><div class="tb-navitems"></div><p class="tb-navempty" hidden>没有匹配的工具</p></nav><main class="tb-main"><header class="tb-mainbar"></header><div class="tb-panes"></div></main></div><div class="tb-floatlayer"></div>';
+    const nav=app.querySelector('.tb-navitems'),bar=app.querySelector('.tb-mainbar'),panes=app.querySelector('.tb-panes'),floatlayer=app.querySelector('.tb-floatlayer');
+    toolData.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='tb-navitem';b.dataset.tool=t.id;b.setAttribute('aria-label',t.name);b.setAttribute('data-tooltip',t.name);b.innerHTML=icon(t.icon)+'<span class="tb-navtext">'+t.name+'</span><span class="tb-navshort">'+({rename:'文件',image:'图片',json:'JSON'}[t.id])+'</span><span class="tb-windowmark" aria-hidden="true"></span>';b.addEventListener('click',()=>{const s=c.sessions.find(s=>s.type===t.id&&!s.floating)||c.sessions.find(s=>s.type===t.id);if(s.floating)c.focusedFloat=s.id;else c.active=s.id;render();save()});nav.appendChild(b)});
+    app.querySelector('.tb-searchbox input').addEventListener('input',event=>{c.query=event.target.value.toLowerCase().trim();let count=0;nav.querySelectorAll('[data-tool]').forEach(b=>{b.hidden=!toolData.find(t=>t.id===b.dataset.tool).name.toLowerCase().includes(c.query);if(!b.hidden)count++});app.querySelector('.tb-navempty').hidden=count>0;});
+    const expand=app.querySelector('[data-expand]');if(expand)expand.addEventListener('click',()=>{app.classList.toggle('tb-nav-expanded');if(app.classList.contains('tb-nav-expanded'))app.querySelector('.tb-searchbox input').focus();});
+    function newSession(){const original=find(c.active)||c.sessions[0];const count=c.sessions.filter(s=>s.type===original.type).length+1;const s={...original,selection:[...(original.selection||[])],id:'s'+c.next++,context:'副本 '+count,floating:false};c.sessions.push(s);c.active=s.id;render();save();}
+    function detach(id){const s=find(id);s.floating=true;c.focusedFloat=id;if(c.active===id)c.active=c.sessions.find(s=>!s.floating)?.id||'';render();save();}
+    function attach(id){const s=find(id);s.floating=false;c.active=id;c.focusedFloat=c.sessions.find(s=>s.floating)?.id||null;render();save();}
+    function controls(s){
+      if(s.type==='rename')return '<div class="tb-controls"><label>文件名前缀<input class="tb-input" data-field="prefix" value="'+escape(s.prefix)+'" aria-label="文件名前缀"></label><label>扩展名<select class="tb-input" data-field="format"><option>保留扩展名</option><option>扩展名转小写</option></select></label></div>';
+      if(s.type==='image')return '<div class="tb-controls"><label>输出格式<select class="tb-input" data-field="imageFormat"><option>WebP</option><option>JPEG</option></select></label><label>质量 <span data-quality>'+escape(s.quality)+'</span><input class="tb-input" data-field="quality" type="range" min="30" max="95" value="'+escape(s.quality)+'" aria-label="输出质量"></label></div>';
+      return '';
+    }
+    function preview(s){
+      if(s.type==='rename')return '<div class="tb-filehead"><span class="tb-filelabel">文件预览 · 4 项</span><button class="tb-action tb-quiet" type="button" data-example>'+icon('plus')+'添加文件</button></div><table class="tb-table"><thead><tr><th><input type="checkbox" '+(s.selection.length===files.length?'checked':'')+' aria-label="全选文件" data-all></th><th>原文件名</th><th>重命名后</th></tr></thead><tbody>'+files.map(f=>'<tr><td><input type="checkbox" '+(s.selection.includes(f.name)?'checked':'')+' aria-label="选择'+escape(f.name)+'" data-select="'+escape(f.name)+'"></td><td><span class="tb-format">'+f.kind+'</span><span class="tb-file-name">'+escape(f.name)+'</span></td><td class="tb-newname" data-preview="'+escape(f.name)+'">'+escape(s.prefix+f.name)+'</td></tr>').join('')+'</tbody></table>';
+      if(s.type==='image')return '<div class="tb-filehead"><span class="tb-filelabel">待处理图片 · 3 项</span><button class="tb-action tb-quiet" type="button" data-example>'+icon('plus')+'添加图片</button></div><table class="tb-table"><thead><tr><th></th><th>文件名</th><th>大小</th></tr></thead><tbody>'+[['cover.png','2.4 MB'],['detail.png','860 KB'],['icon.png','120 KB']].map(f=>'<tr><td><input type="checkbox" '+(s.selection.includes(f[0])?'checked':'')+' aria-label="选择'+f[0]+'" data-select="'+f[0]+'"></td><td>'+f[0]+'</td><td>'+f[1]+'</td></tr>').join('')+'</tbody></table>';
+      return '<label class="tb-small" for="'+key+'-'+s.id+'-json">输入内容</label><textarea class="tb-input tb-textarea" id="'+key+'-'+s.id+'-json" data-field="json" spellcheck="false">'+escape(s.json)+'</textarea>';
+    }
+    function pane(s,mini=false){
+      s.imageFormat=s.imageFormat||'WebP';s.selection=s.selection||(s.type==='image'?['cover.png','detail.png','icon.png']:files.map(f=>f.name));
+      const el=document.createElement('section');el.className='tb-pane';el.setAttribute('aria-label',title(s)+'内容');
+      const ownTitle=mini?'<div class="tb-pane-title"><h3>'+title(s)+'</h3><button class="tb-action tb-quiet" type="button" data-detach>'+icon('external-link')+'独立</button></div>':'';
+      const primary=s.type==='rename'?'执行重命名':s.type==='image'?'开始压缩':'检查格式';
+      el.innerHTML=ownTitle+'<div class="tb-tool-layout"><div class="tb-config"><p class="tb-parameter-title">处理规则</p>'+controls(s)+'</div><div class="tb-preview">'+preview(s)+'<div class="tb-bottomaction"><span class="tb-small">'+(s.type==='rename'?'保留原始文件内容':s.type==='image'?'另存结果，保留原图':'在本地检查文本结构')+'</span><button class="tb-action tb-primary" type="button" data-run>'+primary+'</button></div><p class="tb-status" aria-live="polite"></p></div></div>';
+      el.querySelectorAll('[data-field]').forEach(input=>{if(input.tagName==='SELECT')input.value=s[input.dataset.field];input.addEventListener('input',()=>{s[input.dataset.field]=input.value;if(input.dataset.field==='prefix')el.querySelectorAll('[data-preview]').forEach(td=>{td.textContent=s.prefix+td.dataset.preview});if(input.dataset.field==='quality')el.querySelector('[data-quality]').textContent=s.quality;});});
+      const all=el.querySelector('[data-all]');if(all)all.addEventListener('change',()=>{s.selection=all.checked?files.map(f=>f.name):[];el.querySelectorAll('[data-select]').forEach(box=>{box.checked=all.checked});});
+      el.querySelectorAll('[data-select]').forEach(box=>box.addEventListener('change',()=>{s.selection=Array.from(el.querySelectorAll('[data-select]:checked'),b=>b.dataset.select);if(all)all.checked=s.selection.length===files.length;}));
+      const run=el.querySelector('[data-run]');run.addEventListener('click',()=>{const result=el.querySelector('.tb-status');if(s.type==='json'){try{JSON.parse(s.json);result.textContent='JSON 格式有效';result.classList.remove('tb-error')}catch{result.textContent='格式有误，请检查引号、逗号和括号';result.classList.add('tb-error')}}else result.textContent='交互示意：实际文件未被修改。';});
+      const example=el.querySelector('[data-example]');if(example)example.addEventListener('click',()=>{el.querySelector('.tb-status').textContent='当前展示示例文件，未读取本地文件。';});
+      const detachButton=el.querySelector('[data-detach]');if(detachButton)detachButton.addEventListener('click',()=>detach(s.id));
+      return el;
+    }
+    function render(){
+      app.style.setProperty('--tb-pad',c.options.density==='紧凑'?'17px':'24px');app.style.setProperty('--tb-radius',c.options.radius+'px');
+      const docked=c.sessions.filter(s=>!s.floating);if(!docked.some(s=>s.id===c.active))c.active=docked[0]?.id||'';
+      const selected=find(c.active),related=selected?c.sessions.filter(s=>s.type===selected.type):[];
+      let visible=selected?[selected]:[];if(c.split&&selected){const other=docked.find(s=>s.id!==selected.id);if(other)visible.push(other);}
+      const context=selected&&visible.length!==2?(related.length>1?'<select class="tb-sessionpicker" aria-label="当前任务">'+related.map(s=>'<option value="'+s.id+'" '+(s.id===selected.id?'selected':'')+'>'+escape(s.context)+(s.floating?' ↗':'')+'</option>').join('')+'</select>':'<span class="tb-context">'+escape(selected.context)+'</span>'):'';
+      bar.innerHTML='<div class="tb-heading"><h2>'+(visible.length===2?'并排工作区':selected?title(selected):'我的工作区')+'</h2>'+context+'</div><div class="tb-row"><button class="tb-action tb-quiet" type="button" data-split aria-pressed="'+c.split+'">'+icon(c.split?'panel-top':'columns-2')+(c.split?'合并':'并排')+'</button>'+(visible.length===2?'':'<button class="tb-action" type="button" data-window '+(!selected?'disabled':'')+'>'+icon('external-link')+'独立窗口</button>')+'<details class="tb-more"><summary class="tb-action tb-quiet" aria-label="更多操作">'+icon('ellipsis')+'</summary><div class="tb-menu"><button type="button" data-new>新建一份当前工具</button>'+(key==='graphite'?'<button type="button" data-expand-menu>展开 / 收起导航</button>':'')+'</div></details></div>';
+      bar.querySelector('[data-split]').addEventListener('click',()=>{c.split=!c.split;render();save()});
+      bar.querySelector('[data-window]')?.addEventListener('click',()=>{if(selected)detach(selected.id)});
+      bar.querySelector('[data-new]').addEventListener('click',newSession);
+      const picker=bar.querySelector('.tb-sessionpicker');if(picker)picker.addEventListener('change',event=>{const chosen=find(event.target.value);if(chosen.floating)c.focusedFloat=chosen.id;else c.active=chosen.id;render();save()});
+      const expandMenu=bar.querySelector('[data-expand-menu]');if(expandMenu)expandMenu.addEventListener('click',()=>{app.classList.toggle('tb-nav-expanded');bar.querySelector('details').open=false;});
+      panes.replaceChildren();panes.classList.toggle('tb-paired',visible.length===2);visible.forEach(s=>panes.appendChild(pane(s,visible.length===2)));
+      if(!visible.length){const p=document.createElement('div');p.className='tb-empty';p.textContent='工具正在独立窗口中，可通过工具导航切换。';panes.appendChild(p);}
+      floatlayer.replaceChildren();let floating=find(c.focusedFloat);if(!floating?.floating)floating=c.sessions.find(s=>s.floating);
+      if(floating){c.focusedFloat=floating.id;const win=document.createElement('section');win.className='tb-floating';win.setAttribute('aria-label',title(floating)+'独立窗口示意');win.innerHTML='<div class="tb-floatbar"><strong>'+title(floating)+'<span class="tb-context"> · '+escape(floating.context)+'</span></strong><button class="tb-action tb-quiet" type="button" data-return>'+icon('arrow-down-left')+'收回</button></div>';win.appendChild(pane(floating));win.querySelector('[data-return]').addEventListener('click',()=>attach(floating.id));floatlayer.appendChild(win);}
+      nav.querySelectorAll('[data-tool]').forEach(b=>{b.setAttribute('aria-pressed',String(selected?.type===b.dataset.tool));const hasFloat=c.sessions.some(s=>s.type===b.dataset.tool&&s.floating);b.querySelector('.tb-windowmark').textContent=hasFloat?'↗':'';b.setAttribute('aria-label',toolData.find(t=>t.id===b.dataset.tool).name+(hasFloat?'，有独立窗口':''));});
+      if(globalThis.lucide)lucide.createIcons({attrs:{width:16,height:16}});
+    }
+    c.render=render;c.restore=restore;controllers.push(c);render();
+    if(globalThis.Tweak){const tweak=new Tweak({container:app,onChange:render});tweak.addSelect(c.options,'density',{label:'内容密度',options:['舒适','紧凑']});tweak.addSlider(c.options,'radius',{label:'窗口圆角',min:3,max:12,unit:'px'});}
+  }
+  ['clear','inspector','graphite'].forEach(build);
+  window.addEventListener('openai:set_globals',event=>{const s=event.detail?.globals?.widgetState?.privateContent;if(s?.version===2&&s.views)controllers.forEach(c=>{c.restore(s.views[c.key]);c.render();});});
+})();
+</script>
