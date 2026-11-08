@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "steps": 28,
+  "seconds": 1.85,
+  "first_install_ms": 277,
+  "reinstall_ms": 289,
+  "independent_standalone": true,
+  "package": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\tools\\file-hash\\builds\\59c71517-0271-4e33-8458-dfcf35d55826\\package",
+  "data_preserved": true,
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\integration-proof\\run-c39f9058\\report.json",
+  "at": "2026-11-08T17:08:35.200541+00:00"
+}

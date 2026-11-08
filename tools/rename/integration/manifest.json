@@ -1,9 +1,63 @@
 {
   "manifest_version": 1,
+  "protocol_version": 1,
+  "ui_schema_version": 1,
   "tool_id": "rename",
-  "package_version": "0.2.0",
+  "package_version": "1.0.1",
+  "view_file": "ui.json",
   "name": "批量重命名",
-  "description": "集中设置命名规则，在执行前检查变化。",
+  "description": "先检查预览，再执行可恢复的文件改名。",
   "icon": "files",
-  "view_file": "ui.json"
+  "actions": [
+    {
+      "id": "preview",
+      "label": "生成预览",
+      "batch": true,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 600
+    },
+    {
+      "id": "apply",
+      "label": "确认改名",
+      "batch": true,
+      "write_sources": true,
+      "cancellable": true,
+      "timeout_seconds": 600,
+      "dynamic_resources": true,
+      "requires_context": "plan_id",
+      "confirm": "将根据有效预览修改选中文件名。提交阶段需等待完成。"
+    },
+    {
+      "id": "undo",
+      "label": "尝试撤销最近批次",
+      "batch": true,
+      "write_sources": true,
+      "cancellable": true,
+      "timeout_seconds": 600,
+      "dynamic_resources": true,
+      "confirm": "将核验最近批次的文件身份并尝试恢复原名。"
+    },
+    {
+      "id": "recover",
+      "label": "检查并恢复中断",
+      "batch": true,
+      "write_sources": true,
+      "cancellable": true,
+      "timeout_seconds": 600,
+      "dynamic_resources": true,
+      "confirm": "将核验未完成记录并尝试恢复原名，冲突时保留记录。"
+    }
+  ],
+  "limits": {
+    "max_files": 2000,
+    "max_input_bytes": 5242880,
+    "memory_mb": 512
+  },
+  "category": "文件",
+  "keywords": [
+    "批量",
+    "改名",
+    "撤销"
+  ]
 }

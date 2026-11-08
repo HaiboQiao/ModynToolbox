@@ -1,0 +1,1 @@
+Project-authored tool. Distribution terms are controlled by the project owner. Third-party runtime licenses are bundled in the runtime distribution.

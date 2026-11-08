@@ -8,6 +8,8 @@
 #include <QTemporaryDir>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSlider>
 #include <QTableWidget>
 #include <QMimeData>
@@ -15,25 +17,39 @@
 #include <QDropEvent>
 #include <QToolButton>
 #include <QLabel>
+#include <QSplitter>
+#include <QPushButton>
 #include <QUrl>
 #include <QtTest>
 QVector<ToolDefinition> testTools() {
-    return {{"alpha","Alpha","1.0.0","text",""},{"beta","Beta","1.0.0","files",""}};
+    return {{"alpha", "Alpha", "1.0.0", "text", ""}, {"beta", "Beta", "1.0.0", "files", ""}};
 }
 class WorkbenchTests : public QObject {
     Q_OBJECT
     QVector<ToolDefinition> previewTools(const QString &root) {
-        const auto source=qEnvironmentVariable("MODYN_SOURCE_ROOT");
-        for (const auto &id : {"image","json","rename"}) {
-            const auto destination=root+"/"+id+"/0.2.0";
-            if (!QDir().mkpath(destination)) return {};
-            const auto folder=source+"/tools/"+id+"/integration/";
-            if (!QFile::copy(folder+"manifest.json",destination+"/manifest.json")) return {};
-            if (!QFile::copy(folder+"ui.json",destination+"/ui.json")) return {};
+        const auto source = qEnvironmentVariable("MODYN_SOURCE_ROOT");
+        for (const auto &id : {"image", "json", "rename"}) {
+            const auto destination = root + "/" + id + "/0.2.0";
+            if (!QDir().mkpath(destination))
+                return {};
+            const auto folder = source + "/tools/" + id + "/integration/";
+            QFile source(folder + "manifest.json");
+            if (!source.open(QIODevice::ReadOnly))
+                return {};
+            auto object = QJsonDocument::fromJson(source.readAll()).object();
+            object.remove("protocol_version");
+            object["package_version"] = "0.2.0";
+            QFile output(destination + "/manifest.json");
+            if (!output.open(QIODevice::WriteOnly))
+                return {};
+            output.write(QJsonDocument(object).toJson());
+            output.close();
+            if (!QFile::copy(folder + "ui.json", destination + "/ui.json"))
+                return {};
         }
         return readCatalog(root).tools;
     }
-private slots:
+  private slots:
     void initTestCase() {
         const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";
         QVERIFY(QFontDatabase::addApplicationFont(fonts + "segoeui.ttf") >= 0);
@@ -69,7 +85,7 @@ private slots:
         selector->setCurrentIndex(0);
         QCOMPARE(window.editor(1)->toPlainText(), QString("first"));
         window.detachSession(1);
-        auto *stack = window.findChild<QStackedWidget *>();
+        auto *stack = window.findChild<QStackedWidget *>("primaryWorkspace");
         QCOMPARE(stack->currentWidget()->objectName(), QString("floatingNotice"));
         list->setCurrentRow(1);
         window.attachSession(1);
@@ -111,49 +127,50 @@ private slots:
     }
     void fileAndTextViewsPreserveState() {
         QTemporaryDir root;
-        const auto tools=previewTools(root.path());
-        QCOMPARE(tools.size(),3);
+        const auto tools = previewTools(root.path());
+        QCOMPARE(tools.size(), 3);
         Workbench window(tools);
         window.show();
-        auto *quality=window.sessionView(1)->findChild<QSlider *>("quality");
+        auto *quality = window.sessionView(1)->findChild<QSlider *>("quality");
         QVERIFY(quality);
         quality->setValue(67);
-        QFile file(root.path()+"/sample.png");
+        QFile file(root.path() + "/sample.png");
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write("input-selection-fixture");
         file.close();
         QMimeData mime;
         mime.setUrls({QUrl::fromLocalFile(file.fileName())});
-        auto *drop=window.sessionView(1)->findChild<QWidget *>("fileDropArea");
-        QDragEnterEvent enter(QPoint(10,10),Qt::CopyAction,&mime,Qt::LeftButton,Qt::NoModifier);
-        QApplication::sendEvent(drop,&enter);
+        auto *drop = window.sessionView(1)->findChild<QWidget *>("fileDropArea");
+        QDragEnterEvent enter(QPoint(10, 10), Qt::CopyAction, &mime, Qt::LeftButton,
+                              Qt::NoModifier);
+        QApplication::sendEvent(drop, &enter);
         QVERIFY(enter.isAccepted());
-        QDropEvent event(QPointF(10,10),Qt::CopyAction,&mime,Qt::LeftButton,Qt::NoModifier);
-        QApplication::sendEvent(drop,&event);
-        auto *table=window.sessionView(1)->findChild<QTableWidget *>("inputFiles");
-        QCOMPARE(table->rowCount(),1);
+        QDropEvent event(QPointF(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(drop, &event);
+        auto *table = window.sessionView(1)->findChild<QTableWidget *>("inputFiles");
+        QTRY_COMPARE(table->rowCount(), 1);
         window.detachSession(1);
         window.findChild<QListWidget *>("toolNavigation")->setCurrentRow(1);
         QVERIFY(window.editor(2));
         window.editor(2)->setPlainText("{\"local\":true}");
-        auto *floating=window.sessionView(1)->window();
+        auto *floating = window.sessionView(1)->window();
         floating->showMaximized();
         window.findChild<QListWidget *>("toolNavigation")->setCurrentRow(0);
         QVERIFY(floating->isMaximized());
         window.showMinimized();
         window.attachSession(1);
         QVERIFY(!window.isMinimized());
-        QCOMPARE(quality->value(),67);
-        QCOMPARE(table->rowCount(),1);
+        QCOMPARE(quality->value(), 67);
+        QTRY_COMPARE(table->rowCount(), 1);
         window.addSession();
-        QCOMPARE(window.sessionView(3)->findChild<QSlider *>("quality")->value(),80);
-        QCOMPARE(window.sessionView(3)->findChild<QTableWidget *>("inputFiles")->rowCount(),0);
+        QCOMPARE(window.sessionView(3)->findChild<QSlider *>("quality")->value(), 80);
+        QCOMPARE(window.sessionView(3)->findChild<QTableWidget *>("inputFiles")->rowCount(), 0);
     }
     void brandAndWindowControls() {
         Workbench window(testTools());
         window.show();
-        QCOMPARE(window.windowTitle(),QStringLiteral("ModynToolbox"));
-        QCOMPARE(window.findChild<QLabel *>("appTitle")->text(),QStringLiteral("ModynToolbox"));
+        QCOMPARE(window.windowTitle(), QStringLiteral("ModynToolbox"));
+        QCOMPARE(window.findChild<QLabel *>("appTitle")->text(), QStringLiteral("ModynToolbox"));
         QVERIFY(window.windowFlags().testFlag(Qt::FramelessWindowHint));
         window.maximizeButton()->click();
         QVERIFY(window.isMaximized());
@@ -162,20 +179,20 @@ private slots:
     }
     void savePreview() {
         QTemporaryDir root;
-        const auto tools=previewTools(root.path());
-        QCOMPARE(tools.size(),3);
+        const auto tools = previewTools(root.path());
+        QCOMPARE(tools.size(), 3);
         Workbench window(tools);
         window.show();
         QTest::qWait(60);
-        const auto path=qEnvironmentVariable("MODYN_PREVIEW_PATH");
+        const auto path = qEnvironmentVariable("MODYN_PREVIEW_PATH");
         if (!path.isEmpty()) {
             QVERIFY(window.grab().save(path));
-            window.resize(920,600);
+            window.resize(920, 600);
             QTest::qWait(30);
-            QVERIFY(window.grab().save(path+".compact.png"));
+            QVERIFY(window.grab().save(path + ".compact.png"));
             window.detachSession(1);
             QTest::qWait(30);
-            QVERIFY(window.sessionView(1)->window()->grab().save(path+".floating.png"));
+            QVERIFY(window.sessionView(1)->window()->grab().save(path + ".floating.png"));
             window.attachSession(1);
         }
     }
@@ -192,16 +209,63 @@ private slots:
         window.sessionView(1)->window()->close();
         QVERIFY(!window.isDetached(1));
         QVERIFY(window.isDetached(2));
-        QCOMPARE(window.editor(1)->toPlainText(),QString("alpha"));
+        QCOMPARE(window.editor(1)->toPlainText(), QString("alpha"));
         window.sessionView(2)->window()->close();
         QVERIFY(!window.isDetached(2));
-        QCOMPARE(window.editor(2)->toPlainText(),QString("beta"));
-        QCOMPARE(window.sessionCount(),2);
+        QCOMPARE(window.editor(2)->toPlainText(), QString("beta"));
+        QCOMPARE(window.sessionCount(), 2);
+    }
+    void categoryAndKeywordSearch() {
+        QVector<ToolDefinition> tools;
+        for (int index = 0; index < 9; ++index) {
+            ToolDefinition tool;
+            tool.id = "tool-" + QString::number(index);
+            tool.name = "Tool " + QString::number(index);
+            tool.version = "1.0.0";
+            tool.category = index % 2 ? QStringLiteral("图片") : QStringLiteral("开发");
+            if (index == 0)
+                tool.keywords = QStringList{"needle"};
+            tools.append(tool);
+        }
+        Workbench window(tools);
+        window.show();
+        auto *search = window.findChild<QLineEdit *>("toolSearch");
+        auto *list = window.findChild<QListWidget *>("toolNavigation");
+        auto *category = window.findChild<QComboBox *>("toolCategory");
+        QVERIFY(category->isVisible());
+        search->setText("needle");
+        QVERIFY(!list->item(0)->isHidden());
+        QVERIFY(list->item(1)->isHidden());
+        search->clear();
+        category->setCurrentIndex(category->findData(QStringLiteral("图片")));
+        QVERIFY(list->item(0)->isHidden());
+        QVERIFY(!list->item(1)->isHidden());
+    }
+    void balancedPairAndEmptyWorkspace() {
+        Workbench window(testTools());
+        window.show();
+        window.addSession();
+        window.pairSession(1);
+        QTest::qWait(30);
+        const auto panes = window.findChild<QSplitter *>("workspaceSplitter")->sizes();
+        QCOMPARE(panes.size(), 2);
+        QVERIFY(qAbs(panes[0] - panes[1]) <= 2);
+        QVERIFY(window.findChild<QLabel *>("pairedHeading")->isVisible());
+        window.resize(920, 600);
+        QTest::qWait(20);
+        QVERIFY(!window.findChild<QLabel *>("pairedHeading")->isVisible());
+        window.closeSession(2, true);
+        window.closeSession(1, true);
+        QCOMPARE(window.sessionCount(), 0);
+        QVERIFY(window.findChild<QLabel *>("workspaceNoticeText")
+                    ->text()
+                    .contains(QStringLiteral("尚未打开会话")));
+        QVERIFY(window.findChild<QPushButton *>("returnFloatingButton")->isHidden());
     }
     void repeatedMoves() {
         Workbench window(testTools());
         window.addSession();
-        for (int i=0;i<50;++i) {
+        for (int i = 0; i < 50; ++i) {
             window.detachSession(1);
             window.attachSession(1);
             QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "same_dependency_name": true,
+  "different_values": [
+    "private-a",
+    "private-b"
+  ],
+  "global_python_variables_ignored": true,
+  "private_data_independent": true,
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\isolation-tests\\a699978b\\report.json"
+}

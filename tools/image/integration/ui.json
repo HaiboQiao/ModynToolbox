@@ -2,7 +2,7 @@
   "view_version": 1,
   "kind": "files",
   "input_title": "拖入图片，开始轻量处理",
-  "hint": "JPEG、PNG、WebP",
+  "hint": "静态 JPEG、PNG、WebP · 单图最多 50 MiB / 4000 万像素 PNG 使用无损压缩，透明图转 JPEG 使用白底。",
   "extensions": [
     "jpg",
     "jpeg",
@@ -10,14 +10,6 @@
     "webp"
   ],
   "fields": [
-    {
-      "id": "quality",
-      "label": "图片质量",
-      "type": "range",
-      "minimum": 1,
-      "maximum": 100,
-      "default": 80
-    },
     {
       "id": "format",
       "label": "输出格式",
@@ -28,6 +20,60 @@
         "PNG"
       ],
       "default": "WebP"
+    },
+    {
+      "id": "quality",
+      "label": "图片质量",
+      "type": "range",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 80,
+      "enabled_when": {
+        "field": "format",
+        "not": "PNG"
+      }
+    },
+    {
+      "id": "longest_edge",
+      "label": "最长边（像素，0 表示保持尺寸）",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100000,
+      "default": 0
+    },
+    {
+      "id": "output_dir",
+      "label": "输出目录（留空使用工具导出目录）",
+      "type": "directory",
+      "default": ""
     }
-  ]
+  ],
+  "layout": {
+    "type": "column",
+    "children": [
+      {
+        "type": "row",
+        "children": [
+          {
+            "type": "files"
+          },
+          {
+            "type": "fields"
+          }
+        ]
+      },
+      {
+        "type": "actions"
+      },
+      {
+        "type": "output_table"
+      },
+      {
+        "type": "image_preview"
+      },
+      {
+        "type": "status"
+      }
+    ]
+  }
 }

@@ -1,0 +1,118 @@
+{
+  "release": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\releases\\ModynToolbox-1.0.0-b0803342",
+  "release_bytes": 148486574,
+  "indexed_files": 309,
+  "checksum_mismatches": [],
+  "data_empty": true,
+  "release_app_equals_frozen_build": true,
+  "app_sha256": "b74a86df4940ae9796c6cf16f74303b4e090298f91d478d3cbfe409ffe2b23cd",
+  "suites": {
+    "windows-release": {
+      "ctest_groups": 11,
+      "failed": 0,
+      "qt_results": {
+        "catalog-results.txt": {
+          "passed_including_init_cleanup": 7,
+          "failed": 0,
+          "skipped": 0
+        },
+        "fault-results.txt": {
+          "passed_including_init_cleanup": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "jobs-results.txt": {
+          "passed_including_init_cleanup": 4,
+          "failed": 0,
+          "skipped": 0
+        },
+        "native-results.txt": {
+          "passed_including_init_cleanup": 4,
+          "failed": 0,
+          "skipped": 0
+        },
+        "system-results.txt": {
+          "passed_including_init_cleanup": 15,
+          "failed": 0,
+          "skipped": 0
+        },
+        "view-results.txt": {
+          "passed_including_init_cleanup": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "workbench-results.txt": {
+          "passed_including_init_cleanup": 13,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "seconds": 19.99
+    },
+    "windows-complete": {
+      "ctest_groups": 11,
+      "failed": 0,
+      "qt_results": {
+        "catalog-results.txt": {
+          "passed_including_init_cleanup": 7,
+          "failed": 0,
+          "skipped": 0
+        },
+        "fault-results.txt": {
+          "passed_including_init_cleanup": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "jobs-results.txt": {
+          "passed_including_init_cleanup": 4,
+          "failed": 0,
+          "skipped": 0
+        },
+        "native-results.txt": {
+          "passed_including_init_cleanup": 4,
+          "failed": 0,
+          "skipped": 0
+        },
+        "system-results.txt": {
+          "passed_including_init_cleanup": 15,
+          "failed": 0,
+          "skipped": 0
+        },
+        "view-results.txt": {
+          "passed_including_init_cleanup": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "workbench-results.txt": {
+          "passed_including_init_cleanup": 13,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      "seconds": 39.69
+    }
+  },
+  "tools": [
+    {
+      "id": "file-hash",
+      "version": "1.0.3",
+      "bytes": 18542575
+    },
+    {
+      "id": "image",
+      "version": "1.0.1",
+      "bytes": 39350409
+    },
+    {
+      "id": "json",
+      "version": "1.0.2",
+      "bytes": 24465608
+    },
+    {
+      "id": "rename",
+      "version": "1.0.1",
+      "bytes": 24480565
+    }
+  ],
+  "independent_core_tests": 12
+}

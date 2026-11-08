@@ -1,9 +1,40 @@
 {
   "manifest_version": 1,
+  "protocol_version": 1,
+  "ui_schema_version": 1,
   "tool_id": "json",
-  "package_version": "0.2.0",
+  "package_version": "1.0.2",
+  "view_file": "ui.json",
   "name": "JSON 工具",
-  "description": "编辑与整理 JSON 内容，专注结构与细节。",
+  "description": "严格校验与保留精度的格式化。",
   "icon": "code",
-  "view_file": "ui.json"
+  "actions": [
+    {
+      "id": "format",
+      "label": "格式化",
+      "batch": false,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 60
+    },
+    {
+      "id": "validate",
+      "label": "检查 JSON",
+      "batch": false,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 60
+    }
+  ],
+  "limits": {
+    "max_files": 0,
+    "max_input_bytes": 5242880,
+    "memory_mb": 512
+  },
+  "category": "开发",
+  "keywords": [
+    "JSON",
+    "格式化",
+    "校验"
+  ]
 }

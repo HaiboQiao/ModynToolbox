@@ -1,0 +1,3 @@
+QtCore 6.8.3 Windows MSVC x64, private DLL
+MSVC 14.x app-local redistributable, discovered from current toolchain
+SDK protocol 1, UI schema 1, host minimum 1.0.0

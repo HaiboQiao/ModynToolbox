@@ -3,7 +3,6 @@
   "configurePresets": [
     {
       "name": "windows-dev",
-      "generator": "Visual Studio 18 2026",
       "architecture": "x64",
       "binaryDir": "${sourceDir}/.local/build/windows-dev",
       "cacheVariables": {
@@ -14,6 +13,16 @@
       "name": "windows-check",
       "inherits": "windows-dev",
       "binaryDir": "${sourceDir}/.local/build/windows-check"
+    },
+    {
+      "name": "windows-complete",
+      "inherits": "windows-dev",
+      "binaryDir": "${sourceDir}/.local/build/windows-complete"
+    },
+    {
+      "name": "windows-release",
+      "inherits": "windows-dev",
+      "binaryDir": "${sourceDir}/.local/build/windows-release"
     }
   ],
   "buildPresets": [
@@ -26,6 +35,16 @@
       "name": "windows-check",
       "configurePreset": "windows-check",
       "configuration": "Debug"
+    },
+    {
+      "name": "windows-complete",
+      "configurePreset": "windows-complete",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-release",
+      "configurePreset": "windows-release",
+      "configuration": "Release"
     }
   ],
   "testPresets": [
@@ -44,6 +63,28 @@
       "name": "windows-check",
       "configurePreset": "windows-check",
       "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "windows-complete",
+      "configurePreset": "windows-complete",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "windows-release",
+      "configurePreset": "windows-release",
+      "configuration": "Release",
       "output": {
         "outputOnFailure": true
       },

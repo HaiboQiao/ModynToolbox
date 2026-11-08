@@ -26,7 +26,7 @@
 
 ## 启动与验证
 
-应用入口已在 T01 建立，具体完成范围见 STATUS。统一使用 scripts/dev.ps1 的 doctor/configure/build/run/test/package 入口，参数与实际命令记录到开发指南。VS Code 和 CLI 使用同一 CMake Preset。不能为了让命令通过而跳过全部测试。
+当前为完整 R2 实现，完成与待验范围见 STATUS 和 verification/R2-complete.md。统一使用 scripts/dev.ps1 的 doctor/configure/build/run/test/package 入口，参数与实际命令记录到开发指南。VS Code 和 CLI 使用同一 CMake Preset。不能为了让命令通过而跳过全部测试。
 
 文件写入、取消、部分成功、恢复、升级与协议变更需要对应回归。编译、自动测试、真实 Windows GUI/DPI/多窗口、干净机器发布包各记录自己的证据，不能相互替代。
 
@@ -56,4 +56,4 @@
 
 ## 产品与界面约定
 
-产品名称为 ModynToolbox，默认浅色雾紫主题。主题集中 app/ui/theme，公共控件集中 app/ui/components，主窗与浮窗复用 app/ui/window/ChromeWindow。Windows 外框代码集中 app/platform/windows，业务工具不处理窗口消息。新工具先使用自己 integration/ui.json 的版本化控件描述，宿主不按 tool_id 分支绘制业务页面。完整规范实施前，预览布局与业务能力分别标记。
+产品名称为 ModynToolbox，默认浅色雾紫主题。主题集中 app/ui/theme，公共控件集中 app/ui/components，主窗与浮窗复用 app/ui/window/ChromeWindow。Windows 外框代码集中 app/platform/windows，业务工具不处理窗口消息。新工具先使用自己 integration/ui.json 的版本化控件描述，宿主不按 tool_id 分支绘制业务页面。v1 规范已用于四个真实工具，新增工具优先使用已有公共组件。扩展公共组件时同步校验、渲染、Schema 和回归。

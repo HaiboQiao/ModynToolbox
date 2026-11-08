@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModynToolbox worker v1 envelope",
+  "type": "object",
+  "required": [
+    "protocol",
+    "kind",
+    "job_id",
+    "session_id",
+    "tool_id",
+    "revision",
+    "seq"
+  ],
+  "properties": {
+    "protocol": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "ready",
+        "progress",
+        "reserve",
+        "result"
+      ]
+    },
+    "job_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "tool_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "result_ref": {
+      "const": "result.json"
+    },
+    "resources_ref": {
+      "const": "resources.json"
+    },
+    "completed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "cancellable": {
+      "type": "boolean"
+    },
+    "phase": {
+      "type": "string"
+    }
+  }
+}

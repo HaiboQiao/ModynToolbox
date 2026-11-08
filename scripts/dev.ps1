@@ -1,8 +1,8 @@
 param(
-    [ValidateSet('doctor','configure','build','run','test','package')]
+    [ValidateSet('doctor','configure','build','run','test','tools','package')]
     [string]$Action = 'run',
-    [ValidateSet('windows-dev','windows-check')]
-    [string]$Preset = 'windows-dev'
+    [ValidateSet('windows-dev','windows-check','windows-complete','windows-release')]
+    [string]$Preset = 'windows-complete'
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -33,22 +33,29 @@ try {
     Invoke-Checked $cmake @('--preset',$Preset)
     if ($Action -eq 'configure') { exit 0 }
     Invoke-Checked $cmake @('--build','--preset',$Preset)
-    $binaryRoot = Join-Path $projectRoot (".local\build\" + $Preset + "\bin\Debug")
+    $configuration = if ($Preset -eq "windows-release") { "Release" } else { "Debug" }
+    $binaryRoot = Join-Path $projectRoot (".local\build\" + $Preset + "\bin\" + $configuration)
     $deploy = Join-Path $qtRoot 'bin\windeployqt.exe'
-    Invoke-Checked $deploy @('--debug','--no-translations',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))
-    foreach ($runtime in Get-ChildItem -LiteralPath (Join-Path $qtRoot 'bin') -Filter 'Qt6Test*.dll') {
-        Copy-Item -LiteralPath $runtime.FullName -Destination $binaryRoot -Force
+    Invoke-Checked $deploy @($(if ($configuration -eq 'Release') { '--release' } else { '--debug' }),'--no-translations',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))
+    foreach ($module in @('Test','Concurrent','Sql')) {
+        $runtimeName='Qt6'+$module+$(if ($configuration -eq 'Debug') {'d'} else {''})+'.dll'
+        Copy-Item -LiteralPath (Join-Path $qtRoot ('bin\'+$runtimeName)) -Destination $binaryRoot -Force
     }
+    Copy-Item -LiteralPath (Join-Path $qtRoot $(if ($configuration -eq 'Release') { 'plugins\platforms\qoffscreen.dll' } else { 'plugins\platforms\qoffscreend.dll' })) -Destination (Join-Path $binaryRoot 'platforms') -Force
     if ($Action -eq 'test') {
-        Copy-Item -LiteralPath (Join-Path $qtRoot 'plugins\platforms\qoffscreend.dll') -Destination (Join-Path $binaryRoot 'platforms') -Force
         Invoke-Checked $ctest @('--preset',$Preset)
+    }
+    if ($Action -eq 'tools') {
+        Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts\prepare-tools.py'),'--binary',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))
     }
     if ($Action -eq 'run') {
         & (Join-Path $binaryRoot 'ModynToolbox.App.exe') '--data-root' (Join-Path $projectRoot 'data') '--packages-root' (Join-Path $projectRoot '.local\installed\tools')
         if ($LASTEXITCODE -ne 0) { throw "Application exited with $LASTEXITCODE" }
     }
     if ($Action -eq 'package') {
-        throw 'Release packaging is pending the M0 launcher and release validation. Debug build completed.'
+        if ($configuration -ne 'Release') { throw 'Use -Preset windows-release for packaging.' }
+        Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts\prepare-tools.py'),'--binary',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))
+        Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts\package.py'),'--binary-root',$binaryRoot,'--qt-root',$qtRoot)
     }
 } finally {
     Pop-Location

@@ -1,55 +1,57 @@
 # ModynToolbox
 
-Windows 本地模块化工具箱，C++20 / Qt 6 Widgets 宿主与独立进程后端。默认采用浅色雾紫设计。
+Windows x64 本地工具箱。C++20 / Qt Widgets 宿主管理统一界面、会话、独立窗口、工具安装和后台作业。每个工具集中在自己的目录，通过独立进程接入。
 
-## 当前可用范围
+## 直接使用
 
-已实现工具目录发现、统一主题与一体化窗口标题区域、搜索、独立会话、多个独立窗口和收回。工具从自己的 integration/ui.json 提供文件参数页或文本编辑页。当前支持添加/拖入文件、参数编辑、文本复制/清空，业务处理后端待接入，处理按钮明确禁用。
+双击项目根的 Open-ModynToolbox.cmd，打开最近构建的完整便携版。便携目录也可直接双击 ModynToolbox.exe。发布目录索引在 .local/releases/latest.json。
 
-T01、T02、T03 均有已实现子集，完整阶段尚未完成。实际状态见 [STATUS](docs/STATUS.md)，本轮证据见 [UI-R1](docs/verification/UI-R1-ModynToolbox.md)。
+使用方法见 docs/user-guide.md。开发和验证结果见 docs/STATUS.md、docs/verification/R2-complete.md。
 
-## 打开与运行
+## 目录
 
-当前项目目录为 D:/Workspace/01_Projects/ModynToolbox。
+```text
+ModynToolbox/
+├── app/                       宿主、公共 UI、调度、存储及宿主测试
+├── tools/
+│   ├── json/                  JSON 校验与格式化
+│   ├── image/                 图片压缩与格式转换
+│   ├── rename/                批量重命名、撤销与恢复
+│   ├── file-hash/             独立 C++ 文件校验工具
+│   └── tests/                 工具核心测试汇总入口
+├── shared/                    版本化协议与 Python/C++ SDK
+├── scripts/                   构建、工具打包、便携发布及验证
+├── docs/                      需求、决策、记录、证据和交接
+├── licenses/                  宿主与分发依赖许可
+├── .vscode/                   VS Code 编译与调试入口
+├── data/                      开发数据，业务内容不进 Git
+└── .local/                    本机 SDK、构建、工具包、发布、测试和日志
+```
 
-用 VS Code 打开本目录或 ModynToolbox.code-workspace，选择 ModynToolbox 调试配置后按 F5。调试配置与 CLI 使用同一构建入口，实际按键验收待进行。
+每个工具包含 core、standalone、integration、tests、依赖声明和构建配置。工具数据统一在 data/tools/<tool_id>，宿主状态在 data/host。安装的工具副本在 .local/installed/tools，源码仍在 tools。
 
-~~~powershell
+## VS Code 开发
+
+使用 VS Code 打开整个项目根目录。依赖为 Windows x64、Visual Studio C++ 桌面工具与 Windows SDK、CMake、Qt 6.8.3 MSVC x64、开发用 Python 3.10+。安装 VS Code C/C++ 扩展。
+
+首次恢复环境后，在项目终端执行。
+
+```powershell
 powershell -NoProfile -File scripts/dev.ps1 doctor
-powershell -NoProfile -File scripts/prepare-preview.ps1
-powershell -NoProfile -File scripts/dev.ps1 run
-~~~
+powershell -NoProfile -File scripts/dev.ps1 tools
+powershell -NoProfile -File scripts/dev.ps1 test
+```
 
-prepare-preview 显式准备三个工具预览包，已存在的版本目录保持原样。正常 run/F5 只读取安装目录，手动移除的包不会被普通启动补回。
+随后 F5 使用 windows-complete / Debug 构建并启动。F5 只编译宿主，主动删除的工具保持删除状态。显式执行 tools 才构建并安装工具。需要 Release 时使用 -Preset windows-release。完整迁移步骤见 docs/development.md。
 
-后台验证使用独立输出和离屏测试。
+## 新增工具
 
-~~~powershell
-powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check
-~~~
+已有公共控件可表达的界面，只需新增工具目录、业务核心、薄适配器、manifest 和 ui.json。使用现有宿主安装完整工具包即可。无需修改宿主 CMake 或 app 前端。新增公共组件或协议能力时更新宿主。接入说明见 docs/tool-development.md，实际验证见 R2 报告。
 
-新电脑需要兼容的 Visual Studio C++/Windows SDK、Python，以及 Qt 6.8.3 MSVC SDK。运行 scripts/bootstrap.ps1 可恢复项目 Qt SDK，或通过 MODYN_QT_ROOT 指定兼容位置。详情见 [开发指南](docs/development.md)。
+## 当前范围
 
-## 文件归属
+包含四个可实际执行的工具、独立窗口与并排会话、版本安装与移除、取消与进程树管理、可选草稿、历史、设置、数据备份恢复和便携发布。
 
-| 目录 | 内容 |
-|---|---|
-| app/ | 宿主源码、主题、公共组件、窗口、目录发现与宿主测试 |
-| tools/<id>/ | 单个工具的核心、独立入口、接入描述和测试集中于此，当前先建立 integration 预览 |
-| shared/ | 版本化接入规范与后续轻量 SDK |
-| scripts/ | 环境恢复、统一开发入口和预览包准备 |
-| docs/ | 需求、架构、任务、验收、决策、过程与验证证据 |
-| data/ | 运行数据，按宿主与工具归属组织 |
-| .local/ | 构建、开发依赖、安装副本、日志与测试临时产物 |
-| .vscode/ | 共享编辑器配置 |
+默认浅色雾紫主题。大文本超过 32768 个 UTF-16 码元时显示只读预览，完整数据仍参与处理、复制和导出。首版面向可信本地工具，工具拥有当前用户权限。
 
-源码工具位于 tools，开发安装副本位于 .local/installed/tools/<id>/<version>。退出后删除某工具的安装目录，下次启动撤下其入口。删除源代码目录与移除安装副本分别管理。用户数据位于 data。
-
-## 接手顺序
-
-1. 读取 [AGENTS](AGENTS.md) 与 [STATUS](docs/STATUS.md)。
-2. 阅读 [需求](docs/spec.md)、[架构](docs/plan.md)、[开发指南](docs/development.md)。
-3. 按 [任务](docs/task.md) 推进，以 [验收](docs/checklist.md) 和 verification 记录真实证据。
-4. 跨电脑与跨 Agent 接手参照 [handoff](docs/handoff.md)、[决策](docs/decisions.md) 与 [工作日志](docs/worklog.md)。
-
-源码和记录纳入 Git。data 与 .local 的生成内容受忽略，迁移源码后重新构建，个人数据按需求单独携带。
+自动化验证记录与人工验收项分开保存。目标电脑的多屏 DPI、Snap、系统对话框和干净机器实测仍需最终检查。

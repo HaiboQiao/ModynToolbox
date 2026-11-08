@@ -1,0 +1,16 @@
+{
+  "language": "cpp",
+  "built_binary": "../../.local/tools/file-hash/native/Release/ModynHash.exe",
+  "runtime_files": [
+    ".local/tools/file-hash/runtime/Qt6Core.dll",
+    ".local/tools/file-hash/runtime/msvcp140.dll",
+    ".local/tools/file-hash/runtime/msvcp140_1.dll",
+    ".local/tools/file-hash/runtime/msvcp140_2.dll",
+    ".local/tools/file-hash/runtime/msvcp140_atomic_wait.dll",
+    ".local/tools/file-hash/runtime/msvcp140_codecvt_ids.dll",
+    ".local/tools/file-hash/runtime/vcruntime140.dll",
+    ".local/tools/file-hash/runtime/vcruntime140_1.dll",
+    ".local/tools/file-hash/runtime/concrt140.dll"
+  ],
+  "build_script": "build.py"
+}

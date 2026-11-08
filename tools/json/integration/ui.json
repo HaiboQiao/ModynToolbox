@@ -2,6 +2,23 @@
   "view_version": 1,
   "kind": "text",
   "input_title": "JSON 内容",
-  "placeholder": "粘贴需要检查或格式化的 JSON。",
-  "fields": []
+  "placeholder": "粘贴 JSON，或载入 UTF-8 文件。",
+  "fields": [],
+  "layout": {
+    "type": "column",
+    "children": [
+      {
+        "type": "text"
+      },
+      {
+        "type": "actions"
+      },
+      {
+        "type": "output_text"
+      },
+      {
+        "type": "status"
+      }
+    ]
+  }
 }

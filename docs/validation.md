@@ -1,5 +1,7 @@
 # 规划交付核对记录
 
+本文件保留 2026-11-08 的历史规划检查。当前实现和验证状态见 STATUS、task、checklist 与 verification/R2-complete.md。
+
 核对日期为 2026-11-08。本记录覆盖新独立项目的文档与工程说明，应用功能验收由 checklist 单独维护。
 
 ## 实际执行

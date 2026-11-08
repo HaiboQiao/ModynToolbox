@@ -1,0 +1,27 @@
+Test project D:/Workspace/01_Projects/ModynToolbox/.local/build/windows-complete
+      Start  1: workbench
+ 1/11 Test  #1: workbench ........................   Passed    8.43 sec
+      Start  2: worker_transport
+ 2/11 Test  #2: worker_transport .................   Passed    0.13 sec
+      Start  3: package_catalog
+ 3/11 Test  #3: package_catalog ..................   Passed    0.20 sec
+      Start  4: view_spec
+ 4/11 Test  #4: view_spec ........................   Passed    0.08 sec
+      Start  5: window_native
+ 5/11 Test  #5: window_native ....................   Passed    0.35 sec
+      Start  6: host_start
+ 6/11 Test  #6: host_start .......................   Passed    0.78 sec
+      Start  7: jobs
+ 7/11 Test  #7: jobs .............................   Passed    2.09 sec
+      Start  8: full_system
+ 8/11 Test  #8: full_system ......................   Passed   16.48 sec
+      Start  9: business_cores
+ 9/11 Test  #9: business_cores ...................   Passed    3.30 sec
+      Start 10: worker_faults
+10/11 Test #10: worker_faults ....................   Passed    5.83 sec
+      Start 11: host_crash_tree
+11/11 Test #11: host_crash_tree ..................   Passed    1.99 sec
+
+100% tests passed, 0 tests failed out of 11
+
+Total Test time (real) =  39.69 sec

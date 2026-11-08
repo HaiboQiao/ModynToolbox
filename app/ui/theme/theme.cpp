@@ -3,8 +3,9 @@
 #include <QPalette>
 #include <QStyleFactory>
 void Theme::apply() {
-    if (qApp->property("modynThemeApplied").toBool()) return;
-    qApp->setProperty("modynThemeApplied",true);
+    if (qApp->property("modynThemeApplied").toBool())
+        return;
+    qApp->setProperty("modynThemeApplied", true);
     qApp->setStyle(QStyleFactory::create("Fusion"));
     auto palette = qApp->palette();
     palette.setColor(QPalette::Window, background);
@@ -58,9 +59,34 @@ void Theme::apply() {
         QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical { height:0; }
         QToolTip { background:@panel; color:@text; border:1px solid @border; padding:6px; }
     )");
-    style.replace("@background", background.name()).replace("@navigation", navigation.name())
-        .replace("@selection", selection.name()).replace("@panel", panel.name())
-        .replace("@muted", muted.name()).replace("@border", border.name())
-        .replace("@accent", accent.name()).replace("@text", text.name());
+    style.replace("@background", background.name())
+        .replace("@navigation", navigation.name())
+        .replace("@selection", selection.name())
+        .replace("@panel", panel.name())
+        .replace("@muted", muted.name())
+        .replace("@border", border.name())
+        .replace("@accent", accent.name())
+        .replace("@text", text.name());
+    const int size = qBound(
+        12, qApp->property("modynFontSize").toInt() ? qApp->property("modynFontSize").toInt() : 14,
+        18);
+    style.replace("font-size:14px;", "font-size:@body;")
+        .replace("font-size:12px;", "font-size:@secondary;")
+        .replace("font-size:13px;", "font-size:@mono;")
+        .replace("font-size:23px;", "font-size:@heading;");
+    style.replace("@body", QString("%1px").arg(size))
+        .replace("@secondary", QString("%1px").arg(size - 2))
+        .replace("@mono", QString("%1px").arg(size - 1))
+        .replace("@heading", QString("%1px").arg(size + 9));
+    if (qApp->property("modynCompact").toBool())
+        style.replace("padding:8px 12px;", "padding:5px 10px;")
+            .replace("padding:10px 8px;", "padding:6px 8px;");
     qApp->setStyleSheet(style);
+}
+
+void Theme::setPreferences(int fontSize, bool compact) {
+    qApp->setProperty("modynFontSize", qBound(12, fontSize, 18));
+    qApp->setProperty("modynCompact", compact);
+    qApp->setProperty("modynThemeApplied", false);
+    apply();
 }

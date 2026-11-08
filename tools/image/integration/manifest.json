@@ -1,9 +1,33 @@
 {
   "manifest_version": 1,
+  "protocol_version": 1,
+  "ui_schema_version": 1,
   "tool_id": "image",
-  "package_version": "0.2.0",
+  "package_version": "1.0.1",
+  "view_file": "ui.json",
   "name": "图片压缩",
-  "description": "调整图片大小与质量，保留清晰细节。",
+  "description": "保留原图，批量转换与压缩静态图片。",
   "icon": "image",
-  "view_file": "ui.json"
+  "actions": [
+    {
+      "id": "compress",
+      "label": "开始压缩",
+      "batch": true,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 1800
+    }
+  ],
+  "limits": {
+    "max_files": 500,
+    "max_input_bytes": 5242880,
+    "max_file_bytes": 52428800,
+    "memory_mb": 1536
+  },
+  "category": "图片",
+  "keywords": [
+    "压缩",
+    "WebP",
+    "格式转换"
+  ]
 }

@@ -1,57 +1,31 @@
-# 跨电脑、跨开发者与 Agent 交接
+# 新开发者与 Agent 接手
 
-## 接手入口
+## 可直接提供的接手提示
 
-README 面向使用者，AGENTS.md 面向编码 Agent，STATUS 面向当前进度。项目不依赖本次聊天、Codex 历史或个人 Skill 目录。
+请继续维护 ModynToolbox。先读取根 AGENTS.md、README.md、docs/STATUS.md 和 docs/verification/R2-complete.md，再读取与任务有关的 spec、plan、tool-development、decisions、worklog。检查 Git 状态后工作，保留其他修改。先运行 doctor，恢复依赖后执行需要的测试。工具业务放 tools/<id>，公共宿主保持通用，数据统一放指定 data 根。不要依赖之前聊天或个人全局 Skill。
 
-新接手方依次读取根 AGENTS.md、README.md、docs/STATUS.md。再按工作读取 spec、plan、task、checklist、development 和 decisions。worklog 用于追溯最近工作，verification 用于查看证据。
+## 当前代码定位
 
-## 给其他 Agent 的提示
+- 入口 app/main.cpp，便携启动器 app/launcher.cpp。
+- 工具发现与完整包 app/catalog，运行调度 app/jobs，子进程启动门闩 app/worker_host。
+- 通用 UI 在 app/ui/components/tool_panel、view_spec、workbench，主题与窗口各自集中。
+- SQLite 与一致性数据迁移在 app/storage。
+- 四个工具各有 core、standalone、integration 和 tests。
+- shared/protocol 和 shared/sdk 是接入边界，scripts/build-tool.py 为通用打包器。
+- docs/task.md 为当前任务映射，checklist 区分自动覆盖与手工验收。
 
-```text
-请以这个项目根目录为工作范围。
-先阅读 AGENTS.md、README.md 和 docs/STATUS.md，确认当前实现与验证状态。
-然后阅读当前任务关联的 docs/spec.md、docs/plan.md、docs/task.md、docs/checklist.md。
-依据 docs/development.md 检查本机环境，核对实际文件与 Git 未提交变更。
-继续 STATUS 指定的下一任务，保留既有工作，按项目规范验证并更新记录。
-如果环境缺少真实 Windows GUI 或依赖，请分别记录可验证内容和缺口。
-```
+## 接手验证
 
-AGENTS.md 是开放约定，不同工具自动读取的规则不同。未自动读取的工具使用上面提示或显式添加文件上下文。接手能力还取决于其文件、执行和图形环境权限。
+核对 git log、git diff、忽略规则，确认 data/.local 没有进入提交。从 development 中选择实际入口，执行后记录结果。新增工具优先独立核心测试，再走现有宿主导入、执行、多会话、浮窗和移除。
 
-## 迁移开发项目
+用户授权本轮完成全部剩余开发。R2 为本轮交付，保留原始失败和修正记录。跨 Agent、另一台电脑和物理多 DPI 的实际接手体验由接收方最终验证。项目文件已经自包含，不能将本地冷读记成跨 Agent 已通过。
 
-1. 正常退出正在使用本项目数据根的程序及所属工具任务。
-2. 携带完整源码、根说明、docs、工具源代码、共享协议、脚本、编辑器配置和锁定依赖清单。
-3. 若需要版本历史，携带 .git 或可验证的 Git 交接包。未提交修改要随工作区保存，Git 历史包只包含已经提交的内容。
-4. .local 中的旧构建/环境按机器重建。需要离线恢复时另携带实际版本的 SDK、依赖介质与工具包。
-5. 按需要复制 data，或使用未来的数据导出入口。默认分享源码时排除用户数据。
-6. 在新位置打开工作区，运行环境检查，重新定位 Qt/MSVC 等本机路径、配置和构建，再启动并验证。
+## 维护注意
 
-## 迁移便携程序
+数据库拒绝读取后禁止保存覆盖。草稿恢复失败保留原快照，用户主动修改后才采用新输入。仅显式选择保存正文和文件列表。
 
-正常退出后复制整个发布目录，包含 app、tools、runtimes 和 data。目标电脑须满足运行平台和已记录系统前提。外部输入/输出文件需另行携带或重新选择路径。
+工具升级使用新版本，不覆盖旧包。现有会话固定旧版本，关闭引用后才能移除。文件写事务使用计划、文件身份和 journal。进程资源隔离与系统权限分开理解。
 
-旧机器的绝对文件路径可能在新机器失效。应用须报告缺失、允许重定位，身份复验后再执行文件写入。共享运行环境、包版本与引用关系要随迁移保持。
+较大文本只画前 32768 个 UTF-16 码元，完整内容由会话保留。更复杂的工具页面应先判断是否可用公共组件表达，需要扩展公共组件时同步规范版本、校验器、渲染器和回归。
 
-## 每次交接应具备
-
-- 当前阶段、任务与下一步。
-- 实际版本和环境恢复方法。
-- 已通过、失败、未执行的验证，能定位报告。
-- 重要设计决定及已知限制。
-- Git 当前分支、提交与未提交范围（实际存在时）。
-- 数据根、工具包根及运行时根的确定方式。
-- 当前阻塞及所需条件。
-
-## 记录更新原则
-
-任务状态集中 task，验收集中 checklist，STATUS 只做摘要。worklog 追加有意义阶段的实际过程，decisions 解释重要取舍，避免维护互相矛盾的多份进度。
-
-记录中不得把计划命令写成执行结果。报告避免包含密钥、正文或无必要的用户数据。自动生成的大日志放 .local，保留可复现的命令和必要摘要。
-
-## 本轮更名与 UI 交接
-
-当前根为 D:/Workspace/01_Projects/ModynToolbox，打开 ModynToolbox.code-workspace。先读 verification/UI-R1-ModynToolbox.md。旧根内容已迁入当前根，最终检查旧目录已不存在。所有有效命令与环境变量使用 ModynToolbox / MODYN 前缀。
-
-本轮六组后台测试覆盖 27 个函数。当前先完成雾紫外观、共享窗口与界面接入预览，接手时继续 Job Object/任务通路和完整包协议。界面可操作不代表图片/重命名/JSON 业务已完成。
+继续开发时先读当前代码和证据，历史规划中的拟议类名和测试文件名可能已合并到实际模块。

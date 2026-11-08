@@ -1,25 +1,25 @@
 #pragma once
+#include <QJsonObject>
 #include <QString>
 #include <QStringList>
 #include <QVector>
 struct FieldSpec {
-    QString id;
-    QString label;
-    QString type;
+    QString id, label, type;
     QStringList options;
     QString value;
-    int number = 0;
-    int minimum = 0;
-    int maximum = 100;
+    int number = 0, minimum = 0, maximum = 100;
+    bool boolean = false;
+    QJsonObject condition;
 };
 struct ViewSpec {
     QString kind = "text";
     QString inputTitle = QStringLiteral("输入内容");
-    QString hint = QStringLiteral("编辑区接入预览");
-    QString placeholder = QStringLiteral("在这里输入内容，处理后端将在对应阶段接入。");
+    QString hint = QStringLiteral("工具输入");
+    QString placeholder = QStringLiteral("在这里输入内容");
     QString initialText;
     QStringList extensions;
     QVector<FieldSpec> fields;
+    QJsonObject layout;
     QString error;
 };
 ViewSpec loadViewSpec(const QString &packageRoot, bool required = false);

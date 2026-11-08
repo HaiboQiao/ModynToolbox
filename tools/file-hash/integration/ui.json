@@ -1,0 +1,43 @@
+{
+  "view_version": 1,
+  "kind": "files",
+  "input_title": "选择需要校验的文件",
+  "hint": "支持任意普通文件，流式读取并保留原文件。",
+  "fields": [
+    {
+      "id": "algorithm",
+      "label": "校验算法",
+      "type": "choice",
+      "options": [
+        "SHA-256",
+        "SHA-512"
+      ],
+      "default": "SHA-256"
+    }
+  ],
+  "layout": {
+    "type": "column",
+    "children": [
+      {
+        "type": "row",
+        "children": [
+          {
+            "type": "files"
+          },
+          {
+            "type": "fields"
+          }
+        ]
+      },
+      {
+        "type": "output_table"
+      },
+      {
+        "type": "actions"
+      },
+      {
+        "type": "status"
+      }
+    ]
+  }
+}

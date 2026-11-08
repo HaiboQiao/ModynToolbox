@@ -2,7 +2,7 @@
   "view_version": 1,
   "kind": "files",
   "input_title": "拖入文件，准备命名预览",
-  "hint": "添加文件后设置命名规则",
+  "hint": "可调整勾选与顺序，扩展名保持原样",
   "fields": [
     {
       "id": "prefix",
@@ -18,13 +18,50 @@
     },
     {
       "id": "numbering",
-      "label": "序号规则",
-      "type": "choice",
-      "options": [
-        "不添加序号",
-        "三位序号 · 从 001 开始"
-      ],
-      "default": "不添加序号"
+      "label": "添加序号",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "start",
+      "label": "起始序号",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000,
+      "default": 1
+    },
+    {
+      "id": "digits",
+      "label": "序号位数",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 12,
+      "default": 3
     }
-  ]
+  ],
+  "layout": {
+    "type": "column",
+    "children": [
+      {
+        "type": "row",
+        "children": [
+          {
+            "type": "files"
+          },
+          {
+            "type": "fields"
+          }
+        ]
+      },
+      {
+        "type": "actions"
+      },
+      {
+        "type": "output_table"
+      },
+      {
+        "type": "status"
+      }
+    ]
+  }
 }

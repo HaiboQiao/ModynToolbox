@@ -15,4 +15,5 @@ inline constexpr int panelInset = 20;
 inline constexpr int gap = 12;
 inline constexpr int titleBarHeight = 54;
 void apply();
-}
+void setPreferences(int fontSize, bool compact);
+} // namespace Theme

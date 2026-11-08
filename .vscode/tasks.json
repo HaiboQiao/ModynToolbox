@@ -2,14 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "ModynToolbox build",
+      "label": "ModynToolbox compile",
       "type": "shell",
       "command": "powershell.exe",
       "args": [
         "-NoProfile",
         "-File",
         "${workspaceFolder}/scripts/dev.ps1",
-        "build"
+        "build",
+        "-Preset",
+        "windows-complete"
       ],
       "problemMatcher": [
         "$msCompile"
@@ -18,6 +20,28 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "ModynToolbox tools",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/scripts/prepare-tools.py",
+        "--binary",
+        "${workspaceFolder}/.local/build/windows-complete/bin/Debug/ModynToolbox.App.exe"
+      ],
+      "problemMatcher": [],
+      "dependsOn": [
+        "ModynToolbox compile"
+      ]
+    },
+    {
+      "label": "ModynToolbox build",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "ModynToolbox compile"
+      ],
+      "problemMatcher": []
     }
   ]
 }

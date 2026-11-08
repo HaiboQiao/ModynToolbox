@@ -1,0 +1,65 @@
+{
+  "passed": 12,
+  "tests": [
+    {
+      "name": "json_precision",
+      "passed": true,
+      "ms": 0.08
+    },
+    {
+      "name": "json_invalid",
+      "passed": true,
+      "ms": 2.0
+    },
+    {
+      "name": "rename_roundtrip",
+      "passed": true,
+      "ms": 30.42
+    },
+    {
+      "name": "rename_conflicts",
+      "passed": true,
+      "ms": 10.11
+    },
+    {
+      "name": "rename_rollback",
+      "passed": true,
+      "ms": 12.65
+    },
+    {
+      "name": "rename_recovery",
+      "passed": true,
+      "ms": 10.07
+    },
+    {
+      "name": "future_schema_refused",
+      "passed": true,
+      "ms": 2.3
+    },
+    {
+      "name": "rename_capacity_boundary",
+      "passed": true,
+      "ms": 1875.53
+    },
+    {
+      "name": "image_safety",
+      "passed": true,
+      "ms": 139.16
+    },
+    {
+      "name": "image_orientation",
+      "passed": true,
+      "ms": 3.4
+    },
+    {
+      "name": "image_exif_removed",
+      "passed": true,
+      "ms": 6.84
+    },
+    {
+      "name": "image_capacity_boundaries",
+      "passed": true,
+      "ms": 963.03
+    }
+  ]
+}
