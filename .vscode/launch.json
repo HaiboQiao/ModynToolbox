@@ -8,7 +8,9 @@
       "program": "${workspaceFolder}/.local/build/windows-dev/bin/Debug/GraphiteToolbox.App.exe",
       "args": [
         "--data-root",
-        "${workspaceFolder}/data"
+        "${workspaceFolder}/data",
+        "--packages-root",
+        "${workspaceFolder}/.local/installed/tools"
       ],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Graphite build",

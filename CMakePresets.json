@@ -9,6 +9,11 @@
       "cacheVariables": {
         "CMAKE_PREFIX_PATH": "$env{GRAPHITE_QT_ROOT}"
       }
+    },
+    {
+      "name": "windows-check",
+      "inherits": "windows-dev",
+      "binaryDir": "${sourceDir}/.local/build/windows-check"
     }
   ],
   "buildPresets": [
@@ -16,12 +21,28 @@
       "name": "windows-dev",
       "configurePreset": "windows-dev",
       "configuration": "Debug"
+    },
+    {
+      "name": "windows-check",
+      "configurePreset": "windows-check",
+      "configuration": "Debug"
     }
   ],
   "testPresets": [
     {
       "name": "windows-dev",
       "configurePreset": "windows-dev",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "windows-check",
+      "configurePreset": "windows-check",
       "configuration": "Debug",
       "output": {
         "outputOnFailure": true

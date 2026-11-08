@@ -1,23 +1,29 @@
 # 当前状态
 
-更新日期为 2026-11-08。用户已授权最终核对后按开发阶段实施。
+更新日期为 2026-11-08。用户授权按阶段连续实施，并要求后台验证避免占用桌面。
 
 ## 当前阶段
 
-T01 进行中，原生 C++/Qt 试点已可构建运行。已经提供 VS Code F5 配置和统一脚本，CLI 构建/运行/测试已执行。工具箱业务、动态界面规范、完整调度与工具安装系统仍待后续阶段。
+T01 原生试点进行中。T02 已先行实现独立的元数据目录发现子集，完整安装/执行规范待开发。宿主为 C++20 / Qt 6 Widgets。
 
-## 已验证
+## 最新成果与证据
 
-Qt 6.8.3 msvc2022_64，Visual Studio 18，CMake 4.3.1-msvc1。独立 Qt SDK 与 aqt 引导环境在 .local 下。两组 CTest 通过，包含三项窗口行为测试和三项 Python/C++ 管道测试。真实 Windows 已观察主窗口、分离后的可见内容/主题和关闭收回，发现并修复浮窗隐藏问题。
+- 导航按工具组织，搜索为“搜索工具”。同工具多会话独立，多于一份才显示切换入口。浮窗收回同步左侧选中工具。
+- Windows 原生深色标题栏接口已加入并编译，主窗与独立窗共用。此次没有前台原生视觉验收。
+- 从显式包根的 <id>/<version>/manifest.json 发现工具，校验元数据与数字版本排序。退出后删除安装工具目录，下次启动不再发现。开发运行不会自动恢复手动删除的工具。
+- windows-check 独立后台构建、离屏测试与截图可用。最终 CTest 为 3/3 通过，1.38 秒。界面六项、目录五项与跨语言三项测试通过，另有 Qt 初始化/清理记录。100 个元数据包被发现，尚未测资源预算。
+- 接入预览含 JSON、图片压缩、批量重命名，业务处理尚待开发。
 
-已初始化 Git 并建立本地基线，data 和 .local 的实际忽略行为已验证。报告见 [M0](verification/M0-architecture.md)。
+证据见 verification/UI-catalog-preview.md。此前真实 GUI 证据见 verification/M0-architecture.md，涉及本轮改动的视觉行为需复验。
 
-## 现在如何运行
+## 运行与验证
 
-在项目根运行 powershell -NoProfile -File scripts/dev.ps1 run。VS Code 打开 GraphiteToolbox.code-workspace，选择 GraphiteToolbox 调试配置，F5 会调用同一构建入口。VS Code 按键本身尚待人工验证，当前运行中的原型可直接试用。
+项目根运行 powershell -NoProfile -File scripts/prepare-preview.ps1，明确准备三个元数据预览包，仅在需要时执行。
+随后运行 powershell -NoProfile -File scripts/dev.ps1 run。VS Code 的 F5 使用同一包根与数据根，按键本身待人工验收。
+后台验证运行 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check，不改写正在运行的 windows-dev 二进制。
 
-新电脑先安装 VS 2026 C++ 工具与 SDK、Python，再运行 scripts/bootstrap.ps1 恢复项目 Qt SDK。也可用 GRAPHITE_QT_ROOT 指定兼容 SDK。
+源码在 tools，开发安装副本在 .local/installed/tools，数据在 data。勿把源码目录删除等同于卸载安装副本。prepare-preview 是显式预览准备动作，再次执行会补回已删除的示例包。
 
-## 明确下一步
+## 后续工作
 
-继续 T01。实现并验证 Windows Job Object 启动期归属、受控后台任务、界面描述试点、最小 Release 启动器/包、资源基线和 VS Code 实际 F5。T01 尚未完成，T02–T12 待开始。完整验收清单保持未勾选，已测子集以 M0 报告说明。
+继续 T01 的 Windows Job Object、取消/任务通路、界面描述试点、Release 启动器、性能与真实 VS Code/DPI 验收。T02 后续补完整 manifest/view/messages、入口与运行时校验、暂存安装、版本引用和忙碌卸载。T03–T12 待开始。完整 44 项验收均未完成，保持未勾选。

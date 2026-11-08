@@ -30,3 +30,13 @@
 用户授权方案核对后实施。建立 Git 基线、CMake/VS Code 入口、项目内 Qt 6.8.3 开发工具链、原生窗口与会话迁移代码，以及 Python/C++ 管道 fixture。
 两组 CTest 通过。实际 GUI 检查发现浮动视图隐藏和主题继承问题，已修复并增加可见性回归。中文传输发现 Python 默认编码问题，已显式设置 UTF-8 并复测。
 当前 T01 进行中，进程树/完整任务通路/动态界面/Release/性能验证尚待实施。证据见 verification/M0-architecture.md。
+
+## 2026-11-08 工具导航修正与 T02 目录子集
+
+用户要求修正任务/工具语义、美化外框、减少桌面占用并继续开发。修改 workbench、main、DWM 外框、catalog、CMake/VS Code/开发脚本，新增三个工具的预览元数据及元数据 schema。
+
+使用独立 windows-check 后台构建，没有操作桌面或关闭旧原型。初次离屏测试因平台插件未部署而等待，停止了本轮测试进程并补齐 qoffscreend.dll。第二轮发现测试源文件读取编码导致中文断言损坏，按 UTF-8 修复并显式加载系统字体。prepare-preview 的 PowerShell 5 默认编码也已改为 UTF-8。
+
+最终命令为 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check，3/3 CTest 通过，1.38 秒。目录测试含百工具发现、添加/删除再发现、数字版本、损坏/超限、未知 schema。界面含工具搜索、多会话导航、独立输入、分离收回、预览、50 次迁移。跨语言三项回归通过。
+
+离屏截图 .local/preview-tools.png 已查看，中文、布局与工具名称正常。DWM 已编译，但真实标题栏、DPI/多屏未验收。当前三个工具仍无业务处理。下一步继续 T01 进程归属/任务通路和 T02 完整协议、安装事务。报告见 verification/UI-catalog-preview.md。

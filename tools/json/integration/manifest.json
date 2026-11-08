@@ -1,0 +1,7 @@
+{
+  "manifest_version": 1,
+  "tool_id": "json",
+  "package_version": "0.1.0",
+  "name": "JSON 工具",
+  "description": "检查、格式化与导出 JSON。当前为工具接入预览，处理功能尚待实现。"
+}

@@ -1,0 +1,7 @@
+{
+  "manifest_version": 1,
+  "tool_id": "rename",
+  "package_version": "0.1.0",
+  "name": "批量重命名",
+  "description": "预览文件命名规则并执行批量修改。当前为工具接入预览，处理功能尚待实现。"
+}

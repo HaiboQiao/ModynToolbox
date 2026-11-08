@@ -1,0 +1,7 @@
+{
+  "manifest_version": 1,
+  "tool_id": "image",
+  "package_version": "0.1.0",
+  "name": "图片压缩",
+  "description": "批量处理图片格式、质量和尺寸。当前为工具接入预览，处理功能尚待实现。"
+}

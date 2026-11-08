@@ -4,12 +4,14 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QLockFile>
+#include <QDebug>
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
     app.setApplicationName("GraphiteToolbox");
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addOption({"data-root", "Workspace data directory", "path"});
+    parser.addOption({"packages-root", "Installed tool packages", "path"});
     parser.process(app);
     const auto dataRoot = parser.value("data-root");
     if (dataRoot.isEmpty() || !QDir().mkpath(dataRoot + "/host")) {
@@ -21,7 +23,9 @@ int main(int argc, char **argv) {
         QMessageBox::information(nullptr, QStringLiteral("工作区已占用"), QStringLiteral("该数据目录已有运行实例，或锁文件不可写。"));
         return 3;
     }
-    Workbench window;
+    const auto catalog = readCatalog(parser.value("packages-root"));
+    for (const auto &error : catalog.errors) qWarning().noquote() << error;
+    Workbench window(catalog.tools);
     window.show();
     return app.exec();
 }

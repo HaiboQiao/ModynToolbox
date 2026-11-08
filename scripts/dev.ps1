@@ -1,6 +1,8 @@
 param(
     [ValidateSet('doctor','configure','build','run','test','package')]
-    [string]$Action = 'run'
+    [string]$Action = 'run',
+    [ValidateSet('windows-dev','windows-check')]
+    [string]$Preset = 'windows-dev'
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -28,20 +30,21 @@ try {
         Invoke-Checked $cmake @('--version')
         exit 0
     }
-    Invoke-Checked $cmake @('--preset','windows-dev')
+    Invoke-Checked $cmake @('--preset',$Preset)
     if ($Action -eq 'configure') { exit 0 }
-    Invoke-Checked $cmake @('--build','--preset','windows-dev')
-    $binaryRoot = Join-Path $projectRoot '.local\build\windows-dev\bin\Debug'
+    Invoke-Checked $cmake @('--build','--preset',$Preset)
+    $binaryRoot = Join-Path $projectRoot (".local\build\" + $Preset + "\bin\Debug")
     $deploy = Join-Path $qtRoot 'bin\windeployqt.exe'
     Invoke-Checked $deploy @('--debug','--no-translations',(Join-Path $binaryRoot 'GraphiteToolbox.App.exe'))
     foreach ($runtime in Get-ChildItem -LiteralPath (Join-Path $qtRoot 'bin') -Filter 'Qt6Test*.dll') {
         Copy-Item -LiteralPath $runtime.FullName -Destination $binaryRoot -Force
     }
     if ($Action -eq 'test') {
-        Invoke-Checked $ctest @('--preset','windows-dev')
+        Copy-Item -LiteralPath (Join-Path $qtRoot 'plugins\platforms\qoffscreend.dll') -Destination (Join-Path $binaryRoot 'platforms') -Force
+        Invoke-Checked $ctest @('--preset',$Preset)
     }
     if ($Action -eq 'run') {
-        & (Join-Path $binaryRoot 'GraphiteToolbox.App.exe') '--data-root' (Join-Path $projectRoot 'data')
+        & (Join-Path $binaryRoot 'GraphiteToolbox.App.exe') '--data-root' (Join-Path $projectRoot 'data') '--packages-root' (Join-Path $projectRoot '.local\installed\tools')
         if ($LASTEXITCODE -ne 0) { throw "Application exited with $LASTEXITCODE" }
     }
     if ($Action -eq 'package') {

@@ -204,3 +204,15 @@ AGENTS.md 是开放的项目指令格式，适用于多种编码 Agent，具体�
 Codex 的项目指令可通过 AGENTS.md 提供，具体发现和覆盖规则按其官方文档。本项目不会把 Codex 特定本机设置作为通用开发依赖。[官方 AGENTS 指南](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
 
 本轮 Context7 无可调用工具，API/编辑器行为按官方文档核对。当前规划中的任务、脚本和 F5 由实施阶段创建并真实验证，资料核对不能替代本项目运行证据。
+
+## 11. 非打扰验证与当前工具目录预览
+
+后台入口为 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check。生成物在 .local/build/windows-check，不改写 windows-dev 中正在运行的程序。Qt 测试使用 offscreen，测试临时根位于相应构建目录/tests/tmp，设置 45 秒超时。测试部署额外复制 qoffscreend.dll，离屏字体从本机 Windows Fonts 加载，不复制系统字体到发行包。
+
+首次需要三个示例工具入口时执行 powershell -NoProfile -File scripts/prepare-preview.ps1。该动作只准备清单，已有版本目录保持原样。正常 run/F5 不自动安装。元数据布局为 .local/installed/tools/<id>/<version>/manifest.json。退出后删除对应安装工具目录，下次启动重新扫描，data 不在扫描/删除范围。当前尚无运行中刷新、忙碌卸载或完整安装事务。
+
+运行新版可执行 powershell -NoProfile -File scripts/dev.ps1 run -Preset windows-check。这会由使用者主动打开新窗口，现有实例占用同一 data 时提示占用，先自行关闭旧实例。后台测试不用生产 data。
+
+可选设置 GRAPHITE_PREVIEW_PATH 为项目 .local 下 PNG 绝对路径，再执行 test，保存中文示例的客户区离屏预览。此图无法验证系统标题栏。真实标题栏和 DPI/焦点体验单独验收。
+
+工具源目录中的 integration/manifest.json 为当前唯一源清单。manifest-preview.schema.json 只描述元数据子集，C++ catalog 做对应运行校验，完整执行规范仍在 T02。

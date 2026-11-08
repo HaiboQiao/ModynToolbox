@@ -1,6 +1,6 @@
 # 石墨工具工作台实施任务
 
-2026-11-08 按独立工具架构修订，T01 进行中，其他任务待开始。用户本轮要求完整分析并形成后续开发依据，当前独立项目交付为完整规划、目录说明和编辑器工作区。具体实现、依赖安装及应用测试尚待实施。
+2026-11-08 更新。用户授权按阶段开发并继续下一阶段。T01 进行中，T02 的元数据目录发现先行实施，其他任务待开始。当前已有原生试点和部分测试，完整完成范围以 STATUS 与验证报告为准。
 
 依据为 [需求](spec.md) 和 [架构设计](plan.md)。文中路径均相对本项目。验证入口由相应任务创建，执行前确认用例实际收集，跳过不能计通过。
 
@@ -23,7 +23,7 @@
 
 ## T02 工具包、协议规范与版本维护
 
-状态为待开始。覆盖 F07,F16,F17,F19。AC07,AC17,AC19。
+状态为进行中，仅完成目录元数据预览子集，见 verification/UI-catalog-preview.md。覆盖 F07,F16,F17,F19。AC07,AC17,AC19。用户本轮要求继续下一阶段，因此先行处理独立于 T01 剩余进程/发布试验的目录扫描工作。完整 T02 仍需满足 T01 相关依赖及下述完成条件。
 
 新建 `shared/protocol/{manifest-v1,view-v1,messages-v1}.schema.json`、`app/catalog/`、`app/core/contracts.h`、三个工具包的 manifest/UI 初稿、`app/tests/unit/test_package_catalog.cpp` 和 `app/tests/integration/test_package_install.cpp`。依赖 T01，契约见 plan §3、§9。
 

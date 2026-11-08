@@ -4,7 +4,7 @@ Windows 本地工具工作台。前台采用 C++20 / Qt 6 Widgets，工具通过
 
 ## 当前阶段
 
-2026-11-08 已进入 T01，原生会话/窗口试点可运行，CLI 构建与两组 CTest 已通过，VS Code 调试配置已提供。完整工具与发布包仍待实现。实际进度以 [STATUS](docs/STATUS.md) 为准。
+2026-11-08 已进入 T01，原生会话/窗口试点可运行，CLI 构建与三组 CTest 已通过，VS Code 调试配置已提供。完整工具与发布包仍待实现。实际进度以 [STATUS](docs/STATUS.md) 为准。
 
 本项目依据用户要求在独立目录从零开发，当前本机路径为 `D:\Workspace\01_Projects\GraphiteToolbox`。旧讨论目录仅作历史来源，后续工作以本项目内文件为依据。
 
@@ -27,7 +27,7 @@ Windows 本地工具工作台。前台采用 C++20 / Qt 6 Widgets，工具通过
 | .local/ | 构建、工具环境、安装副本、发布包和测试临时产物 |
 | .vscode/ | 编辑器协作配置 |
 
-上述源码目录当前提供用途说明，具体实现由任务逐项创建。完整目标结构含源码与交付包两棵目录树。[架构设计](docs/plan.md)
+上述源码目录已有试点及用途说明，具体完成范围由任务与验证报告记录。完整目标结构含源码与交付包两棵目录树。[架构设计](docs/plan.md)
 
 ## 开发依据与接手顺序
 
@@ -40,8 +40,14 @@ Windows 本地工具工作台。前台采用 C++20 / Qt 6 Widgets，工具通过
 
 开发默认数据根为本项目 `data/`，便携发布包默认数据根为包内 `data/`。用户可明确指定其他数据根，数据根不可写时必须提示选择，路径规则见开发指南。
 
-源码与文档纳入 Git，机器配置、运行数据、依赖环境和构建结果按忽略规则分别处理。复制源码后需要重建开发环境。迁移运行数据要单独携带或导出。当前应用尚待实现，文档核对与应用验收分开记录。
+源码与文档纳入 Git，机器配置、运行数据、依赖环境和构建结果按忽略规则分别处理。复制源码后需要重建开发环境。迁移运行数据要单独携带或导出。当前已有原生试点，业务工具与发布尚待实现，文档核对与应用验收分开记录。
 ## T01 最新运行入口
 
 当前原生架构试点已可运行。项目根执行 powershell -NoProfile -File scripts/dev.ps1 run，测试用同一脚本的 test 动作。VS Code F5 配置已建立，CLI 已验证。
 当前界面验证会话和窗口，业务工具与完整任务管理待后续接入。以 docs/STATUS.md 和 docs/verification/M0-architecture.md 为最新事实。
+
+## 工具导航预览与后台测试
+
+目前已按工具导航与搜索，支持同工具多会话、分离/收回和目录元数据发现。首次需要示例入口时运行 powershell -NoProfile -File scripts/prepare-preview.ps1，再执行 run。三个工具仅有接入预览。
+
+后台测试运行 powershell -NoProfile -File scripts/dev.ps1 test -Preset windows-check。新版主动启动可使用 run -Preset windows-check。详情及当前限制见 docs/verification/UI-catalog-preview.md。
