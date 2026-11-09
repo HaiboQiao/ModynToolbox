@@ -274,33 +274,58 @@ class GitHub:
                         "Accept": "application/vnd.github+json", "Cache-Control": "no-cache"}
         self.opener = urllib.request.build_opener(SafeRedirect())
 
+    def upload(self, url, file):
+        endpoint = urllib.parse.urlsplit(url)
+        if endpoint.scheme != "https" or endpoint.hostname != "uploads.github.com":
+            raise RuntimeError("Unexpected upload endpoint")
+        curl = shutil.which("curl.exe")
+        if not curl:
+            raise RuntimeError("Windows curl is required for bounded streaming uploads")
+        logs = ROOT / ".local/upload-progress"
+        logs.mkdir(parents=True, exist_ok=True)
+        response = logs / (file.name + ".response.json")
+        progress = logs / (file.name + ".log")
+        command = [curl, "--config", "-", "--fail-with-body", "--show-error", "--progress-bar",
+                   "--connect-timeout", "30", "--max-time", "1800", "--request", "POST",
+                   "--header", "Content-Type: application/octet-stream",
+                   "--header", "Content-Length: " + str(file.stat().st_size),
+                   "--upload-file", str(file), "--output", str(response), url]
+        proxy = urllib.request.getproxies().get("https")
+        if proxy:
+            command[1:1] = ["--proxy", proxy]
+        config = "".join("header = " + json.dumps(key + ": " + value) + "\n"
+                         for key, value in self.headers.items())
+        print("Uploading", file.name, file.stat().st_size, "bytes", flush=True)
+        with progress.open("ab") as output:
+            result = subprocess.run(command, input=config.encode(), stdout=subprocess.DEVNULL,
+                                    stderr=output, timeout=1830)
+        if result.returncode:
+            raise RuntimeError("Upload interrupted; preserve draft and retry. Progress: " + str(progress))
+        return read(response)
+
     def request(self, method, url, value=None, file=None, missing=False):
+        if file:
+            return self.upload(url, file)
         headers = self.headers.copy()
         data = None
         if value is not None:
             data = json.dumps(value, ensure_ascii=False).encode()
             headers["Content-Type"] = "application/json"
-        if file:
-            headers.update({"Content-Type": "application/octet-stream", "Content-Length": str(file.stat().st_size)})
         for attempt in range(3):
-            stream = file.open("rb") if file else None
             try:
-                request = urllib.request.Request(url, data=stream if file else data, headers=headers, method=method)
+                request = urllib.request.Request(url, data=data, headers=headers, method=method)
                 with self.opener.open(request, timeout=180) as response:
                     body = response.read()
                     return json.loads(body) if body else None
             except urllib.error.HTTPError as error:
                 if missing and error.code == 404:
                     return None
-                if error.code not in (429, 500, 502, 503, 504) or attempt == 2 or file:
+                if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
                     raise RuntimeError("GitHub request failed: HTTP " + str(error.code) + " " +
                                        error.read(1000).decode(errors="replace")) from None
             except (urllib.error.URLError, TimeoutError):
-                if attempt == 2 or file:
+                if attempt == 2:
                     raise RuntimeError("GitHub network request failed; preserve draft and retry") from None
-            finally:
-                if stream:
-                    stream.close()
             time.sleep(2 ** attempt)
         raise RuntimeError("GitHub retry budget exhausted")
 
@@ -343,6 +368,10 @@ def publish():
     git("push", "origin", "HEAD:main", "refs/tags/" + tag, network=True)
     client = GitHub()
     release = client.request("GET", API + "/releases/tags/" + urllib.parse.quote(tag, safe=""), missing=True)
+    if not release:
+        # The tag endpoint returns published releases. Drafts are found through the authenticated list.
+        candidates = client.request("GET", API + "/releases?per_page=100")
+        release = next((item for item in candidates if item["tag_name"] == tag), None)
     body = (REPOSITORY / "releases" / manifest["version"] / "README.md").read_text(encoding="utf-8")
     body = body.replace("../../source/docs/release-policy.md", WEB + "/blob/" + tag + "/source/docs/release-policy.md")
     if not release:
@@ -353,6 +382,10 @@ def publish():
                                     asset(folder / "SHA256SUMS.txt", "checksums")]
     for entry in assets:
         existing = next((item for item in release["assets"] if item["name"] == entry["name"]), None)
+        if existing and release["draft"] and existing["state"] != "uploaded":
+            client.request("DELETE", API + "/releases/assets/" + str(existing["id"]))
+            release["assets"].remove(existing)
+            existing = None
         if not existing:
             if not release["draft"]:
                 raise RuntimeError("Published release is immutable")

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "source_zip_bytes": 4198866,
+  "source_zip_seconds": 28.936823,
+  "tool_zip_bytes": 5060856,
+  "tool_zip_seconds": 37.493963,
+  "streamed_tool_digest_verified": true,
+  "original_draft_published": false,
+  "retired_draft_removed": true,
+  "original_source_tag_preserved": true
+}

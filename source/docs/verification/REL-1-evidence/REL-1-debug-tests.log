@@ -5,51 +5,78 @@
 -- Build files have been written to: D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-complete
 适用于 .NET Framework MSBuild 版本 18.9.1+a81b43525
 
-  1>Checking Build System
   Automatic MOC for target ModynLauncher
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
   ModynLauncher.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\ModynToolbox.exe
   Automatic MOC for target modyn_shell
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  state_repository.cpp
+  data_transfer.cpp
+  files.cpp
+  package_manager.cpp
+  job_runner.cpp
+  scheduler.cpp
+  workbench.cpp
+  theme.cpp
+  icons.cpp
+  combo_box.cpp
+  tool_view.cpp
+  tool_panel.cpp
+  tool_navigation.cpp
+  view_spec.cpp
+  chrome_window.cpp
+  package_catalog.cpp
+  window_chrome.cpp
+  正在生成代码...
   modyn_shell.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\Debug\modyn_shell.lib
   Automatic MOC for target ModynToolboxApp
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  main.cpp
+  automation.cpp
+  正在生成代码...
   ModynToolboxApp.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\ModynToolbox.App.exe
   Automatic MOC for target ModynWorkerHost
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
   ModynWorkerHost.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\ModynToolbox.WorkerHost.exe
   Automatic MOC for target modyn_catalog_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
   test_package_catalog.cpp
+  正在生成代码...
   modyn_catalog_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_catalog_tests.exe
   Automatic MOC for target modyn_fault_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_faults.cpp
+  正在生成代码...
   modyn_fault_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_fault_tests.exe
   Automatic MOC for target modyn_job_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_jobs.cpp
+  正在生成代码...
   modyn_job_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_job_tests.exe
   Automatic MOC for target modyn_native_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_window_native.cpp
+  正在生成代码...
   modyn_native_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_native_tests.exe
   Automatic MOC for target modyn_sdk_compile
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
   modyn_sdk_compile.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\Debug\modyn_sdk_compile.exe
   Automatic MOC for target modyn_shell_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_workbench.cpp
+  正在生成代码...
   modyn_shell_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_shell_tests.exe
   Automatic MOC for target modyn_system_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_system.cpp
+  正在生成代码...
   modyn_system_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_system_tests.exe
   Automatic MOC for target modyn_view_tests
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
+  mocs_compilation_Debug.cpp
+  test_view_spec.cpp
+  正在生成代码...
   modyn_view_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_view_tests.exe
   Automatic MOC for target modyn_worker
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
   modyn_worker.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\modyn_worker.exe
-  Building Custom Rule D:/Workspace/01_Projects/ModynToolbox/source/CMakeLists.txt
 Warning: Translations will not be available due to the following error.
 Cannot open D:/Workspace/01_Projects/ModynToolbox/source/.local/toolchains/Qt/6.8.3/msvc2022_64/translations/catalogs.json
-Warning: Cannot find any version of the dxcompiler.dll and dxil.dll.
 D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-complete\bin\Debug\ModynToolbox.App.exe 64 bit, debug executable
 Adding in plugin type generic for module: Qt6Gui
 Adding Qt6Network for qtuiotouchplugind.dll from plugin type: generic
@@ -63,6 +90,7 @@ Skipping plugin qopensslbackendd.dll. Use -force-openssl or specify -openssl-roo
 Direct dependencies: Qt6Core Qt6Gui Qt6Sql Qt6Widgets
 All dependencies   : Qt6Core Qt6Gui Qt6Sql Qt6Widgets
 To be deployed     : Qt6Core Qt6Gui Qt6Network Qt6Sql Qt6Widgets
+Warning: Cannot find any version of the dxcompiler.dll and dxil.dll.
 Warning: Cannot find Visual Studio installation directory, VCINSTALLDIR is not set.
 Qt6Cored.dll is up to date.
 Qt6Guid.dll is up to date.
@@ -85,28 +113,28 @@ qcertonlybackendd.dll is up to date.
 qschannelbackendd.dll is up to date.
 Test project D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-complete
       Start  1: workbench
- 1/11 Test  #1: workbench ........................   Passed    8.25 sec
+ 1/11 Test  #1: workbench ........................   Passed    8.66 sec
       Start  2: worker_transport
  2/11 Test  #2: worker_transport .................   Passed    0.13 sec
       Start  3: package_catalog
- 3/11 Test  #3: package_catalog ..................   Passed    0.20 sec
+ 3/11 Test  #3: package_catalog ..................   Passed    0.22 sec
       Start  4: view_spec
- 4/11 Test  #4: view_spec ........................   Passed    0.07 sec
+ 4/11 Test  #4: view_spec ........................   Passed    0.08 sec
       Start  5: window_native
- 5/11 Test  #5: window_native ....................   Passed    0.38 sec
+ 5/11 Test  #5: window_native ....................   Passed    0.36 sec
       Start  6: host_start
  6/11 Test  #6: host_start .......................   Passed    0.78 sec
       Start  7: jobs
- 7/11 Test  #7: jobs .............................   Passed    2.08 sec
+ 7/11 Test  #7: jobs .............................   Passed    2.00 sec
       Start  8: full_system
- 8/11 Test  #8: full_system ......................   Passed   16.10 sec
+ 8/11 Test  #8: full_system ......................   Passed   16.70 sec
       Start  9: business_cores
- 9/11 Test  #9: business_cores ...................   Passed    3.59 sec
+ 9/11 Test  #9: business_cores ...................   Passed    3.94 sec
       Start 10: worker_faults
-10/11 Test #10: worker_faults ....................   Passed    6.03 sec
+10/11 Test #10: worker_faults ....................   Passed    5.88 sec
       Start 11: host_crash_tree
 11/11 Test #11: host_crash_tree ..................   Passed    1.94 sec
 
 100% tests passed, 0 tests failed out of 11
 
-Total Test time (real) =  39.60 sec
+Total Test time (real) =  40.71 sec
