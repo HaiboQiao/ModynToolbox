@@ -1,0 +1,12 @@
+/.local/*
+!/.local/README.md
+/data/*
+!/data/README.md
+/CMakeUserPresets.json
+/.vscode/*.local.json
+**/.idea/
+**/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.user

@@ -1,0 +1,33 @@
+{
+  "manifest_version": 1,
+  "protocol_version": 1,
+  "ui_schema_version": 1,
+  "min_host_version": "1.0.0",
+  "tool_id": "file-hash",
+  "name": "文件校验",
+  "package_version": "1.0.4",
+  "icon": "files",
+  "description": "流式计算文件 SHA-256 / SHA-512，独立 C++ 后端。",
+  "view_file": "ui.json",
+  "limits": {
+    "max_files": 2000,
+    "max_input_bytes": 5242880,
+    "memory_mb": 512
+  },
+  "actions": [
+    {
+      "id": "hash",
+      "label": "计算校验值",
+      "batch": true,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 1800
+    }
+  ],
+  "category": "文件",
+  "keywords": [
+    "SHA256",
+    "SHA512",
+    "校验值"
+  ]
+}
