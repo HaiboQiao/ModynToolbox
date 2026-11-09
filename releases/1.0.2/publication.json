@@ -56,5 +56,9 @@
     }
   ],
   "public_download_verified": true,
-  "downloaded_assets": 8
+  "downloaded_assets": 8,
+  "msvc_runtime_audit": {
+    "checked_pe_files": 149,
+    "missing_msvc_runtime": []
+  }
 }
