@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "steps": 33,
+  "seconds": 3.187,
+  "path": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\portable-tests\\中文 空格 c6769dfc\\ModynToolbox",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\portable-tests\\中文 空格 c6769dfc\\acceptance.json",
+  "isolated_path": "C:\\WINDOWS/System32",
+  "system_python_used_by_app": false,
+  "screenshots": [
+    "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\logs\\final-main.png",
+    "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\logs\\final-image.png"
+  ]
+}

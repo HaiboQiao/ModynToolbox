@@ -37,3 +37,7 @@
 本机自动回归、离屏手势、ZIP 解压运行和目录刷新有记录。物理跨屏拖动、多 DPI、Snap、另一台干净电脑仍需目标设备检查。本版尚未配置 Authenticode 签名。
 
 发布规则与验证记录在 [源码文档](../../source/docs/release-policy.md)中。GitHub 版本正文以此文件为基础生成。
+
+## 发布回执
+
+[公开发布与下载验证](publication.json)、[分发清单](release-manifest.json)、[SHA256 校验](SHA256SUMS.txt)。固定源提交为 8a45e58e2f395e3e9864d54e07fe30b17915acf3，8 项公开下载与本地一致，下载版 33 步运行验证通过。

@@ -1,0 +1,84 @@
+{
+  "product": "ModynToolbox",
+  "version": "1.0.2",
+  "tag": "v1.0.2",
+  "platform": "windows-x64",
+  "source_commit": "8a45e58e2f395e3e9864d54e07fe30b17915acf3",
+  "repository": "https://github.com/HaiboQiao/ModynToolbox",
+  "prepared_at": "2026-11-09T16:57:59.649742+00:00",
+  "tools": {
+    "file-hash": "1.0.4",
+    "image": "1.0.1",
+    "json": "1.0.2",
+    "rename": "1.0.1"
+  },
+  "validation": {
+    "complete": true,
+    "portable_steps": 33,
+    "directory_drop_refresh_execute": true,
+    "platform": "Windows x64, isolated PATH and Qt offscreen",
+    "manual_pending": [
+      "physical multi-DPI/Snap",
+      "another clean computer"
+    ],
+    "validated_at": "2026-11-09T16:58:11.398798+00:00"
+  },
+  "assets": [
+    {
+      "name": "ModynToolbox-1.0.2-windows-x64.zip",
+      "kind": "portable",
+      "bytes": 64806780,
+      "sha256": "b2cdf8689caad7d8a79a838e822fef7b6d80e2597784516fe2d44221b54953cb"
+    },
+    {
+      "name": "ModynToolbox-tool-file-hash-1.0.4-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 5060856,
+      "sha256": "fd612fe3b5137afeb870c854f81563a8387fd2ebc5e27f1ff81c066b56395717",
+      "tool_id": "file-hash",
+      "version": "1.0.4",
+      "protocol": 1,
+      "ui_schema": 1,
+      "min_host_version": "1.0.0"
+    },
+    {
+      "name": "ModynToolbox-tool-image-1.0.1-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 19510278,
+      "sha256": "48039527c35f2d62d5b91250c1923c323a36083ae88d8991b7f1d88d75412624",
+      "tool_id": "image",
+      "version": "1.0.1",
+      "protocol": 1,
+      "ui_schema": 1,
+      "min_host_version": "1.0.0"
+    },
+    {
+      "name": "ModynToolbox-tool-json-1.0.2-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 12355322,
+      "sha256": "49828336ba21d958ed49c61dc9b1b1a2941bcc38c1fcfd945607b99218972bb9",
+      "tool_id": "json",
+      "version": "1.0.2",
+      "protocol": 1,
+      "ui_schema": 1,
+      "min_host_version": "1.0.0"
+    },
+    {
+      "name": "ModynToolbox-tool-rename-1.0.1-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 12359651,
+      "sha256": "bbd1425988e472081bce0bee4e3f8b848382ab1873e796a7ac26dec98ef2ac71",
+      "tool_id": "rename",
+      "version": "1.0.1",
+      "protocol": 1,
+      "ui_schema": 1,
+      "min_host_version": "1.0.0"
+    },
+    {
+      "name": "ModynToolbox-1.0.2-source.zip",
+      "kind": "source",
+      "bytes": 4201229,
+      "sha256": "cc337d5b1b6a9237c7f1c48df0706f15aa6706ba92e4b827344633760a6716f4"
+    }
+  ]
+}
