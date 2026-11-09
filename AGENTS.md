@@ -57,3 +57,5 @@
 ## 产品与界面约定
 
 产品名称为 ModynToolbox，默认浅色雾紫主题。主题集中 app/ui/theme，公共控件集中 app/ui/components，主窗与浮窗复用 app/ui/window/ChromeWindow。Windows 外框代码集中 app/platform/windows，业务工具不处理窗口消息。新工具先使用自己 integration/ui.json 的版本化控件描述，宿主不按 tool_id 分支绘制业务页面。v1 规范已用于四个真实工具，新增工具优先使用已有公共组件。扩展公共组件时同步校验、渲染、Schema 和回归。
+
+用户明确说“优化修改”的本项目小型需求，直接按范围完成实现与验证，不停留在方案说明。只有明确要求先分析/先给方案时交付对应阶段，并清楚说明实现状态。

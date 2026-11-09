@@ -15,12 +15,15 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QTimer>
+#include <QTreeWidget>
+#include <QContextMenuEvent>
 #include <QTableWidget>
 #include <QSplitter>
 #include <QLabel>
 #include "ui/theme/theme.h"
 #include <QClipboard>
 #include <QApplication>
+#include <QFontDatabase>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -45,6 +48,11 @@ class SystemTests : public QObject {
         QCOMPARE(f.write(value), value.size());
     }
   private slots:
+    void initTestCase() {
+        const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";
+        QVERIFY(QFontDatabase::addApplicationFont(fonts + "segoeui.ttf") >= 0);
+        QVERIFY(QFontDatabase::addApplicationFont(fonts + "msyh.ttc") >= 0);
+    }
     void sqliteStateAndConsistentSnapshot() {
         QTemporaryDir root;
         const auto data = root.path() + "/data";
@@ -147,8 +155,25 @@ class SystemTests : public QObject {
             QTRY_COMPARE_WITH_TIMEOUT(finished.size(), 1, 30000);
             QCOMPARE(finished.first().at(4).toString(), QString("succeeded"));
             QVERIFY(window.panel(id)->resultText().contains("123456789012345678901234567890"));
+            const auto screenshot = qEnvironmentVariable("MODYN_UI_R3_SCREENSHOTS");
+            if (!screenshot.isEmpty()) {
+                QTest::qWait(30);
+                QVERIFY(
+                    window.sessionView(id)->window()->grab().save(screenshot + "-floating.png"));
+            }
             window.attachSession(id);
             const int other = window.open("json", true);
+            if (!screenshot.isEmpty()) {
+                auto *tree = window.findChild<QTreeWidget *>("toolNavigation");
+                QTest::mouseClick(tree->viewport(), Qt::LeftButton, Qt::NoModifier,
+                                  tree->visualItemRect(tree->topLevelItem(0)->child(0)).center());
+                QTest::qWait(30);
+                QVERIFY(window.grab().save(screenshot + "-main.png"));
+                window.resize(760, 480);
+                QTest::qWait(30);
+                QVERIFY(window.grab().save(screenshot + "-compact.png"));
+                window.resize(1200, 780);
+            }
             window.pairSession(id);
             QCOMPARE(window.sessionCount(), 2);
             QVERIFY(!window.removePackage("json", readCatalog(packages).tools.first().version)
@@ -234,23 +259,39 @@ class SystemTests : public QObject {
                 window.savedState().value("preferences").toObject().value("batch_limit").toInt(),
                 2);
             const int id = window.open("json");
-            auto *session = window.sessionView(id)->findChild<QPushButton *>("sessionMenu");
-            QVERIFY(session);
-            QTimer::singleShot(0, &window, [] {
-                if (auto *dialog =
-                        qobject_cast<QInputDialog *>(QApplication::activeModalWidget())) {
-                    dialog->setTextValue(QStringLiteral("工作副本 A"));
-                    dialog->accept();
-                }
+            auto *tree = window.findChild<QTreeWidget *>("toolNavigation");
+            QTimer::singleShot(0, &window, [&window] {
+                auto *menu = window.findChild<QMenu *>("sessionMenu");
+                if (!menu)
+                    return;
+                QTimer::singleShot(0, &window, [] {
+                    if (auto *dialog =
+                            qobject_cast<QInputDialog *>(QApplication::activeModalWidget())) {
+                        dialog->setTextValue(QStringLiteral("工作副本 A"));
+                        dialog->accept();
+                    }
+                });
+                for (auto *action : menu->actions())
+                    if (action->text() == QStringLiteral("重命名会话")) {
+                        action->trigger();
+                        break;
+                    }
+                menu->close();
             });
-            for (auto *action : session->menu()->actions())
-                if (action->text() == QStringLiteral("重命名会话")) {
-                    action->trigger();
-                    break;
-                }
-            QVERIFY(window.sessionView(id)->findChild<QLabel *>("heading")->text().contains(
-                QStringLiteral("工作副本 A")));
+            const auto point = tree->visualItemRect(tree->currentItem()).center();
+            QContextMenuEvent context(QContextMenuEvent::Mouse, point,
+                                      tree->viewport()->mapToGlobal(point));
+            QApplication::sendEvent(tree->viewport(), &context);
+            QVERIFY(window.savedState()
+                        .value("sessions")
+                        .toArray()
+                        .first()
+                        .toObject()
+                        .value("title")
+                        .toString()
+                        .contains(QStringLiteral("工作副本 A")));
             window.addSession();
+            tree->topLevelItem(0)->setExpanded(false);
             window.findChild<QSplitter *>("navigationSplitter")->setSizes({240, 960});
             QVERIFY(window.saveState());
         }
@@ -260,6 +301,8 @@ class SystemTests : public QObject {
             QTest::qWait(20);
             const auto state = window.savedState();
             QCOMPARE(window.sessionCount(), 2);
+            QVERIFY(
+                !window.findChild<QTreeWidget *>("toolNavigation")->topLevelItem(0)->isExpanded());
             QCOMPARE(state.value("preferences").toObject().value("font_size").toInt(), 13);
             bool title = false, draft = false;
             for (const auto &value : state.value("sessions").toArray()) {

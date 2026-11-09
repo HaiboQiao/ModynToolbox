@@ -20,12 +20,14 @@ add_library(modyn_shell
   app/ui/components/combo_box.cpp
   app/ui/components/tool_view.cpp
   app/ui/components/tool_panel.cpp app/ui/components/tool_panel.h
+  app/ui/components/tool_navigation.cpp app/ui/components/tool_navigation.h
   app/ui/view_spec.cpp
   app/ui/window/chrome_window.cpp app/ui/window/chrome_window.h
   app/catalog/package_catalog.cpp
   app/platform/windows/window_chrome.cpp)
 target_link_libraries(modyn_shell PUBLIC Qt6::Widgets Qt6::Sql Qt6::Concurrent)
 target_include_directories(modyn_shell PUBLIC app)
+target_compile_definitions(modyn_shell PRIVATE MODYN_VERSION="${PROJECT_VERSION}")
 add_executable(ModynToolboxApp WIN32 app/main.cpp app/automation.cpp)
 target_link_libraries(ModynToolboxApp PRIVATE modyn_shell)
 set_target_properties(ModynToolboxApp PROPERTIES OUTPUT_NAME ModynToolbox.App)

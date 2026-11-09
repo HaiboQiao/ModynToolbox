@@ -59,14 +59,14 @@ test 实际收集 11 组 CTest，含 workbench、worker_transport、package_cata
 独立扩展与发布验证入口如下。
 
 ```powershell
-python tools/file-hash/tests/verify_integration.py
+python tools/file-hash/tests/verify_integration.py --record .local/integration-proof/UI-R3-host.json
 python tools/file-hash/tests/verify_manual_removal.py
 python scripts/verify-environments.py
 python scripts/verify-portable.py
 python scripts/measure-resources.py
 ```
 
-扩展测试需要已存在的冻结记录，参见 R2-complete.md 中的执行顺序。measure-resources 使用 Windows 进程计数与 Qt offscreen，数据用于本机比较。物理窗口交互、不同 DPI 和干净机器另做人工验收。原始日志放 .local/logs，摘要与截图保存在 docs/verification。
+扩展测试需要已存在的冻结记录。当前 UI-R3 基线见 verification/UI-R3-navigation.md，首次完整实验见 R2-complete.md。新实验使用新的记录名，freeze 后通过 --record 传给验证脚本，保留旧证据。measure-resources 使用 Windows 进程计数与 Qt offscreen，数据用于本机比较。物理窗口交互、不同 DPI 和干净机器另做人工验收。原始日志放 .local/logs，摘要与截图保存在 docs/verification。
 
 ## 迁移到另一台电脑
 

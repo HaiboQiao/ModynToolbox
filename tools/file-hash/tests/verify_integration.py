@@ -1,5 +1,6 @@
 """Install/run/remove/reinstall an extension using the already frozen host."""
 from pathlib import Path
+import argparse
 import datetime
 import hashlib
 import json
@@ -9,6 +10,9 @@ import time
 import uuid
 ROOT=Path(__file__).resolve().parents[3]
 PROOF=ROOT/".local/integration-proof"
+parser=argparse.ArgumentParser()
+parser.add_argument("--record",type=Path,default=PROOF/"release-host-final2.json")
+args=parser.parse_args()
 base=PROOF/("run-"+str(uuid.uuid4())[:8]);base.mkdir(parents=True)
 package=Path(json.loads((ROOT/".local/tools/file-hash/latest.json").read_text(encoding="utf-8"))["package"])
 version=json.loads((package/"manifest.json").read_text(encoding="utf-8"))["package_version"]
@@ -50,4 +54,4 @@ install_ms=[step["elapsed_ms"] for step in result["steps"] if step["operation"]=
 output={"success":True,"steps":len(steps),"seconds":round(time.perf_counter()-started,3),"first_install_ms":install_ms[0],"reinstall_ms":install_ms[1],"independent_standalone":True,"package":str(package),"data_preserved":sentinel.exists(),"report":str(report),"at":datetime.datetime.now(datetime.timezone.utc).isoformat()}
 (PROOF/"integration-result.json").write_text(json.dumps(output,indent=2),encoding="utf-8")
 print(json.dumps(output))
-subprocess.run([os.sys.executable,str(ROOT/"scripts/freeze-host.py"),"check","--record",str(PROOF/"release-host-final2.json")],cwd=ROOT,check=True)
+subprocess.run([os.sys.executable,str(ROOT/"scripts/freeze-host.py"),"check","--record",str(args.record.resolve())],cwd=ROOT,check=True)

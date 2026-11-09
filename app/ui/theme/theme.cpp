@@ -25,10 +25,10 @@ void Theme::apply() {
         QLabel#appTitle { font-size:14px; font-weight:600; }
         QLabel#caption, QLabel#description, QLabel#secondary, QLabel#catalogStatus { color:@muted; font-size:12px; }
         QWidget#sidebar { background:@navigation; border-right:1px solid @border; }
-        QListWidget#toolNavigation { background:transparent; border:0; outline:0; }
-        QListWidget#toolNavigation::item { min-height:24px; padding:10px 8px; margin:2px 0; border-radius:8px; }
-        QListWidget#toolNavigation::item:hover { background:#eae5f6; }
-        QListWidget#toolNavigation::item:selected { background:@selection; color:#5438b6; }
+        QTreeWidget#toolNavigation { background:transparent; border:0; outline:0; }
+        QTreeWidget#toolNavigation::item { min-height:24px; padding:7px 3px; border-radius:0; border:0; }
+        QTreeWidget#toolNavigation::item:hover { background:#eae5f6; }
+        QTreeWidget#toolNavigation::item:selected { background:@selection; color:#5438b6; }
         QLabel#heading { font-size:23px; font-weight:600; }
         QWidget#toolPanel { background:@panel; border:1px solid @border; border-radius:12px; }
         QLineEdit,QPlainTextEdit,QComboBox,QSpinBox { background:@panel; border:1px solid @border; border-radius:7px; padding:8px; selection-background-color:@accent; }

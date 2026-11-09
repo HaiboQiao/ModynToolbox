@@ -13,7 +13,9 @@ inline constexpr int sidebarWidth = 190;
 inline constexpr int pageInset = 24;
 inline constexpr int panelInset = 20;
 inline constexpr int gap = 12;
-inline constexpr int titleBarHeight = 54;
+inline constexpr int titleBarHeight = 62;
+inline constexpr int navigationIndent = 16;
+inline constexpr int navigationActionWidth = 28;
 void apply();
 void setPreferences(int fontSize, bool compact);
 } // namespace Theme

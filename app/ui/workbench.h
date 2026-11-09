@@ -5,7 +5,8 @@
 #include <QSet>
 #include <QJsonObject>
 #include <memory>
-class QListWidget;
+class ToolNavigation;
+class QMenu;
 class QStackedWidget;
 class QPlainTextEdit;
 class QComboBox;
@@ -65,7 +66,9 @@ class Workbench : public ChromeWindow {
     };
     void openTool(const QString &toolId);
     void activateSession(int id);
-    void updateSelector(int activeId);
+    void syncNavigation(int selected);
+    QMenu *sessionMenu(int id);
+    void showNavigationMenu(const QString &tool, int id, const QPoint &position);
     void ensureView(int id);
     void parkUnused();
     void initializeServices();
@@ -84,12 +87,12 @@ class Workbench : public ChromeWindow {
     QMap<int, Session> sessions;
     QMap<QString, int> recentSessions;
     QMap<QString, qint64> persistedAt;
-    QListWidget *navigation = nullptr;
+    ToolNavigation *navigation = nullptr;
     QStackedWidget *workspace = nullptr, *secondary = nullptr;
-    QComboBox *selector = nullptr, *categories = nullptr;
+    QComboBox *categories = nullptr;
     QSplitter *splitter = nullptr, *navigationSplit = nullptr;
     QPushButton *activity = nullptr;
-    QJsonObject preferences;
+    QJsonObject preferences, navigationExpansion;
     QSet<int> pendingSessionClose;
     int unreadErrors = 0, navigationWidth = 190;
     qint64 historyReviewedAt = 0;

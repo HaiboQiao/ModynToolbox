@@ -6,7 +6,7 @@ Windows x64 本地工具箱。C++20 / Qt Widgets 宿主管理统一界面、会�
 
 双击项目根的 Open-ModynToolbox.cmd，打开最近构建的完整便携版。便携目录也可直接双击 ModynToolbox.exe。发布目录索引在 .local/releases/latest.json。
 
-使用方法见 docs/user-guide.md。开发和验证结果见 docs/STATUS.md、docs/verification/R2-complete.md。
+使用方法见 docs/user-guide.md。开发和验证结果见 docs/STATUS.md、docs/verification/UI-R3-navigation.md。完整业务交付记录见 docs/verification/R2-complete.md。
 
 ## 目录
 

@@ -6,7 +6,7 @@
 
 ```powershell
 python tools/file-hash/build.py
-python tools/file-hash/tests/verify_integration.py
+python tools/file-hash/tests/verify_integration.py --record .local/integration-proof/UI-R3-host.json
 python tools/file-hash/tests/verify_manual_removal.py
 ```
 

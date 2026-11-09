@@ -33,3 +33,7 @@
 ## 后续用户验收
 
 按 checklist 和 R2 报告检查物理窗口与目标电脑行为。发现问题在当前项目继续修复。首版新增业务工具遵循 v1 接入规范，新的公共 UI 能力单独扩展宿主。
+
+## UI-R3 当前增量
+
+已完成。新增 ToolNavigation，调整 Workbench/ChromeWindow/Theme，加号、分支、拖出/取消/收回、展开恢复与纯工具工作区回归通过。windows-complete（用户 run 默认入口）和 Release 均 11/11 通过，便携包已更新。证据见 verification/UI-R3-navigation.md，物理跨屏拖动继续待设备验收。

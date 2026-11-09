@@ -1,0 +1,10 @@
+{
+  "release": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\releases\\ModynToolbox-1.0.0-f2b221c8",
+  "app_sha256": "6936d2f485a80b5b5c582685e646da23318845e2badabb9d8ca9b8b870bf93ea",
+  "indexed_files": 309,
+  "checksums_valid": true,
+  "initial_data_empty": true,
+  "default_run_binary": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\build\\windows-complete\\bin\\Debug\\ModynToolbox.App.exe",
+  "screenshots": true,
+  "screenshot_report": "D:\\Workspace\\01_Projects\\ModynToolbox\\.local\\ui-r3\\94f83da3\\report.json"
+}

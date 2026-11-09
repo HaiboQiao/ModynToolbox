@@ -1,6 +1,7 @@
 #include "workbench.h"
 #include "components/icons.h"
 #include "components/tool_panel.h"
+#include "components/tool_navigation.h"
 #include "catalog/package_manager.h"
 #include "jobs/scheduler.h"
 #include "storage/state_repository.h"
@@ -38,6 +39,7 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QShortcut>
 #include <QSignalBlocker>
 #include <QStackedWidget>
@@ -108,9 +110,9 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     auto *section = new QLabel(QStringLiteral("工具"));
     section->setObjectName("secondary");
     sideLayout->addWidget(section);
-    navigation = new QListWidget;
+    navigation = new ToolNavigation;
     navigation->setObjectName("toolNavigation");
-    navigation->setAccessibleName(QStringLiteral("工具列表"));
+    navigation->setAccessibleName(QStringLiteral("工具和会话"));
     navigation->setIconSize(QSize(18, 18));
     navigation->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     sideLayout->addWidget(navigation, 1);
@@ -144,18 +146,6 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     contentLayout->setContentsMargins(Theme::pageInset, Theme::pageInset, Theme::pageInset,
                                       Theme::pageInset);
     contentLayout->setSpacing(Theme::gap);
-    selector = new UiComboBox;
-    selector->setObjectName("sessionSelector");
-    selector->setAccessibleName(QStringLiteral("当前工具会话"));
-    selector->hide();
-    auto *workspaceHeading = new QLabel(QStringLiteral("并排工作区"));
-    workspaceHeading->setObjectName("pairedHeading");
-    workspaceHeading->hide();
-    auto *workspaceToolbar = new QHBoxLayout;
-    workspaceToolbar->addWidget(workspaceHeading);
-    workspaceToolbar->addStretch();
-    workspaceToolbar->addWidget(selector);
-    contentLayout->addLayout(workspaceToolbar);
     workspace = new QStackedWidget;
     workspace->setObjectName("primaryWorkspace");
     splitter = new QSplitter;
@@ -192,17 +182,56 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     layout->addWidget(navigationSplit);
     connect(navigationSplit, &QSplitter::splitterMoved, this, [this] { updatePairVisibility(); });
     setContentWidget(root);
-    connect(navigation, &QListWidget::currentRowChanged, this, [this](int row) {
-        if (auto *item = navigation->item(row))
-            openTool(item->data(Qt::UserRole).toString());
+    connect(navigation, &ToolNavigation::openRequested, this, [this](const QString &tool, int id) {
+        if (sessions.contains(id))
+            activateSession(id);
+        else
+            openTool(tool);
+    });
+    connect(navigation, &ToolNavigation::createRequested, this, [this](const QString &tool) {
+        navigationExpansion[tool] = true;
+        open(tool, true);
+    });
+    connect(navigation, &ToolNavigation::detachRequested, this,
+            [this](const QString &, int id, const QPoint &position) {
+                if (!sessions.contains(id))
+                    return;
+                if (isDetached(id))
+                    activateSession(id);
+                else
+                    detachSession(id);
+                auto *window = sessions[id].floating;
+                if (!window)
+                    return;
+                auto *target = QGuiApplication::screenAt(position);
+                const auto bounds = (target ? target : screen())->availableGeometry();
+                window->move(qBound(bounds.left(), position.x() - 32,
+                                    qMax(bounds.left(), bounds.right() - window->width() + 1)),
+                             qBound(bounds.top(), position.y() - 20,
+                                    qMax(bounds.top(), bounds.bottom() - window->height() + 1)));
+            });
+    connect(navigation, &ToolNavigation::menuRequested, this, &Workbench::showNavigationMenu);
+    connect(navigation, &QTreeWidget::itemExpanded, this, [this](QTreeWidgetItem *item) {
+        if (!item->parent()) {
+            navigationExpansion[item->data(0, ToolNavigation::ToolRole).toString()] = true;
+            const QSignalBlocker blocker(navigation);
+            for (int row = 0; row < item->childCount(); ++row)
+                if (item->child(row)->data(0, ToolNavigation::SessionRole).toInt() == activeId)
+                    navigation->setCurrentItem(item->child(row));
+        }
+    });
+    connect(navigation, &QTreeWidget::itemCollapsed, this, [this](QTreeWidgetItem *item) {
+        if (!item->parent()) {
+            navigationExpansion[item->data(0, ToolNavigation::ToolRole).toString()] = false;
+            if (navigation->currentItem() && navigation->currentItem()->parent() == item) {
+                const QSignalBlocker blocker(navigation);
+                navigation->setCurrentItem(item);
+            }
+        }
     });
     connect(search, &QLineEdit::textChanged, this, [this] { filterNavigation(); });
     connect(categories, &QComboBox::currentIndexChanged, this, [this] { filterNavigation(); });
     rebuildNavigation();
-    connect(selector, &QComboBox::currentIndexChanged, this, [this](int index) {
-        if (index >= 0)
-            activateSession(selector->itemData(index).toInt());
-    });
     auto *find = new QShortcut(QKeySequence(QStringLiteral("Ctrl+K")), this);
     connect(find, &QShortcut::activated, search, [search] {
         search->setFocus();
@@ -220,7 +249,7 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
         activateSession(attached.at((current + 1) % attached.size()));
     });
     if (!definitions.isEmpty())
-        navigation->setCurrentRow(0);
+        openTool(definitions.first().id);
     else {
         auto *empty = new QLabel(QStringLiteral("工具目录为空\n通过管理菜单安装兼容工具包。"));
         empty->setAlignment(Qt::AlignCenter);
@@ -273,16 +302,6 @@ void Workbench::openTool(const QString &toolId) {
     else
         addSession();
 }
-void Workbench::updateSelector(int selected) {
-    const QSignalBlocker blocker(selector);
-    selector->clear();
-    for (auto it = sessions.cbegin(); it != sessions.cend(); ++it)
-        if (it->toolId == currentTool)
-            selector->addItem(
-                it->title + (it->floating ? QStringLiteral(" · 独立窗口") : QString()), it.key());
-    selector->setCurrentIndex(selector->findData(selected));
-    selector->setVisible(selector->count() > 1);
-}
 void Workbench::activateSession(int id) {
     auto it = sessions.find(id);
     if (it == sessions.end())
@@ -290,12 +309,8 @@ void Workbench::activateSession(int id) {
     activeId = id;
     currentTool = it->toolId;
     recentSessions[currentTool] = id;
-    const QSignalBlocker blocker(navigation);
-    for (int row = 0; row < navigation->count(); ++row)
-        if (navigation->item(row)->data(Qt::UserRole).toString() == currentTool)
-            navigation->setCurrentRow(row);
     ensureView(id);
-    updateSelector(id);
+    syncNavigation(id);
     if (pairedId == id)
         pairedId = 0;
     if (it->floating) {
@@ -319,16 +334,6 @@ void Workbench::activateSession(int id) {
         workspace->setCurrentWidget(it->view);
     }
     updatePairVisibility();
-    for (auto entry = sessions.begin(); entry != sessions.end(); ++entry)
-        if (entry->view) {
-            auto *heading = entry->view->findChild<QLabel *>("heading");
-            if (heading)
-                heading->setText(
-                    entry->customTitle ||
-                            (pairedId > 0 && (entry.key() == activeId || entry.key() == pairedId))
-                        ? QStringLiteral("%1 · %2").arg(entry->tool.name).arg(entry->title)
-                        : entry->tool.name);
-        }
     if (pairedId > 0 && pairedId != id && !isDetached(pairedId)) {
         ensureView(pairedId);
         auto *other = sessions[pairedId].view;
@@ -365,40 +370,21 @@ int Workbench::addSession() {
     activateSession(id);
     return id;
 }
-void Workbench::ensureView(int id) {
-    auto it = sessions.find(id);
-    if (it == sessions.end() || it->view)
-        return;
-    auto *view = new QWidget;
-    auto *layout = new QVBoxLayout(view);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(12);
-    auto *header = new QHBoxLayout;
-    auto *titles = new QVBoxLayout;
-    auto *heading =
-        new QLabel(it->customTitle || (pairedId > 0 && (id == activeId || id == pairedId))
-                       ? QStringLiteral("%1 · %2").arg(it->tool.name).arg(it->title)
-                       : it->tool.name);
-    heading->setObjectName("heading");
-    heading->setTextFormat(Qt::PlainText);
-    heading->setWordWrap(true);
-    heading->setMinimumWidth(0);
-    heading->setMaximumHeight(68);
-    heading->setToolTip(it->tool.name);
-    titles->addWidget(heading);
-    auto *description = new QLabel(it->tool.description);
-    description->setObjectName("description");
-    description->setTextFormat(Qt::PlainText);
-    description->setWordWrap(true);
-    description->setMaximumHeight(48);
-    description->setToolTip(it->tool.description);
-    titles->addWidget(description);
-    header->addLayout(titles, 1);
-    auto *menuButton = new QPushButton(QStringLiteral("会话"));
-    menuButton->setObjectName("sessionMenu");
-    auto *menu = new QMenu(menuButton);
+QMenu *Workbench::sessionMenu(int id) {
+    auto *menu = new QMenu(this);
+    menu->setObjectName("sessionMenu");
+    menu->addAction(isDetached(id) ? QStringLiteral("收回主窗口") : QStringLiteral("独立窗口打开"),
+                    this, [this, id] {
+                        if (isDetached(id))
+                            attachSession(id);
+                        else
+                            detachSession(id);
+                    });
     menu->addAction(QStringLiteral("新建会话"), this, [this, id] {
+        if (!sessions.contains(id))
+            return;
         currentTool = sessions[id].toolId;
+        navigationExpansion[currentTool] = true;
         addSession();
     });
     menu->addAction(QStringLiteral("重命名会话"), this, [this, id] { renameSession(id); });
@@ -422,16 +408,30 @@ void Workbench::ensureView(int id) {
     });
     auto *draft = menu->addAction(QStringLiteral("保存本会话输入草稿"));
     draft->setCheckable(true);
-    draft->setChecked(it->draft);
+    draft->setChecked(sessions.value(id).draft);
     connect(draft, &QAction::toggled, this, [this, id](bool enabled) { setDraft(id, enabled); });
     menu->addAction(QStringLiteral("关闭会话"), this, [this, id] { closeSession(id); });
-    menuButton->setMenu(menu);
-    header->addWidget(menuButton, 0, Qt::AlignTop);
-    auto *detach =
-        new QPushButton(uiIcon(UiIcon::External, Theme::muted), QStringLiteral("独立窗口"));
-    detach->setObjectName("locationAction");
-    header->addWidget(detach, 0, Qt::AlignTop);
-    layout->addLayout(header);
+    return menu;
+}
+void Workbench::showNavigationMenu(const QString &tool, int id, const QPoint &position) {
+    QMenu *menu;
+    if (sessions.contains(id))
+        menu = sessionMenu(id);
+    else {
+        menu = new QMenu(this);
+        menu->addAction(QStringLiteral("新建会话"), this, [this, tool] { open(tool, true); });
+    }
+    menu->exec(position);
+    menu->deleteLater();
+}
+void Workbench::ensureView(int id) {
+    auto it = sessions.find(id);
+    if (it == sessions.end() || it->view)
+        return;
+    auto *view = new QWidget;
+    auto *layout = new QVBoxLayout(view);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(12);
     auto spec = loadViewSpec(it->tool.packageRoot, !it->tool.viewFile.isEmpty());
     if (it->missing)
         spec.error =
@@ -445,12 +445,6 @@ void Workbench::ensureView(int id) {
     workspace->addWidget(view);
     if (!it->missing && !it->parked.isEmpty())
         it->preserveSnapshot = !body->restore(it->parked);
-    connect(detach, &QPushButton::clicked, this, [this, id] {
-        if (isDetached(id))
-            attachSession(id);
-        else
-            detachSession(id);
-    });
     connect(body, &ToolPanel::changed, this, [this, id] {
         if (!sessions.contains(id))
             return;
@@ -537,7 +531,6 @@ void Workbench::detachSession(int id) {
     it->floating = window;
     if (!it->geometry.isEmpty())
         window->restoreGeometry(it->geometry);
-    it->view->findChild<QPushButton *>("locationAction")->setText(QStringLiteral("收回主窗口"));
     it->view->show();
     window->show();
     activateSession(id);
@@ -549,7 +542,6 @@ void Workbench::attachSession(int id) {
     auto *window = it->floating;
     it->geometry = window->saveGeometry();
     it->view->setParent(nullptr);
-    it->view->findChild<QPushButton *>("locationAction")->setText(QStringLiteral("独立窗口"));
     it->floating = nullptr;
     workspace->addWidget(it->view);
     window->hide();
@@ -660,7 +652,7 @@ void Workbench::closeSession(int id, bool confirmed) {
             workspace->setCurrentWidget(floatingNotice);
         }
     }
-    updateSelector(activeId);
+    syncNavigation(activeId);
     if (!restoring)
         saveState();
 }
@@ -766,6 +758,7 @@ void Workbench::initializeServices() {
             ++unreadErrors;
     }
     updateActivity();
+    navigationExpansion = state.value("navigation_expansion").toObject();
     preferences = state.value("preferences").toObject();
     navigationWidth = qBound(170, state.value("navigation_width").toInt(190), 280);
     applyPreferences();
@@ -831,6 +824,7 @@ void Workbench::initializeServices() {
             activateSession(restoredActive ? restoredActive : sessions.firstKey());
         }
     }
+    syncNavigation(activeId);
     auto *timer = new QTimer(this);
     timer->setInterval(10000);
     connect(timer, &QTimer::timeout, this, [this] { saveState(); });
@@ -863,7 +857,8 @@ QJsonObject Workbench::savedState() const {
              QString::fromLatin1(
                  (it->floating ? it->floating->saveGeometry() : it->geometry).toBase64())}});
     }
-    return {{"history_reviewed_at", historyReviewedAt},
+    return {{"navigation_expansion", navigationExpansion},
+            {"history_reviewed_at", historyReviewedAt},
             {"preferences", preferences},
             {"navigation_width", navigationSplit ? navigationSplit->sizes().value(0, 190) : 190},
             {"sessions", records},
@@ -1142,41 +1137,108 @@ void Workbench::resizeEvent(QResizeEvent *event) {
     updatePairVisibility();
 }
 void Workbench::rebuildNavigation() {
-    const QSignalBlocker navigationBlocker(navigation), categoryBlocker(categories);
+    const QSignalBlocker blocker(categories);
     const auto selected = categories->currentData().toString();
-    navigation->clear();
     categories->clear();
     categories->addItem(QStringLiteral("全部分类"), QString());
     QSet<QString> names;
-    for (const auto &tool : definitions) {
-        auto *item = new QListWidgetItem(uiIcon(navigationIcon(tool.icon), Theme::accent),
-                                         tool.name, navigation);
-        item->setData(Qt::UserRole, tool.id);
-        item->setData(Qt::UserRole + 1,
-                      tool.description + " " + tool.category + " " + tool.keywords.join(' '));
-        item->setData(Qt::UserRole + 2, tool.category);
-        item->setToolTip(tool.name + "\n" + tool.description);
+    for (const auto &tool : definitions)
         names.insert(tool.category);
-    }
     auto sorted = names.values();
     std::sort(sorted.begin(), sorted.end());
     for (const auto &name : sorted)
         categories->addItem(name, name);
     categories->setCurrentIndex(qMax(0, categories->findData(selected)));
     categories->setVisible(definitions.size() > 8 && names.size() > 1);
-    navigation->setCurrentRow(-1);
+    syncNavigation(activeId);
+}
+void Workbench::syncNavigation(int selected) {
+    const QSignalBlocker blocker(navigation);
+    const int scroll = navigation->verticalScrollBar()->value();
+    navigation->clear();
+    auto tools = definitions;
+    QSet<QString> known;
+    for (const auto &tool : tools)
+        known.insert(tool.id);
+    for (const auto &session : sessions)
+        if (!known.contains(session.toolId)) {
+            tools.append(session.tool);
+            known.insert(session.toolId);
+        }
+    QTreeWidgetItem *selection = nullptr;
+    for (const auto &tool : tools) {
+        auto *item = new QTreeWidgetItem(navigation);
+        item->setText(0, tool.name);
+        item->setIcon(0, uiIcon(navigationIcon(tool.icon), Theme::accent));
+        item->setData(0, ToolNavigation::ToolRole, tool.id);
+        item->setData(0, ToolNavigation::SearchRole,
+                      tool.description + " " + tool.category + " " + tool.keywords.join(' '));
+        item->setData(0, ToolNavigation::CategoryRole, tool.category);
+        const int recent = recentSessions.value(tool.id);
+        item->setData(0, ToolNavigation::SessionRole, recent);
+        item->setData(0, ToolNavigation::DragLabelRole,
+                      tool.name + " · " + sessions.value(recent).title);
+        const bool available = std::any_of(definitions.cbegin(), definitions.cend(),
+                                           [&](const auto &entry) { return entry.id == tool.id; });
+        if (available) {
+            item->setText(1, "+");
+            item->setTextAlignment(1, Qt::AlignCenter);
+            item->setData(1, Qt::AccessibleTextRole, QStringLiteral("新建 %1 会话").arg(tool.name));
+            item->setToolTip(1, QStringLiteral("新建会话 · Ctrl+N"));
+        }
+        item->setToolTip(0, tool.name + "\n" + tool.description +
+                                QStringLiteral("\n按住名称拖出主窗口，可独立打开；右键管理会话"));
+        QList<int> ids;
+        for (auto it = sessions.cbegin(); it != sessions.cend(); ++it)
+            if (it->toolId == tool.id)
+                ids.append(it.key());
+        if (ids.size() > 1) {
+            for (int id : ids) {
+                const auto &session = sessions[id];
+                auto *child = new QTreeWidgetItem(item);
+                const auto name = !session.customTitle && session.title == QStringLiteral("会话 1")
+                                      ? QStringLiteral("默认会话")
+                                      : session.title;
+                child->setText(0, name + (session.floating ? QStringLiteral(" ↗") : QString()) +
+                                      (session.missing ? QStringLiteral(" · 缺包") : QString()));
+                child->setData(0, ToolNavigation::ToolRole, tool.id);
+                child->setData(0, ToolNavigation::SessionRole, id);
+                child->setData(0, ToolNavigation::DragLabelRole, tool.name + " · " + session.title);
+                child->setToolTip(0, tool.name + " · " + session.title +
+                                         (session.floating
+                                              ? QStringLiteral("\n独立窗口中，点击唤起")
+                                              : QStringLiteral("\n按住拖出主窗口；右键管理会话")));
+                if (id == selected)
+                    selection = child;
+            }
+            item->setExpanded(navigationExpansion.value(tool.id).toBool(true));
+        } else if (ids.size() == 1) {
+            const auto &session = sessions[ids.first()];
+            if (session.floating)
+                item->setText(0, tool.name + QStringLiteral(" ↗"));
+            if (session.missing)
+                item->setText(0, tool.name + QStringLiteral(" · 缺包"));
+            if (ids.first() == selected)
+                selection = item;
+        }
+    }
+    if (selection && selection->parent() && !selection->parent()->isExpanded())
+        selection = selection->parent();
+    navigation->setCurrentItem(selection);
     filterNavigation();
+    navigation->verticalScrollBar()->setValue(scroll);
 }
 void Workbench::filterNavigation() {
     const auto query = findChild<QLineEdit *>("toolSearch")->text().trimmed();
     const auto category =
         categories->isVisible() ? categories->currentData().toString() : QString();
     int matches = 0;
-    for (int row = 0; row < navigation->count(); ++row) {
-        auto *item = navigation->item(row);
+    for (int row = 0; row < navigation->topLevelItemCount(); ++row) {
+        auto *item = navigation->topLevelItem(row);
         const bool visible =
-            (category.isEmpty() || item->data(Qt::UserRole + 2).toString() == category) &&
-            (item->text() + " " + item->data(Qt::UserRole + 1).toString())
+            (category.isEmpty() ||
+             item->data(0, ToolNavigation::CategoryRole).toString() == category) &&
+            (item->text(0) + " " + item->data(0, ToolNavigation::SearchRole).toString())
                 .contains(query, Qt::CaseInsensitive);
         item->setHidden(!visible);
         if (visible)
@@ -1191,8 +1253,6 @@ void Workbench::updatePairVisibility() {
     const int sidebar = navigationSplit->sizes().value(0, Theme::sidebarWidth);
     const bool visible = pairedId > 0 && width() - sidebar - 2 * Theme::pageInset >= 840;
     secondary->setVisible(visible);
-    if (auto *heading = findChild<QLabel *>("pairedHeading"))
-        heading->setVisible(visible);
 }
 void Workbench::renameSession(int id) {
     if (!sessions.contains(id))
