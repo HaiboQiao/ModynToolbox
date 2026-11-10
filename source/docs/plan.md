@@ -488,3 +488,7 @@ Git 根保留路由 README/AGENTS，完整工程进入 source，releases 保存�
 ## UI-R4 局部实施
 
 复用 ChromeWindow 和现有浅紫 Theme。两行品牌布局采用 AlignVCenter，行间距来自 Theme::titleBrandSpacing，避免标签分摊标题栏剩余高度。主窗与独立窗共享此布局。沿用既有字体和标题栏高度。通过 workbench 的布局几何断言及离屏截图检查默认/最小窗口，主窗/浮窗与字体偏好兼容。Logo 候选以原 ICO 语义为参考，用 imagegen 生成三种紫白简化方向，暂存 .local/design/logo-concepts，待用户选择。
+
+## UI-R5
+
+UI-R5 沿用 Qt Widgets，Qt Resource 内嵌 B 图标，Windows RC 提供 exe 图标。UiSpinBox 复用原生输入/步进，仅明确绘制箭头，统一 QSS 控制间距和状态。公共快捷入口复用既有服务。样式契约维护 docs/ui-design-system.md。

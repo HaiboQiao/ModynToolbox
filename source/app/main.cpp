@@ -1,4 +1,5 @@
 #include "ui/workbench.h"
+#include "ui/components/icons.h"
 #include "automation.h"
 #include "storage/data_transfer.h"
 #include <QApplication>
@@ -15,6 +16,7 @@
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
     app.setApplicationName("ModynToolbox");
+    app.setWindowIcon(brandIcon());
     app.setApplicationVersion(QStringLiteral(MODYN_VERSION));
     if (QGuiApplication::platformName() == "offscreen") {
         const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";

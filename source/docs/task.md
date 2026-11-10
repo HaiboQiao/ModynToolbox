@@ -53,3 +53,7 @@
 ## UI-R4 当前增量
 
 品牌间距已实现。调整 chrome_window.cpp 的品牌布局与 theme.h 的间距参数，补充 test_workbench.cpp 的紧凑居中回归。默认 windows-complete 已构建，workbench 16/16 与布局/截图专项 4/4 通过，默认、紧凑与独立窗离屏截图已检查。三个 Logo 候选已生成，应用资源接入等待用户选定。全量回归存在工具包启用与进程树场景失败，详细结果见 verification/UI-R4-brand.md。
+
+## UI-R5
+
+UI-R5 已完成品牌资源、通用样式、UiSpinBox、侧栏入口与开发规范。默认构建成功，最终 Debug 11/11，真实包 13 步通过，视觉与异常处理见 verification/UI-R5-unified-interface.md。后续收藏和预设为文档中的候选设计。

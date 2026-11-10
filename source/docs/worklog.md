@@ -123,3 +123,11 @@ release-policy 新增明确触发、普通本地优化和正式发布的范围�
 默认 build 成功，workbench 16/16。布局/截图专项 4/4，1.422 秒，已查看主窗、紧凑窗、独立窗与标题栏离屏结果。全量 Debug 初轮 10/11，末轮 9/11，工具包启用分支反复在不同用例失败，末轮进程树场景还出现派生标记缺失。旧 Release 对照 full_system 15/15。根因未确认，细节、日志与复现入口见 verification/UI-R4-brand.md，保留整体全量未通过状态。
 
 原 ICO 最大 256px，解码用于观察，原文件保留。用内置 imagegen 输出三个 1254px 紫白候选，位于 .local/design/logo-concepts，完整提示词同目录 prompts.md。当前用户选择待定，正式 Logo 接入为后续步骤。
+
+## 2026-11-11 UI-R5 统一界面与品牌接入
+
+用户选定 B 并授权公共区、按钮/输入、数字步进和独立工具页面统一优化。接入七尺寸 ICO 与 PNG 母版，QRC/Windows RC 内嵌运行所需图标。Theme 统一字号/密度/状态，UiSpinBox 明确绘制上下箭头。侧栏新增工具库数量与 F5 刷新、会话/记录/设置入口，Ctrl+, 设置，复用原有管理与业务逻辑。
+
+设计系统文档 ui-design-system.md 记录功能取舍、未来候选、字体/尺度/色彩/状态和工具页接入规则，AGENTS/README/tool-development/user-guide 同步。默认构建成功，workbench17项通过，最终CTests11/11，39.88秒。完整工具包私有数据根13步，JSON业务与会话操作通过，两个exe图标资源核对。截图位于.local/design/UI-R5-actual.png和布局矩阵。
+
+初轮完整测试11/11后精简QRC嵌入内容，规范测试发生启动访问冲突，初步误判退出阶段，实际旧结果文件未刷新。补齐离屏字体初始化仍复现，清理该测试生成exe/ilk并非增量链接后单项及最终全量通过。具体根因未定，详见verification/UI-R5-unified-interface.md。历史间歇性包启用/派生标记失败本轮未复现，继续保留记录。物理DPI/跨屏/异机按既有验收范围。

@@ -49,3 +49,9 @@ GitHub Release 为 https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2
 原 ICO 最大 256px，生成 A 工具箱模块、B 工具箱与 M、C 模块托盘三个 1254×1254 RGBA 候选，保存在 .local/design/logo-concepts。用户选择后继续制作正式资源。报告见 verification/UI-R4-brand.md。
 
 全量 Debug 首轮 10/11，末轮 9/11。full_system 出现不同用例的工具包启用失败，末轮 host_crash_tree 未观察到派生进程标记。旧 Release 对照 full_system 15/15 通过。原因尚未确认，后续需独立诊断工具包目录启用及启动时序。品牌专项已通过，整体全量回归保持未通过状态。
+
+## UI-R5 当前本地增量
+
+2026-11-11 完成 B Logo 接入、统一控件与数字箭头、工具库数量/刷新和侧栏快捷入口，默认开发构建已更新。设计规范见 ui-design-system.md，新工具通过现有 UI 描述继承共用样式。
+
+最终 Debug CTest 11/11，39.88 秒，workbench 17 项通过。真实工具包 13 步通过，Windows exe 图标资源确认。规范测试启动访问冲突经清理生成链接产物后通过，具体根因未确定；历史 UI-R4 间歇失败本轮未复现，记录保留。报告 verification/UI-R5-unified-interface.md。物理 DPI/跨屏与异机继续待设备验收。

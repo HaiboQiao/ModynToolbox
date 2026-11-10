@@ -3,12 +3,15 @@ project(ModynToolbox VERSION 1.0.2 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 if(MSVC)
   add_compile_options(/utf-8)
 endif()
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Sql Concurrent Test)
 enable_testing()
 add_library(modyn_shell
+  app/resources/assets.qrc
+  app/ui/components/spin_box.cpp
   app/storage/state_repository.cpp app/storage/data_transfer.cpp
   app/core/files.cpp
   app/catalog/package_manager.cpp
@@ -30,6 +33,8 @@ target_include_directories(modyn_shell PUBLIC app)
 target_compile_definitions(modyn_shell PUBLIC MODYN_VERSION="${PROJECT_VERSION}")
 add_executable(ModynToolboxApp WIN32 app/main.cpp app/automation.cpp)
 target_link_libraries(ModynToolboxApp PRIVATE modyn_shell)
+target_sources(ModynToolboxApp PRIVATE app/resources/windows.rc)
+target_include_directories(ModynToolboxApp PRIVATE app/resources)
 set_target_properties(ModynToolboxApp PROPERTIES OUTPUT_NAME ModynToolbox.App)
 add_executable(modyn_shell_tests app/tests/unit/test_workbench.cpp)
 target_link_libraries(modyn_shell_tests PRIVATE modyn_shell Qt6::Test)
@@ -82,7 +87,8 @@ set_target_properties(modyn_job_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMA
 add_test(NAME jobs COMMAND modyn_job_tests -o -,txt -o jobs-results.txt,txt)
 set_tests_properties(jobs PROPERTIES TIMEOUT 120 ENVIRONMENT "MODYN_SOURCE_ROOT=${CMAKE_SOURCE_DIR};TEMP=${CMAKE_BINARY_DIR}/tests/tmp;TMP=${CMAKE_BINARY_DIR}/tests/tmp")
 
-add_executable(ModynLauncher WIN32 app/launcher.cpp)
+add_executable(ModynLauncher WIN32 app/launcher.cpp app/resources/windows.rc)
+target_include_directories(ModynLauncher PRIVATE app/resources)
 set_target_properties(ModynLauncher PROPERTIES OUTPUT_NAME ModynToolbox RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 add_executable(modyn_system_tests app/tests/integration/test_system.cpp)

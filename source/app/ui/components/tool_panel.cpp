@@ -31,6 +31,7 @@
 #include <QSignalBlocker>
 #include <QSlider>
 #include <QSpinBox>
+#include "ui/components/spin_box.h"
 #include <QStyle>
 #include <QStringConverter>
 #include <QTableWidget>
@@ -351,7 +352,7 @@ QWidget *ToolPanel::makeFields() {
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(8);
     if (!spec.fields.isEmpty())
-        layout->addWidget(label(QStringLiteral("参数设置")));
+        layout->addWidget(label(QStringLiteral("参数设置"), "sectionTitle"));
     for (const auto &field : spec.fields) {
         auto *container = new QWidget;
         auto *group = new QVBoxLayout(container);
@@ -384,7 +385,7 @@ QWidget *ToolPanel::makeFields() {
                 inputChanged();
             });
         } else if (field.type == "number") {
-            auto *number = new QSpinBox;
+            auto *number = new UiSpinBox;
             number->setRange(field.minimum, field.maximum);
             number->setValue(field.number);
             input = number;

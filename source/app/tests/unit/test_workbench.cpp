@@ -1,5 +1,8 @@
 #include "ui/workbench.h"
 #include "ui/theme/theme.h"
+#include "ui/components/spin_box.h"
+#include <QHBoxLayout>
+#include <QStyleOptionSpinBox>
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QTreeWidget>
@@ -217,6 +220,44 @@ class WorkbenchTests : public QObject {
         }
         Theme::setPreferences(14, false);
     }
+    void numericSteppingAndControlDensity() {
+        for (const bool compact : {false, true}) {
+            for (const int fontSize : {12, 14, 18}) {
+                Theme::setPreferences(fontSize, compact);
+                QWidget row;
+                auto *layout = new QHBoxLayout(&row);
+                auto *number = new UiSpinBox;
+                number->setRange(0, 2);
+                auto *button = new QPushButton(QStringLiteral("选择目录"));
+                layout->addWidget(number);
+                layout->addWidget(button);
+                row.show();
+                QTest::qWait(10);
+                QStyleOptionSpinBox option;
+                option.initFrom(number);
+                option.frame = true;
+                const auto up = number->style()->subControlRect(
+                    QStyle::CC_SpinBox, &option, QStyle::SC_SpinBoxUp, number);
+                const auto down = number->style()->subControlRect(
+                    QStyle::CC_SpinBox, &option, QStyle::SC_SpinBoxDown, number);
+                QVERIFY(!up.isEmpty() && !down.isEmpty());
+                QTest::mouseClick(number, Qt::LeftButton, Qt::NoModifier, up.center());
+                QCOMPARE(number->value(), 1);
+                QTest::mouseClick(number, Qt::LeftButton, Qt::NoModifier, down.center());
+                QCOMPARE(number->value(), 0);
+                QTest::mouseClick(number, Qt::LeftButton, Qt::NoModifier, down.center());
+                QCOMPARE(number->value(), 0);
+                number->setValue(2);
+                QTest::mouseClick(number, Qt::LeftButton, Qt::NoModifier, up.center());
+                QCOMPARE(number->value(), 2);
+                QTest::keyClick(number, Qt::Key_Down);
+                QCOMPARE(number->value(), 1);
+                QVERIFY(qAbs(number->height() - button->height()) <= 2);
+                QVERIFY(number->height() >= number->fontMetrics().height() + 8);
+            }
+        }
+        Theme::setPreferences(14, false);
+    }
     void savePreview() {
         QTemporaryDir root;
         const auto tools = previewTools(root.path());
@@ -228,6 +269,12 @@ class WorkbenchTests : public QObject {
         if (!path.isEmpty()) {
             QVERIFY(window.grab().save(path));
             QVERIFY(window.titleBar()->grab().save(path + ".brand.png"));
+            for (const bool compact : {false, true}) {
+                Theme::setPreferences(18, compact);
+                QTest::qWait(20);
+                QVERIFY(window.grab().save(path + (compact ? ".large-compact.png" : ".large.png")));
+            }
+            Theme::setPreferences(14, false);
             window.resize(920, 600);
             QTest::qWait(30);
             QVERIFY(window.grab().save(path + ".compact.png"));

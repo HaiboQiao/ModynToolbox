@@ -75,3 +75,5 @@ manifest 可指定 category（最多 40 字符）和 keywords（最多 20 项、
 ## 独立发布与目录刷新
 
 工具版本与宿主版本独立。先构建带 manifest、ui.json、checksums、完整后端/运行时/许可的工具包，再以 <id>/<version> 为 ZIP 顶层发布。用户将 ZIP 解压到应用 tools 目录，通过管理菜单中的工具包/刷新目录发现。当前整包与独立工具资产同时发布；后续仅工具变更可使用 tools/<id>/v<version> 标签单独分发。流程见 release-policy.md。
+
+新增工具界面遵循 [UI 设计规范](ui-design-system.md)。通过 ui.json 使用公共组件即可继承品牌、字号、密度和状态样式，number 字段使用宿主 UiSpinBox。业务后端继续独立。

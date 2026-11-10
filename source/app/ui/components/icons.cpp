@@ -1,7 +1,6 @@
 #include "icons.h"
 #include <QPainter>
-#include <QFont>
-#include <QLinearGradient>
+#include <QResource>
 QIcon uiIcon(UiIcon icon, const QColor &color) {
     QPixmap image(40, 40);
     image.fill(Qt::transparent);
@@ -10,6 +9,7 @@ QIcon uiIcon(UiIcon icon, const QColor &color) {
     p.scale(2, 2);
     p.setPen(QPen(color, 1.4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     switch (icon) {
+    case UiIcon::Refresh: p.drawArc(QRectF(3,3,14,14),40*16,280*16); p.drawPolyline(QPolygonF{{17,3},{17,8},{12,8}}); break;
     case UiIcon::Search: p.drawEllipse(QRectF(3,3,10,10)); p.drawLine(QPointF(12,12),QPointF(17,17)); break;
     case UiIcon::Add: p.drawLine(4,10,16,10); p.drawLine(10,4,10,16); break;
     case UiIcon::External: p.drawLine(10,3,17,3); p.drawLine(17,3,17,10); p.drawLine(17,3,8,12); p.drawLine(4,4,4,16); p.drawLine(4,16,16,16); break;
@@ -26,19 +26,9 @@ QIcon uiIcon(UiIcon icon, const QColor &color) {
     return QIcon(image);
 }
 QIcon brandIcon() {
-    QPixmap image(64,64);
-    image.fill(Qt::transparent);
-    QPainter p(&image);
-    p.setRenderHint(QPainter::Antialiasing);
-    QLinearGradient gradient(0,0,64,64);
-    gradient.setColorAt(0,QColor("#ac9af0"));
-    gradient.setColorAt(1,QColor("#7054d8"));
-    p.setBrush(gradient);
-    p.setPen(Qt::NoPen);
-    p.drawRoundedRect(QRectF(1,1,62,62),16,16);
-    QFont font("Segoe UI",27,QFont::DemiBold);
-    p.setFont(font);
-    p.setPen(Qt::white);
-    p.drawText(image.rect(),Qt::AlignCenter,QStringLiteral("M"));
-    return QIcon(image);
+    static const QIcon icon = [] {
+        Q_INIT_RESOURCE(assets);
+        return QIcon(":/modyn/modyn.ico");
+    }();
+    return icon;
 }

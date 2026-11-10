@@ -31,15 +31,38 @@ void Theme::apply() {
         QTreeWidget#toolNavigation::item:selected { background:@selection; color:#5438b6; }
         QLabel#heading { font-size:23px; font-weight:600; }
         QWidget#toolPanel { background:@panel; border:1px solid @border; border-radius:12px; }
-        QLineEdit,QPlainTextEdit,QComboBox,QSpinBox { background:@panel; border:1px solid @border; border-radius:7px; padding:8px; selection-background-color:@accent; }
+        QLineEdit,QPlainTextEdit,QComboBox,QSpinBox { background:@panel; border:1px solid @border; border-radius:7px; padding:@controlPaddingpx 10px; selection-background-color:@accent; }
+        QLineEdit,QComboBox,QSpinBox { min-height:@controlContentpx; }
+        QSpinBox { padding-right:36px; }
+        QSpinBox::up-button { subcontrol-origin:border; subcontrol-position:top right; width:28px; border-left:1px solid @border; border-bottom:1px solid @border; border-top-right-radius:7px; background:#f8f6fc; }
+        QSpinBox::down-button { subcontrol-origin:border; subcontrol-position:bottom right; width:28px; border-left:1px solid @border; border-bottom-right-radius:7px; background:#f8f6fc; }
+        QSpinBox::up-button:hover,QSpinBox::down-button:hover { background:@selection; }
+        QSpinBox::up-button:pressed,QSpinBox::down-button:pressed { background:#ddd4f7; }
+        QSpinBox::up-arrow,QSpinBox::down-arrow { image:none; }
+        QSpinBox:disabled,QLineEdit:disabled,QComboBox:disabled { background:#f4f2f7; color:@muted; }
+        QComboBox QAbstractItemView { background:@panel; border:1px solid @border; selection-background-color:@selection; selection-color:@text; padding:4px; }
+        QMenu { background:@panel; border:1px solid @border; border-radius:8px; padding:5px; }
+        QMenu::item { padding:8px 24px 8px 12px; border-radius:4px; }
+        QMenu::item:selected { background:@selection; }
+        QMenu::separator { height:1px; background:@border; margin:5px 8px; }
+        QCheckBox { spacing:8px; }
+        QLabel#sectionTitle { font-weight:600; color:@text; }
+        QLabel#catalogStatus { background:@selection; color:#5438b6; border-radius:6px; padding:3px 7px; }
+        QToolButton#catalogRefresh { border:0; border-radius:6px; background:transparent; padding:4px; }
+        QToolButton#catalogRefresh:hover { background:@selection; }
+        QPushButton[sidebarAction="true"] { min-width:0; padding:5px 6px; font-size:12px; }
+        QPushButton::menu-indicator { image:none; width:0px; }
+        QComboBox::down-arrow { image:none; }
         QComboBox::drop-down { width:26px; border:0; }
         QPlainTextEdit { font-family:Consolas,'Microsoft YaHei UI'; font-size:13px; }
         QLineEdit:focus,QPlainTextEdit:focus,QComboBox:focus,QSpinBox:focus { border-color:@accent; }
-        QPushButton { background:@panel; border:1px solid @border; border-radius:7px; padding:8px 12px; }
+        QPushButton { background:@panel; border:1px solid @border; border-radius:7px; padding:@controlPaddingpx 12px; min-height:@controlContentpx; }
         QPushButton:hover { background:#f3effd; border-color:#bbaedc; }
+        QPushButton:pressed { background:@selection; }
         QPushButton:focus { border-color:@accent; }
         QPushButton[primary="true"] { background:@accent; border-color:@accent; color:@panel; }
         QPushButton[primary="true"]:hover { background:#6044c9; }
+        QPushButton[primary="true"]:pressed { background:#5438b6; }
         QPushButton:disabled { background:#efedf4; color:#777185; border-color:@border; }
         QToolButton#windowControl { background:transparent; border:0; border-radius:4px; }
         QToolButton#windowControl:hover { background:#e5dff4; }
@@ -78,6 +101,8 @@ void Theme::apply() {
         .replace("@secondary", QString("%1px").arg(size - 2))
         .replace("@mono", QString("%1px").arg(size - 1))
         .replace("@heading", QString("%1px").arg(size + 9));
+    style.replace("@controlPadding", qApp->property("modynCompact").toBool() ? "5" : "7")
+        .replace("@controlContent", QString::number(size + 6));
     if (qApp->property("modynCompact").toBool())
         style.replace("padding:8px 12px;", "padding:5px 10px;")
             .replace("padding:10px 8px;", "padding:6px 8px;");

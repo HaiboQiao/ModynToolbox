@@ -15,6 +15,7 @@
 #include <QFormLayout>
 #include <QCheckBox>
 #include <QSpinBox>
+#include "ui/components/spin_box.h"
 #include <QDialogButtonBox>
 #include <QDesktopServices>
 #include "core/files.h"
@@ -101,15 +102,33 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     search->setPlaceholderText(QStringLiteral("搜索工具"));
     search->addAction(uiIcon(UiIcon::Search, Theme::muted), QLineEdit::LeadingPosition);
     search->setClearButtonEnabled(true);
+    search->setToolTip(QStringLiteral("搜索工具 · Ctrl+K"));
     sideLayout->addWidget(search);
     categories = new UiComboBox;
     categories->setObjectName("toolCategory");
     categories->setAccessibleName(QStringLiteral("筛选工具分类"));
     categories->hide();
     sideLayout->addWidget(categories);
-    auto *section = new QLabel(QStringLiteral("工具"));
-    section->setObjectName("secondary");
-    sideLayout->addWidget(section);
+    auto *library = new QHBoxLayout;
+    library->setSpacing(6);
+    auto *section = new QLabel(QStringLiteral("工具库"));
+    section->setObjectName("sectionTitle");
+    library->addWidget(section);
+    auto *version = new QLabel(QString::number(definitions.size()));
+    version->setObjectName("catalogStatus");
+    version->setToolTip(QStringLiteral("已发现的可用工具数量"));
+    library->addWidget(version);
+    library->addStretch();
+    auto *refresh = new QToolButton;
+    refresh->setObjectName("catalogRefresh");
+    refresh->setIcon(uiIcon(UiIcon::Refresh, Theme::muted));
+    refresh->setAccessibleName(QStringLiteral("刷新工具目录"));
+    refresh->setToolTip(QStringLiteral("刷新工具目录 · F5"));
+    library->addWidget(refresh);
+    sideLayout->addLayout(library);
+    connect(refresh, &QToolButton::clicked, this, [this] { refreshTools(); });
+    auto *refreshShortcut = new QShortcut(QKeySequence(Qt::Key_F5), this);
+    connect(refreshShortcut, &QShortcut::activated, refresh, &QToolButton::click);
     navigation = new ToolNavigation;
     navigation->setObjectName("toolNavigation");
     navigation->setAccessibleName(QStringLiteral("工具和会话"));
@@ -121,15 +140,31 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     noMatches->setWordWrap(true);
     noMatches->hide();
     sideLayout->addWidget(noMatches);
-    auto *version = new QLabel(QStringLiteral("%1 个本地工具").arg(definitions.size()));
-    version->setObjectName("catalogStatus");
-    sideLayout->addWidget(version);
+    auto *utilities = new QHBoxLayout;
+    utilities->setSpacing(5);
+    auto addUtility = [this, utilities](const QString &label, const QString &name,
+                                        const QString &hint, auto action) {
+        auto *button = new QPushButton(label);
+        button->setObjectName(name);
+        button->setProperty("sidebarAction", true);
+        button->setAccessibleName(hint);
+        button->setToolTip(hint);
+        utilities->addWidget(button, 1);
+        connect(button, &QPushButton::clicked, this, action);
+    };
+    addUtility(QStringLiteral("会话"), "sessionsShortcut", QStringLiteral("查看所有会话"),
+               &Workbench::showSessions);
+    addUtility(QStringLiteral("记录"), "historyShortcut", QStringLiteral("查看运行记录"),
+               &Workbench::showHistory);
+    addUtility(QStringLiteral("设置"), "settingsShortcut", QStringLiteral("界面与运行设置"),
+               &Workbench::showPreferences);
+    sideLayout->addLayout(utilities);
     activity = new QPushButton;
     activity->setObjectName("activityButton");
     activity->hide();
     sideLayout->addWidget(activity);
     connect(activity, &QPushButton::clicked, this, &Workbench::showHistory);
-    auto *manage = new QPushButton(QStringLiteral("管理"));
+    auto *manage = new QPushButton(QStringLiteral("工作区管理"));
     manage->setObjectName("managementButton");
     auto *management = new QMenu(manage);
     management->addAction(QStringLiteral("工具包"), this, &Workbench::showManager);
@@ -237,6 +272,8 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
         search->setFocus();
         search->selectAll();
     });
+    auto *settings = new QShortcut(QKeySequence(QStringLiteral("Ctrl+,")), this);
+    connect(settings, &QShortcut::activated, this, &Workbench::showPreferences);
     auto *next = new QShortcut(QKeySequence(QStringLiteral("Ctrl+Tab")), this);
     connect(next, &QShortcut::activated, this, [this] {
         QList<int> attached;
@@ -878,7 +915,7 @@ bool Workbench::refreshTools() {
     const auto catalog = readCatalog(config.packagesRoot);
     definitions = catalog.tools;
     if (auto *label = findChild<QLabel *>("catalogStatus"))
-        label->setText(QStringLiteral("%1 个本地工具").arg(definitions.size()));
+        label->setText(QString::number(definitions.size()));
     const auto versions = PackageManager(config.packagesRoot).versions();
     for (auto &session : sessions) {
         const auto tool = std::find_if(versions.cbegin(), versions.cend(), [&](const auto &entry) {
@@ -1292,12 +1329,12 @@ void Workbench::showPreferences() {
     auto *density = new UiComboBox;
     density->addItems({QStringLiteral("标准"), QStringLiteral("紧凑")});
     density->setCurrentIndex(preferences.value("compact").toBool() ? 1 : 0);
-    auto *font = new QSpinBox;
+    auto *font = new UiSpinBox;
     font->setObjectName("preferenceFont");
     font->setRange(12, 18);
     font->setValue(preferences.value("font_size").toInt(14));
     font->setSuffix(QStringLiteral(" px"));
-    auto *batch = new QSpinBox;
+    auto *batch = new UiSpinBox;
     batch->setObjectName("preferenceBatch");
     batch->setRange(1, 2);
     batch->setValue(preferences.value("batch_limit").toInt(1));

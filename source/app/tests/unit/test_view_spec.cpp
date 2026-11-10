@@ -1,6 +1,7 @@
 #include "ui/view_spec.h"
 #include "ui/components/tool_view.h"
 #include <QFile>
+#include <QFontDatabase>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -17,6 +18,11 @@ class ViewSpecTests : public QObject {
         file.write(QJsonDocument(object).toJson());
     }
 private slots:
+    void initTestCase() {
+        const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";
+        QVERIFY(QFontDatabase::addApplicationFont(fonts + "segoeui.ttf") >= 0);
+        QVERIFY(QFontDatabase::addApplicationFont(fonts + "msyh.ttc") >= 0);
+    }
     void legacyFallback() {
         QTemporaryDir root;
         const auto spec=loadViewSpec(root.path());
