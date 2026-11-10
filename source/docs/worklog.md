@@ -105,3 +105,13 @@
 公开 URL https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2。匿名重新下载 8 个文件，大小/SHA256 全部匹配。下载 ZIP 解压后的真实三工具、窗口与草稿等 33 步通过，3.187 s，运行 PATH 只含 Windows/System32，应用使用包内运行时。完整便携 ZIP 64806780 字节，源码 ZIP 4201229 字节。
 
 最终回执、分发清单与校验复制到 releases/1.0.2，状态/任务/验收和证据同步。该后续提交仅更新发布记录，资产来源继续固定到 v1.0.2。根 exe 未签名，多 DPI/Snap/另一台干净电脑保留人工验收。
+
+## 2026-11-10 启动入口与发布触发边界
+
+用户报告在 PowerShell 直接执行带 %~dp0 的 CMD 内部命令失败，并要求明确发布触发与 GitHub 同步规则。检查确认 %~dp0 由 CMD 批处理展开，现有入口按 .local/releases/latest.json 打开便携版。
+
+新增根与 source 的 Run-Dev.cmd，复用 dev.ps1 run 构建和运行当前源码。保留 Open-ModynToolbox.cmd 的便携入口语义，两个源码启动器显示入口用途，失败暂停后返回原始退出码，便携脚本增加实际路径输出与缺包恢复提示。根/source README 与 development 记录双击和 PowerShell 调用方式。
+
+release-policy 新增明确触发、普通本地优化和正式发布的范围，正式发布同时完成最新源码、说明、分发资产与回执的 GitHub 同步及核验。根/source AGENTS 接入同一边界。本轮按用户的小需求执行本地优化，版本保持 1.0.2，公开资产沿用既有记录。
+
+新增 test_launchers.py，采用暂存目录、替身脚本和 Start-Process 拦截，避免启动 GUI。首轮测试替身把未传入的参数序列化为 [null] 导致四个断言失败，修正替身默认空数组后通过。最终执行 python app/tests/integration/test_launchers.py，3/3，2.415 秒，覆盖 8 个 CMD 路由/退出码子场景、中文空格括号路径和外部 cwd、便携定位、缺索引与缺可执行文件两条错误路径。原始日志 .local/logs/launcher-rules-tests.log。应用 C++ 代码未涉及，本轮验证聚焦启动链路，物理 GUI/异机待验项继续保留。

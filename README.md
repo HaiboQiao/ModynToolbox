@@ -21,6 +21,8 @@
 
 完整工程集中在 source。请先读取 [source/AGENTS.md](source/AGENTS.md)、[当前状态](source/docs/STATUS.md)和[接手指南](source/docs/handoff.md)。VS Code 打开 source/ModynToolbox.code-workspace。
 
+恢复开发工具链后，双击根目录或 source 中的 `Run-Dev.cmd` 编译并运行当前源码。`Open-ModynToolbox.cmd` 打开本机最近构建的便携版。PowerShell 中使用 `.\Run-Dev.cmd` 或 `.\Open-ModynToolbox.cmd` 调用文件。
+
 发布前必须读取 [发布规程](source/docs/release-policy.md)。
 
 ## 仓库结构

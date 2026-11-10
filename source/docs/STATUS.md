@@ -33,3 +33,11 @@ GitHub Release 为 https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2
 历史 R2/UI-R3 与首轮 1.0.1 记录保留当时背景。1.0.1 草稿未公开并已清理，原源标签保留。正式 1.0.2 使用已验证的流式上传与草稿恢复。
 
 根 exe 未做 Authenticode 签名，物理多 DPI/Snap、另一台干净电脑仍待目标设备检查。
+
+## 本地启动与发布边界优化
+
+2026-11-10 完成源码启动入口和规则说明的本地更新。根与 source 新增 Run-Dev.cmd，编译运行当前源码；Open-ModynToolbox.cmd 继续定位最近构建的便携版。失败保留提示与退出码，README 和开发指南说明 PowerShell 的正确调用方式。
+
+只有用户明确要求发布才触发正式流程，发布必须同步最新源码、说明、运行资产和回执到 GitHub。规则位于 release-policy，根与 source AGENTS 均已接入。本轮为本地优化，应用版本维持 1.0.2，GitHub 当前公开版与本轮源码增量分开记录。
+
+专项验证 `python app/tests/integration/test_launchers.py` 通过 3/3，2.415 秒。覆盖四个 CMD 入口各自成功/失败分支、中文空格括号路径、便携包定位和缺失提示。通过替身调用核对启动链路，真实 GUI 和源码构建沿用原有验证记录。

@@ -1,6 +1,6 @@
 # 开发、构建与迁移
 
-更新于 2026-11-09。本文件记录当前可执行入口。早期规划中的文件名与测试名以实际实现和本文件为准。
+更新于 2026-11-10。本文件记录当前可执行入口。早期规划中的文件名与测试名以实际实现和本文件为准。
 
 ## 工具链
 
@@ -27,6 +27,14 @@ powershell -NoProfile -File scripts/dev.ps1 package -Preset windows-release
 默认 windows-complete 为 Debug。windows-release 为 Release。windows-dev/windows-check 保留历史验证用途。VS Code F5 与终端使用同一脚本和预设，启动时传入项目 data 与 .local/installed/tools。只开发 Python 工具时可以使用 PyCharm 打开对应工具目录，宿主开发采用 VS Code。
 
 tools 是显式恢复工具入口，遍历 tools/*/tool.build.json。普通 run/F5 不自动补回删除的工具。工具内容改变要提高 package_version，同版本安装内容不允许被静默替换。
+
+## CMD 启动入口
+
+`Run-Dev.cmd` 调用 `scripts/dev.ps1 run`，构建后启动当前源码。`Open-ModynToolbox.cmd` 调用 `scripts/open-release.ps1`，按本机索引启动已构建的便携版。两个入口在仓库根和 source 均可使用，失败时保留终端提示并返回原始退出码。
+
+PowerShell 中运行 `.\Run-Dev.cmd` 或 `.\Open-ModynToolbox.cmd`。CMD 内的 `%~dp0` 由批处理解释，直接调用 PowerShell 脚本时使用 `-File .\scripts\dev.ps1 run` 等实际路径。
+
+启动入口专项回归使用 `python app/tests/integration/test_launchers.py`。测试暂存文件集中在 .local/launcher-tests，使用替身脚本检查四个入口、成功/失败退出码与中文空格路径，并拦截 Start-Process 核对便携包定位。
 
 ## 源码和运行目录
 

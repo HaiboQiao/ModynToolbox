@@ -4,9 +4,31 @@
 
 Windows x64 本地工具箱。C++20 / Qt Widgets 宿主管理统一界面、会话、独立窗口、工具安装和后台作业。每个工具集中在自己的目录，通过独立进程接入。
 
+## 本地启动入口
+
+- 双击 `Run-Dev.cmd`，编译并运行当前源码，需要下文列出的开发工具链。
+- 双击 `Open-ModynToolbox.cmd`，打开本机最近构建的完整便携版。该入口使用 `.local/releases/latest.json` 中的目录。
+- 仓库根和本目录均提供这两个 CMD 文件，从其他当前目录调用也会定位到对应脚本。
+
+在本目录的 PowerShell 中运行文件即可。
+
+```powershell
+.\Run-Dev.cmd
+.\Open-ModynToolbox.cmd
+```
+
+也可以直接调用 PowerShell 脚本。
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\dev.ps1 run
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\open-release.ps1
+```
+
+`%~dp0` 属于 CMD 批处理的脚本目录展开语法。复制 CMD 内部命令到 PowerShell 时，需要改成对应的真实路径或上述相对路径。
+
 ## 直接使用
 
-双击项目根的 Open-ModynToolbox.cmd，打开最近构建的完整便携版。便携目录也可直接双击 ModynToolbox.exe。发布目录索引在 .local/releases/latest.json。
+便携目录可直接双击 ModynToolbox.exe。源码目录的本地启动方式见上文。
 
 普通用户也可从 https://github.com/HaiboQiao/ModynToolbox/releases 下载完整便携版。使用方法见 docs/user-guide.md。开发和验证结果见 docs/STATUS.md、docs/verification/UI-R3-navigation.md。完整业务交付记录见 docs/verification/R2-complete.md。
 

@@ -43,3 +43,9 @@
 已完成。仓库整理为 source/releases，发布规程已接入根与源码 AGENTS。正式版本 1.0.2，源提交 8a45e58，原生工具包 1.0.4。完整便携、源码、四独立工具、校验与清单共 8 项已公开到 GitHub。
 
 新路径 Debug/Release 各 11/11；ZIP 实际业务、源码入口与目录刷新通过；从现有草稿检查点恢复上传通过；匿名下载 8 项摘要匹配，下载版 33 步业务复验通过。最终回执在 releases/1.0.2，报告见 verification/REL-1-publication.md。物理多屏与干净机器继续保留目标设备验收。
+
+## 启动入口与发布触发规则
+
+2026-11-10 已完成本地优化。新增根与 source 的 Run-Dev.cmd，保留 Open-ModynToolbox.cmd 的便携版语义，明确 PowerShell 中调用 CMD 文件或脚本的写法。修正失败退出码保留，补充缺包恢复提示。
+
+发布规程及两级 AGENTS 明确只有当前用户发布指令触发正式发布，并要求源码、说明、运行资产与回执同步 GitHub。专项回归 3/3 通过，记录见 worklog 与 STATUS。
