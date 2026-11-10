@@ -115,3 +115,11 @@
 release-policy 新增明确触发、普通本地优化和正式发布的范围，正式发布同时完成最新源码、说明、分发资产与回执的 GitHub 同步及核验。根/source AGENTS 接入同一边界。本轮按用户的小需求执行本地优化，版本保持 1.0.2，公开资产沿用既有记录。
 
 新增 test_launchers.py，采用暂存目录、替身脚本和 Start-Process 拦截，避免启动 GUI。首轮测试替身把未传入的参数序列化为 [null] 导致四个断言失败，修正替身默认空数组后通过。最终执行 python app/tests/integration/test_launchers.py，3/3，2.415 秒，覆盖 8 个 CMD 路由/退出码子场景、中文空格括号路径和外部 cwd、便携定位、缺索引与缺可执行文件两条错误路径。原始日志 .local/logs/launcher-rules-tests.log。应用 C++ 代码未涉及，本轮验证聚焦启动链路，物理 GUI/异机待验项继续保留。
+
+## 2026-11-10 UI-R4 品牌间距与 Logo 候选
+
+用户要求调整标题栏两行文字间距，并基于指定 ICO 先提供 Logo 候选。沿用既有小需求直接修改授权，spec/plan/task/checklist 记录本轮局部增量。ChromeWindow 品牌子布局自然高度居中，Theme 行间距 3 逻辑像素；新增主窗与浮窗在 12/14/18 字号下几何回归，增加局部截图。
+
+默认 build 成功，workbench 16/16。布局/截图专项 4/4，1.422 秒，已查看主窗、紧凑窗、独立窗与标题栏离屏结果。全量 Debug 初轮 10/11，末轮 9/11，工具包启用分支反复在不同用例失败，末轮进程树场景还出现派生标记缺失。旧 Release 对照 full_system 15/15。根因未确认，细节、日志与复现入口见 verification/UI-R4-brand.md，保留整体全量未通过状态。
+
+原 ICO 最大 256px，解码用于观察，原文件保留。用内置 imagegen 输出三个 1254px 紫白候选，位于 .local/design/logo-concepts，完整提示词同目录 prompts.md。当前用户选择待定，正式 Logo 接入为后续步骤。

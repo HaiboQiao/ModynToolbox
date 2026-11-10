@@ -48,7 +48,7 @@ ChromeWindow::ChromeWindow(QWidget *parent) : QMainWindow(parent) {
     auto *name = new QLabel(QStringLiteral("ModynToolbox"));
     name->setObjectName("appTitle");
     auto *brand = new QVBoxLayout;
-    brand->setSpacing(1);
+    brand->setSpacing(Theme::titleBrandSpacing);
     brand->setContentsMargins(0, 0, 0, 0);
     brand->addWidget(name);
     auto *caption =
@@ -62,6 +62,7 @@ ChromeWindow::ChromeWindow(QWidget *parent) : QMainWindow(parent) {
     });
     brand->addWidget(caption);
     row->addLayout(brand);
+    row->setAlignment(brand, Qt::AlignVCenter);
     name->setAttribute(Qt::WA_TransparentForMouseEvents);
     caption->setAttribute(Qt::WA_TransparentForMouseEvents);
     logo->setAttribute(Qt::WA_TransparentForMouseEvents);

@@ -41,3 +41,11 @@ GitHub Release 为 https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2
 只有用户明确要求发布才触发正式流程，发布必须同步最新源码、说明、运行资产和回执到 GitHub。规则位于 release-policy，根与 source AGENTS 均已接入。本轮为本地优化，应用版本维持 1.0.2，GitHub 当前公开版与本轮源码增量分开记录。
 
 专项验证 `python app/tests/integration/test_launchers.py` 通过 3/3，2.415 秒。覆盖四个 CMD 入口各自成功/失败分支、中文空格括号路径、便携包定位和缺失提示。通过替身调用核对启动链路，真实 GUI 和源码构建沿用原有验证记录。
+
+## UI-R4 品牌间距与 Logo 预览
+
+2026-11-10 本地源码已调整标题栏品牌区，两行文字按 3 个逻辑像素间距整体居中。默认 windows-complete 已构建，workbench 16/16，布局与截图专项 4/4。已观察默认 1200×780、紧凑 920×600 和独立窗离屏截图。
+
+原 ICO 最大 256px，生成 A 工具箱模块、B 工具箱与 M、C 模块托盘三个 1254×1254 RGBA 候选，保存在 .local/design/logo-concepts。用户选择后继续制作正式资源。报告见 verification/UI-R4-brand.md。
+
+全量 Debug 首轮 10/11，末轮 9/11。full_system 出现不同用例的工具包启用失败，末轮 host_crash_tree 未观察到派生进程标记。旧 Release 对照 full_system 15/15 通过。原因尚未确认，后续需独立诊断工具包目录启用及启动时序。品牌专项已通过，整体全量回归保持未通过状态。

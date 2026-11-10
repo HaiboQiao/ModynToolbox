@@ -49,3 +49,7 @@
 2026-11-10 已完成本地优化。新增根与 source 的 Run-Dev.cmd，保留 Open-ModynToolbox.cmd 的便携版语义，明确 PowerShell 中调用 CMD 文件或脚本的写法。修正失败退出码保留，补充缺包恢复提示。
 
 发布规程及两级 AGENTS 明确只有当前用户发布指令触发正式发布，并要求源码、说明、运行资产与回执同步 GitHub。专项回归 3/3 通过，记录见 worklog 与 STATUS。
+
+## UI-R4 当前增量
+
+品牌间距已实现。调整 chrome_window.cpp 的品牌布局与 theme.h 的间距参数，补充 test_workbench.cpp 的紧凑居中回归。默认 windows-complete 已构建，workbench 16/16 与布局/截图专项 4/4 通过，默认、紧凑与独立窗离屏截图已检查。三个 Logo 候选已生成，应用资源接入等待用户选定。全量回归存在工具包启用与进程树场景失败，详细结果见 verification/UI-R4-brand.md。

@@ -484,3 +484,7 @@ VS Code 已可打开当前规划工作区。F5、脚本与发布入口是实施�
 ## REL-1 发布设计
 
 Git 根保留路由 README/AGENTS，完整工程进入 source，releases 保存版本索引/说明/校验，二进制 ZIP 作为 GitHub Release assets。宿主版本取 CMake，运行时兼容检查/GUI/元数据一致。发布来源固定提交与标签，先本地完整验证，再草稿上传/摘要核对/公开/匿名下载复核。工具版本独立，整包携带已验证版本并提供独立 ZIP。新源码路径重建缓存，旧生成物保留隔离。
+
+## UI-R4 局部实施
+
+复用 ChromeWindow 和现有浅紫 Theme。两行品牌布局采用 AlignVCenter，行间距来自 Theme::titleBrandSpacing，避免标签分摊标题栏剩余高度。主窗与独立窗共享此布局。沿用既有字体和标题栏高度。通过 workbench 的布局几何断言及离屏截图检查默认/最小窗口，主窗/浮窗与字体偏好兼容。Logo 候选以原 ICO 语义为参考，用 imagegen 生成三种紫白简化方向，暂存 .local/design/logo-concepts，待用户选择。

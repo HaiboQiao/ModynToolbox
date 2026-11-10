@@ -1,4 +1,5 @@
 #include "ui/workbench.h"
+#include "ui/theme/theme.h"
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QTreeWidget>
@@ -190,6 +191,32 @@ class WorkbenchTests : public QObject {
         window.maximizeButton()->click();
         QVERIFY(!window.isMaximized());
     }
+    void compactBrandLayout() {
+        for (const int fontSize : {12, 14, 18}) {
+            Theme::setPreferences(fontSize, false);
+            Workbench window(testTools());
+            window.resize(920, 600);
+            window.show();
+            window.detachSession(1);
+            QTest::qWait(20);
+            for (auto *frame : {static_cast<QWidget *>(&window), window.sessionView(1)->window()}) {
+                const auto *title = frame->findChild<QLabel *>("appTitle");
+                const auto *caption = frame->findChild<QLabel *>("caption");
+                const auto *bar = frame->findChild<QWidget *>("titleBar");
+                QVERIFY(title && caption && bar);
+                const int top = title->mapTo(bar, QPoint()).y();
+                const int captionTop = caption->mapTo(bar, QPoint()).y();
+                const int bottom = captionTop + caption->height();
+                QCOMPARE(captionTop - top - title->height(), Theme::titleBrandSpacing);
+                QVERIFY(top >= 4);
+                QVERIFY(bottom <= bar->height() - 4);
+                QVERIFY(qAbs(top - (bar->height() - bottom)) <= 1);
+                QCOMPARE(title->height(), title->sizeHint().height());
+                QCOMPARE(caption->height(), caption->sizeHint().height());
+            }
+        }
+        Theme::setPreferences(14, false);
+    }
     void savePreview() {
         QTemporaryDir root;
         const auto tools = previewTools(root.path());
@@ -200,6 +227,7 @@ class WorkbenchTests : public QObject {
         const auto path = qEnvironmentVariable("MODYN_PREVIEW_PATH");
         if (!path.isEmpty()) {
             QVERIFY(window.grab().save(path));
+            QVERIFY(window.titleBar()->grab().save(path + ".brand.png"));
             window.resize(920, 600);
             QTest::qWait(30);
             QVERIFY(window.grab().save(path + ".compact.png"));
