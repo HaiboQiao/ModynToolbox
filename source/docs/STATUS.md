@@ -1,5 +1,14 @@
 # 当前状态
 
+更新于2026-11-12。本地开发版新增视频裁剪与通用UI v2，已安装到日常工具目录并生成完整本地包。Run-Dev.cmd和Open-ModynToolbox.cmd均可使用本轮功能。当前公开版仍1.1.0，尚未发布视频增量。
+
+最终Release14/14（62.34秒）、Debug14/14（104.02秒）；真实视频核心20项、视频控件8项、便携原业务33步、便携视频34步及崩溃恢复、运行中目录接入11步通过。编码写入后取消0.063秒为本次观测。报告verification/VID-1-video-tool.md，功能文档features/video-clip。
+
+宿主内QGraphicsVideoItem负责预览，独立C++进程和FFmpeg/ffprobe负责业务。旧UI v1保持兼容。物理播放/音画观感、多DPI/Snap、异机、空间/ACL故障和复杂4K等保留待验。首轮Release退出异常及修正经过均在报告中保留。
+
+## 以下为已公开版本与此前阶段背景
+
+
 更新于2026-11-11。当前公开版1.1.0，GitHub发布与下载复核完成。本版包含B Logo、统一控件、数字箭头、工具库刷新、侧栏快捷入口、启动器说明和设计规范。运行包及源码入口在仓库releases/1.1.0，发布报告见verification/REL-2-publication.md。
 
 固定源提交41fe271450446171c5a90530d771840362cfbf8a，Release ID441095721。Release11/11，20.22秒；Debug11/11，41.10秒。8项资产已公开且匿名下载SHA256一致，下载版33步，3.563秒，运行中目录刷新执行和源码包启动器测试通过。
@@ -61,3 +70,8 @@ GitHub Release 为 https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2
 2026-11-11 完成 B Logo 接入、统一控件与数字箭头、工具库数量/刷新和侧栏快捷入口，默认开发构建已更新。设计规范见 ui-design-system.md，新工具通过现有 UI 描述继承共用样式。
 
 最终 Debug CTest 11/11，39.88 秒，workbench 17 项通过。真实工具包 13 步通过，Windows exe 图标资源确认。规范测试启动访问冲突经清理生成链接产物后通过，具体根因未确定；历史 UI-R4 间歇失败本轮未复现，记录保留。报告 verification/UI-R5-unified-interface.md。物理 DPI/跨屏与异机继续待设备验收。
+
+
+## VID-1 视频裁剪规划
+
+2026-11-11 按用户本轮要求完成需求与初版技术方案草案，位于 features/video-clip/spec.md、plan.md、task.md、checklist.md。当前未实现；公开版仍为1.1.0。建议独立视频工具包与通用UI v2视频组件，先验证Qt Multimedia/FFmpeg部署、预览、取消和资源约束，再实施。

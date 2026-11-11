@@ -1,0 +1,2 @@
+ModynToolbox video-clip tool. Original source follows the ModynToolbox project terms.
+FFmpeg and bundled components have independent licenses. See LICENSES and dependencies.lock.json.

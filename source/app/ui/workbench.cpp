@@ -303,9 +303,16 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
 Workbench::~Workbench() {
     closing = true;
     saveState();
-    for (auto &session : sessions)
-        if (session.floating)
-            delete session.floating;
+    // Release native media child windows while the top-level platform window still exists.
+    // QWidget base destruction otherwise tears down native ancestors before child views.
+    for (auto &session : sessions) {
+        auto *view = session.view;
+        session.view = nullptr;
+        session.panel = nullptr;
+        delete view;
+        delete session.floating;
+        session.floating = nullptr;
+    }
 }
 int Workbench::sessionCount() const {
     return sessions.size();
@@ -470,6 +477,7 @@ void Workbench::ensureView(int id) {
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(12);
     auto spec = loadViewSpec(it->tool.packageRoot, !it->tool.viewFile.isEmpty());
+    if (it->tool.executable && spec.version != it->tool.uiSchemaVersion) spec.error = QStringLiteral("工具清单与界面版本不一致");
     if (it->missing)
         spec.error =
             QStringLiteral(

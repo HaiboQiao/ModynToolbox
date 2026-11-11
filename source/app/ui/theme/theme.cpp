@@ -72,6 +72,8 @@ void Theme::apply() {
         QSlider::groove:horizontal { height:5px; background:#e5dfef; border-radius:2px; }
         QSlider::sub-page:horizontal { background:@accent; border-radius:2px; }
         QSlider::handle:horizontal { background:@accent; width:14px; margin:-5px 0; border-radius:7px; }
+        QWidget#videoPreviewFrame,QLabel#videoPlaceholder { background:@videoBackground; color:@videoForeground; border-radius:9px; }
+        QGraphicsView#videoSurface { background:@videoBackground; }
         QFrame#fileDropArea { background:#f8f6ff; border:1px dashed #bfb0e7; border-radius:9px; }
         QTableWidget { background:@panel; border:0; gridline-color:#eeebf5; selection-background-color:@selection; selection-color:@text; }
         QHeaderView::section { background:#f7f5fb; color:@muted; border:0; padding:10px 8px; text-align:left; font-size:12px; }
@@ -82,6 +84,7 @@ void Theme::apply() {
         QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical { height:0; }
         QToolTip { background:@panel; color:@text; border:1px solid @border; padding:6px; }
     )");
+    style.replace("@videoBackground", videoBackground.name()).replace("@videoForeground", videoForeground.name());
     style.replace("@background", background.name())
         .replace("@navigation", navigation.name())
         .replace("@selection", selection.name())

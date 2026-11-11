@@ -1,0 +1,48 @@
+{
+  "manifest_version": 1,
+  "protocol_version": 1,
+  "ui_schema_version": 2,
+  "min_host_version": "1.1.0",
+  "tool_id": "video-clip",
+  "package_version": "0.1.0",
+  "view_file": "ui.json",
+  "name": "视频裁剪",
+  "description": "预览选段、精确裁剪、快速截取及压缩，原视频保持只读。",
+  "icon": "files",
+  "category": "视频",
+  "keywords": [
+    "裁剪",
+    "剪辑",
+    "压缩",
+    "截取",
+    "MP4"
+  ],
+  "actions": [
+    {
+      "id": "export",
+      "label": "导出视频",
+      "batch": true,
+      "dynamic_resources": true,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 86400
+    },
+    {
+      "id": "prepare",
+      "label": "预览快速截取区间",
+      "cancellable": true,
+      "timeout_seconds": 120
+    },
+    {
+      "id": "probe",
+      "label": "重新分析视频",
+      "cancellable": true,
+      "timeout_seconds": 120
+    }
+  ],
+  "limits": {
+    "max_files": 1,
+    "max_input_bytes": 5242880,
+    "memory_mb": 2048
+  }
+}

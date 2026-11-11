@@ -4,6 +4,8 @@
 #include <QJsonObject>
 #include <QMap>
 #include <QWidget>
+#include <QElapsedTimer>
+class VideoEditor;
 class QLabel;
 class FullTextEdit;
 class QScrollArea;
@@ -58,6 +60,7 @@ class ToolPanel : public QWidget {
     QMap<QString, QWidget *> fields, fieldContainers;
     QMap<QString, QPushButton *> actions;
     QVector<QWidget *> frozenInputs;
+    VideoEditor *videoEditor = nullptr;
     FullTextEdit *textInput = nullptr;
     QPlainTextEdit *textResult = nullptr;
     QScrollArea *bodyScroll = nullptr;
@@ -65,6 +68,8 @@ class ToolPanel : public QWidget {
     QLabel *status = nullptr, *preview = nullptr, *fileNotice = nullptr;
     QProgressBar *progress = nullptr;
     QPushButton *cancelButton = nullptr;
-    QJsonObject context, lastResult;
+    QLabel *elapsedLabel = nullptr;
+    QElapsedTimer jobClock;
+    QJsonObject context, lastResult, pendingMediaSelection;
     bool restoring = false, scanning = false, busy = false;
 };

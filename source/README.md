@@ -81,3 +81,6 @@ powershell -NoProfile -File scripts/dev.ps1 test
 自动化验证记录与人工验收项分开保存。目标电脑的多屏 DPI、Snap、系统对话框和干净机器实测仍需最终检查。
 
 界面风格与公共功能设计见 [UI 设计规范](docs/ui-design-system.md)，新工具开发应一并阅读。
+
+
+视频裁剪本地开发增量位于tools/video-clip，使用公共UI v2，开发和使用说明见该工具README与docs/verification/VID-1-video-tool.md。当前公开版1.1.0与本轮开发能力分开记录。

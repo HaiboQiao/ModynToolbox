@@ -77,3 +77,10 @@ manifest 可指定 category（最多 40 字符）和 keywords（最多 20 项、
 工具版本与宿主版本独立。先构建带 manifest、ui.json、checksums、完整后端/运行时/许可的工具包，再以 <id>/<version> 为 ZIP 顶层发布。用户将 ZIP 解压到应用 tools 目录，通过管理菜单中的工具包/刷新目录发现。当前整包与独立工具资产同时发布；后续仅工具变更可使用 tools/<id>/v<version> 标签单独分发。流程见 release-policy.md。
 
 新增工具界面遵循 [UI 设计规范](ui-design-system.md)。通过 ui.json 使用公共组件即可继承品牌、字号、密度和状态样式，number 字段使用宿主 UiSpinBox。业务后端继续独立。
+
+
+## UI v2 媒体工具
+
+video-clip提供独立原生核心、CLI、薄适配器、锁定的媒体引擎及声明式视频界面。UI v2支持video_editor、角色动作、prepare_when和长作业，详见shared/protocol/media-v2.md。已有v1工具无需迁移。新增同类工具可复用该公共能力；旧公开1.1.0不支持，使用本轮新宿主构建。
+
+通用tool.build.json新增可选license_files字符串数组，构建时复制到LICENSES并计入完整性索引，同名拒绝；其他配方行为不变。视频工具实际的FFmpeg静态依赖约201MiB，独立工具包按需安装；安装并不等于启动编码进程。

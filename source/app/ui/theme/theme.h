@@ -9,6 +9,8 @@ inline const QColor muted("#6c687c");
 inline const QColor border("#ddd7e9");
 inline const QColor accent("#7054d8");
 inline const QColor selection("#ece7fd");
+inline const QColor videoBackground("#211e2b");
+inline const QColor videoForeground("#ded8ee");
 inline constexpr int sidebarWidth = 190;
 inline constexpr int pageInset = 24;
 inline constexpr int panelInset = 20;

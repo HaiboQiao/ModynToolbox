@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModynToolbox view v2",
+  "type": "object",
+  "required": [
+    "view_version",
+    "kind"
+  ],
+  "properties": {
+    "view_version": {
+      "const": 2
+    },
+    "kind": {
+      "enum": [
+        "text",
+        "files"
+      ]
+    },
+    "input_title": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "placeholder": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "hint": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "initial_text": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "extensions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]{1,8}$"
+      }
+    },
+    "fields": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "type",
+          "default"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "type": {
+            "enum": [
+              "text",
+              "directory",
+              "choice",
+              "range",
+              "number",
+              "boolean"
+            ]
+          },
+          "options": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "minimum": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "maximum": {
+            "type": "integer",
+            "maximum": 1000000
+          },
+          "enabled_when": {
+            "type": "object",
+            "required": [
+              "field"
+            ],
+            "minProperties": 2,
+            "maxProperties": 2,
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "equals": {},
+              "not": {}
+            }
+          }
+        }
+      }
+    },
+    "layout": {
+      "$ref": "#/$defs/node"
+    },
+    "media": {
+      "type": "object",
+      "required": [
+        "probe_action",
+        "prepare_action",
+        "export_action",
+        "prepare_when"
+      ],
+      "properties": {
+        "probe_action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "prepare_action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "export_action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "prepare_when": {
+          "type": "object",
+          "required": [
+            "field",
+            "equals"
+          ],
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "equals": {}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "children"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "children": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "items": {
+                "$ref": "#/$defs/node"
+              }
+            },
+            "stretch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "files",
+                "text",
+                "fields",
+                "actions",
+                "output_text",
+                "output_table",
+                "image_preview",
+                "status",
+                "video_editor"
+              ]
+            },
+            "stretch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        }
+      ]
+    }
+  }
+}

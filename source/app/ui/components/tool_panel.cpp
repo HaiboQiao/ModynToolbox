@@ -1,5 +1,7 @@
 #include "tool_panel.h"
 #include "combo_box.h"
+#include "video_editor.h"
+#include <QMessageBox>
 #include "icons.h"
 #include "core/files.h"
 #include "ui/theme/theme.h"
@@ -165,8 +167,8 @@ class AdaptiveRow : public QWidget {
         box->setContentsMargins(0, 0, 0, 0);
         box->setSpacing(20);
     }
-    void append(QWidget *widget) {
-        box->addWidget(widget, 1);
+    void append(QWidget *widget, int stretch = 1) {
+        box->addWidget(widget, qBound(1, stretch, 4));
     }
 
   protected:
@@ -189,6 +191,12 @@ ToolPanel::ToolPanel(ToolDefinition definition, ViewSpec view, QWidget *parent)
     auto *layout = new QVBoxLayout(this);
     layout->setContentsMargins(16, 16, 16, 16);
     layout->setSpacing(12);
+    if (!spec.mediaProbe.isEmpty()) {
+        QSet<QString> ids;
+        for (const auto &a : tool.actions) ids.insert(a.id);
+        for (const auto &id : {spec.mediaProbe,spec.mediaPrepare,spec.mediaExport})
+            if (!ids.contains(id)) spec.error = QStringLiteral("媒体动作未在工具清单声明");
+    }
     if (!spec.error.isEmpty()) {
         layout->addWidget(label(spec.error, "viewError"));
         layout->addStretch();
@@ -232,7 +240,15 @@ ToolPanel::ToolPanel(ToolDefinition definition, ViewSpec view, QWidget *parent)
     progress->hide();
     cancelButton = button(QStringLiteral("取消"));
     cancelButton->hide();
+    elapsedLabel = label(QString(), "secondary");
+    auto *elapsedTimer = new QTimer(this);
+    elapsedTimer->setInterval(500);
+    connect(elapsedTimer, &QTimer::timeout, this, [this] {
+        if (busy && jobClock.isValid()) elapsedLabel->setText(QStringLiteral("已用 %1 s").arg(jobClock.elapsed()/1000));
+    });
+    elapsedTimer->start();
     footer->addWidget(status, 1);
+    footer->addWidget(elapsedLabel);
     footer->addWidget(progress);
     footer->addWidget(cancelButton);
     layout->addLayout(footer);
@@ -250,7 +266,7 @@ QWidget *ToolPanel::node(const QJsonObject &description) {
         auto *row = new AdaptiveRow;
         for (const auto &child : description.value("children").toArray())
             if (auto *widget = node(child.toObject()))
-                row->append(widget);
+                row->append(widget, child.toObject().value("stretch").toInt(1));
         return row;
     }
     if (type == "column") {
@@ -262,6 +278,18 @@ QWidget *ToolPanel::node(const QJsonObject &description) {
             if (auto *widget = node(child.toObject()))
                 layout->addWidget(widget);
         return column;
+    }
+    if (type == "video_editor") {
+        videoEditor = new VideoEditor(spec.extensions);
+        connect(videoEditor, &VideoEditor::sourceChanged, this, [this] {
+            if (restoring) return;
+            pendingMediaSelection = {}; context = {}; inputChanged();
+            QTimer::singleShot(0, this, [this] { if (!busy && videoEditor && !videoEditor->source().isEmpty()) trigger(spec.mediaProbe); });
+        });
+        connect(videoEditor, &VideoEditor::probeRequested, this, [this] { trigger(spec.mediaProbe); });
+        connect(videoEditor, &VideoEditor::selectionChanged, this, [this] { inputChanged(); });
+        connect(videoEditor, &VideoEditor::notice, this, &ToolPanel::setStatusText);
+        return videoEditor;
     }
     if (type == "fields")
         return makeFields();
@@ -310,6 +338,13 @@ QWidget *ToolPanel::node(const QJsonObject &description) {
         layout->addWidget(resultTable);
         auto *row = new QHBoxLayout;
         row->addStretch();
+        auto *openFile = button(QStringLiteral("打开首个输出文件"));
+        row->addWidget(openFile);
+        connect(openFile, &QPushButton::clicked, this, [this] {
+            const auto paths=lastResult.value("artifacts").toArray();
+            if (!paths.isEmpty() && QDir::isAbsolutePath(paths.first().toString()) && QFileInfo(paths.first().toString()).isFile())
+                QDesktopServices::openUrl(QUrl::fromLocalFile(paths.first().toString()));
+        });
         auto *open = button(QStringLiteral("打开首个输出所在目录"));
         auto *save = button(QStringLiteral("导出结果表 JSON"));
         row->addWidget(open);
@@ -574,6 +609,7 @@ QWidget *ToolPanel::makeActions() {
         if (index == 0)
             control->setProperty("primary", true);
         actions[action.id] = control;
+        if (action.id == spec.mediaProbe) control->setVisible(false);
         frame->append(control);
         connect(control, &QPushButton::clicked, this, [this, id = action.id] { trigger(id); });
     }
@@ -593,6 +629,10 @@ QJsonObject ToolPanel::parameters() const {
         else if (auto *text = qobject_cast<QLineEdit *>(it.value()))
             values[it.key()] = text->text();
     }
+    if (videoEditor) {
+        const auto selection = videoEditor->selection();
+        for (auto i=selection.begin(); i!=selection.end(); ++i) values[i.key()] = i.value();
+    }
     return values;
 }
 QJsonObject ToolPanel::input() const {
@@ -601,6 +641,7 @@ QJsonObject ToolPanel::input() const {
         for (int row = 0; row < fileTable->rowCount(); ++row)
             if (fileTable->item(row, 0)->checkState() == Qt::Checked)
                 files.append(fileTable->item(row, 0)->data(Qt::UserRole).toString());
+    if (videoEditor && !videoEditor->source().isEmpty()) files.append(videoEditor->source());
     return {{"params", parameters()},
             {"files", files},
             {"text", textInput ? textInput->content() : QString()},
@@ -624,6 +665,7 @@ QJsonObject ToolPanel::snapshot(bool includeInput) const {
                     QJsonObject{{"path", fileTable->item(row, 0)->data(Qt::UserRole).toString()},
                                 {"size", fileTable->item(row, 1)->data(Qt::UserRole).toDouble()},
                                 {"checked", fileTable->item(row, 0)->checkState() == Qt::Checked}});
+        if (videoEditor) state["video"] = videoEditor->snapshot();
         state["files"] = records;
         state["context"] = context;
         state["result"] = lastResult;
@@ -693,10 +735,28 @@ bool ToolPanel::restore(const QJsonObject &state) {
         }
     if (textInput)
         textInput->setContent(state.value("text").toString());
+    if (videoEditor) {
+        auto mediaState = state.value("video").toObject();
+        QString source = mediaState.value("source").toString();
+        const auto records = state.value("files").toArray();
+        if (source.isEmpty() && !records.isEmpty()) source = records.first().isString() ? records.first().toString() : records.first().toObject().value("path").toString();
+        videoEditor->setSource(source);
+        const auto media = state.value("context").toObject().value("media").toObject();
+        if (!media.isEmpty()) videoEditor->setMedia(media);
+        if (mediaState.isEmpty()) mediaState = values;
+        pendingMediaSelection = mediaState;
+        videoEditor->restoreSelection(mediaState);
+    }
     appendRecords(state.value("files").toArray(), true);
     if (state.contains("result"))
         setResult(state.value("result").toObject());
     context = state.value("context").toObject();
+    if (videoEditor && context.contains("media") && !videoEditor->setMedia(context.value("media").toObject())) {
+        context = {};
+        setStatusText(QStringLiteral("视频已变化或缺失，请重新选择并分析视频"));
+    }
+    if (videoEditor && !videoEditor->source().isEmpty() && !context.contains("media"))
+        QTimer::singleShot(0, this, [this] { if (!busy) trigger(spec.mediaProbe); });
     if (textInput) {
         auto cursor = textInput->textCursor();
         cursor.setPosition(
@@ -722,7 +782,9 @@ bool ToolPanel::restore(const QJsonObject &state) {
 void ToolPanel::inputChanged() {
     if (restoring)
         return;
-    context = {};
+    if (videoEditor && context.contains("media"))
+        context = {{"media", context.value("media")}};
+    else context = {};
     conditions();
     updateActions();
     emit changed();
@@ -744,12 +806,34 @@ void ToolPanel::updateActions() {
             actions[action.id]->setEnabled(
                 tool.executable && !busy && !scanning &&
                 (action.requiredContext.isEmpty() || context.contains(action.requiredContext)));
+    if (videoEditor) {
+        const bool ready = context.contains("media");
+        if (actions.contains(spec.mediaProbe)) actions[spec.mediaProbe]->setVisible(false);
+        const bool fast = parameters().value(spec.mediaPrepareWhen.value("field").toString()) == spec.mediaPrepareWhen.value("equals");
+        if (actions.contains(spec.mediaPrepare)) {
+            actions[spec.mediaPrepare]->setVisible(fast);
+            actions[spec.mediaPrepare]->setEnabled(!busy && ready && fast);
+        }
+        if (actions.contains(spec.mediaExport)) actions[spec.mediaExport]->setEnabled(!busy && ready && (!fast || context.contains("plan")));
+    }
 }
 void ToolPanel::trigger(const QString &action) {
-    if (actions.contains(action) && actions[action]->isEnabled())
-        emit actionRequested(action, input());
+    if (!actions.contains(action) || !actions[action]->isEnabled()) return;
+    if (videoEditor && action == spec.mediaExport && !context.value("plan").toObject().isEmpty() &&
+        context.value("plan").toObject().value("fast").toBool()) {
+        const auto plan=context.value("plan").toObject();
+        if (QMessageBox::question(this, QStringLiteral("确认快速截取"),
+            QStringLiteral("将截取 %1 至 %2。起点按关键帧调整，末尾可能有编码包边界误差。继续导出？")
+            .arg(VideoEditor::timecode(qint64(plan.value("start_ms").toDouble())), VideoEditor::timecode(qint64(plan.value("end_ms").toDouble())))) != QMessageBox::Yes) return;
+    }
+    emit actionRequested(action, input());
 }
 void ToolPanel::addPaths(const QStringList &paths) {
+    if (videoEditor) {
+        if (!busy && paths.size()==1) videoEditor->setSource(paths.first());
+        else setStatusText(QStringLiteral("每个视频会话接收一个文件"));
+        return;
+    }
     if (!fileTable || busy || scanning || paths.isEmpty())
         return;
     const int maximum = tool.limits.value("max_files").toInt(1000);
@@ -790,6 +874,19 @@ void ToolPanel::addPaths(const QStringList &paths) {
 void ToolPanel::setResult(const QJsonObject &value) {
     lastResult = value;
     context = value.value("context").toObject();
+    if (videoEditor) {
+        if (context.contains("media")) {
+            const auto metadata=context.value("media").toObject();
+            if (!videoEditor->setMedia(metadata)) context = {};
+            else if (!pendingMediaSelection.isEmpty()) {
+                if (pendingMediaSelection.value("identity").toString().isEmpty() ||
+                    pendingMediaSelection.value("identity")==metadata.value("identity"))
+                    videoEditor->restoreSelection(pendingMediaSelection);
+                pendingMediaSelection = {};
+            }
+        }
+        if (context.contains("plan")) videoEditor->showPlan(context.value("plan").toObject());
+    }
     updateActions();
     if (textResult) {
         const auto text = value.value("text").toString();
@@ -860,11 +957,14 @@ QString ToolPanel::resultText() const {
 }
 void ToolPanel::setJobState(const QString &state, const QString &message, int done, int total,
                             bool cancellable) {
+    const bool wasBusy = busy;
     busy = QStringList{"preparing", "queued", "running"}.contains(state);
+    if (busy && !wasBusy) { jobClock.start(); if (elapsedLabel) elapsedLabel->clear(); }
     for (auto *input : frozenInputs)
         input->setEnabled(!busy);
     if (textInput)
         textInput->setBusy(busy);
+    if (videoEditor) videoEditor->setBusy(busy);
     if (status) {
         static const QMap<QString, QString> labels{
             {"preparing", QStringLiteral("准备中")},
@@ -888,7 +988,8 @@ void ToolPanel::setJobState(const QString &state, const QString &message, int do
     updateActions();
 }
 bool ToolPanel::hasVolatileInput() const {
-    return (textInput && !textInput->content().isEmpty()) ||
+    return (videoEditor && !videoEditor->source().isEmpty()) ||
+           (textInput && !textInput->content().isEmpty()) ||
            (fileTable && fileTable->rowCount() > 0);
 }
 void ToolPanel::loadText() {

@@ -7,9 +7,11 @@ set(CMAKE_AUTORCC ON)
 if(MSVC)
   add_compile_options(/utf-8)
 endif()
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Sql Concurrent Test)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Sql Concurrent Test Multimedia MultimediaWidgets)
 enable_testing()
 add_library(modyn_shell
+  app/ui/components/video_surface.cpp app/ui/components/video_surface.h
+  app/ui/components/video_editor.cpp app/ui/components/video_editor.h
   app/resources/assets.qrc
   app/ui/components/spin_box.cpp
   app/storage/state_repository.cpp app/storage/data_transfer.cpp
@@ -28,7 +30,7 @@ add_library(modyn_shell
   app/ui/window/chrome_window.cpp app/ui/window/chrome_window.h
   app/catalog/package_catalog.cpp
   app/platform/windows/window_chrome.cpp)
-target_link_libraries(modyn_shell PUBLIC Qt6::Widgets Qt6::Sql Qt6::Concurrent)
+target_link_libraries(modyn_shell PUBLIC Qt6::Widgets Qt6::Sql Qt6::Concurrent Qt6::Multimedia Qt6::MultimediaWidgets)
 target_include_directories(modyn_shell PUBLIC app)
 target_compile_definitions(modyn_shell PUBLIC MODYN_VERSION="${PROJECT_VERSION}")
 add_executable(ModynToolboxApp WIN32 app/main.cpp app/automation.cpp)
@@ -112,3 +114,16 @@ target_link_libraries(modyn_sdk_compile PRIVATE Qt6::Core)
 
 add_test(NAME host_crash_tree COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/app/tests/integration/test_host_crash.py" "$<TARGET_FILE:ModynToolboxApp>" "${CMAKE_SOURCE_DIR}")
 set_tests_properties(host_crash_tree PROPERTIES TIMEOUT 60)
+
+# Real media tests use only private generated fixtures and the independent tool build.
+add_test(NAME video_core COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/tools/video-clip/tests/verify_video.py")
+set_tests_properties(video_core PROPERTIES TIMEOUT 120)
+add_executable(modyn_video_tests app/tests/unit/test_video_editor.cpp)
+target_link_libraries(modyn_video_tests PRIVATE modyn_shell Qt6::Test)
+set_target_properties(modyn_video_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+add_test(NAME video_editor COMMAND modyn_video_tests -o -,txt -o video-editor-results.txt,txt)
+set_tests_properties(video_editor PROPERTIES TIMEOUT 90 DEPENDS video_core
+ ENVIRONMENT "MODYN_SOURCE_ROOT=${CMAKE_SOURCE_DIR};QT_QPA_PLATFORM=offscreen;TEMP=${CMAKE_BINARY_DIR}/tests/tmp;TMP=${CMAKE_BINARY_DIR}/tests/tmp")
+
+add_test(NAME video_host COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/tools/video-clip/tests/verify_host.py" --binary "$<TARGET_FILE:ModynToolboxApp>")
+set_tests_properties(video_host PROPERTIES TIMEOUT 180 DEPENDS video_core)

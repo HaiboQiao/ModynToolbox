@@ -4,7 +4,7 @@
 
 ## 工具链
 
-宿主为 C++20、Qt 6.8.3 Widgets/Core/Concurrent/Sql，MSVC x64。Visual Studio 安装 C++ 桌面开发、Windows SDK 和 CMake 组件。dev.ps1 通过 vswhere 定位工具。Qt 默认位于项目 .local/toolchains/Qt/6.8.3/msvc2022_64，也可设置 MODYN_QT_ROOT。
+宿主为 C++20、Qt 6.8.3 Widgets/Core/Concurrent/Sql/Multimedia/MultimediaWidgets，MSVC x64。Visual Studio 安装 C++ 桌面开发、Windows SDK 和 CMake 组件。dev.ps1 通过 vswhere 定位工具。Qt 默认位于项目 .local/toolchains/Qt/6.8.3/msvc2022_64，也可设置 MODYN_QT_ROOT。
 
 当前机器已用 Visual Studio 2026 / MSVC 19.51 构建。Qt MSVC2022 x64 SDK 与当前编译器的组合通过本机测试。其他机器应重新 doctor 和编译，保留 Qt 许可及运行库。
 
@@ -89,3 +89,14 @@ python scripts/measure-resources.py
 ## 正式发布
 
 发布入口为 docs/release-policy.md，生成与上传脚本为 scripts/release.py。正式版本从 CMakeLists 读取，release-metadata 绑定源提交和工具版本。源码 ZIP 含 SOURCE-REVISION.json，可独立恢复开发环境；正式对外发布使用完整 Git 检出并通过干净提交检查。
+
+
+## 视频组件 SDK 增量
+
+视频公共组件需要Qt 6.8.3的Multimedia模块与Qt ShaderTools。使用Qt官方维护工具补装相同版本，或使用已有aqt环境在本项目工程根补装。依赖仍集中.local，保持版本6.8.3。
+
+```powershell
+.local/bootstrap/venv/Scripts/python.exe -m aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 --noarchives -m qtmultimedia qtshadertools -O .local/toolchains/Qt
+```
+
+新电脑先恢复原开发工具链，再执行工具构建。test现有14组包含真实视频核心、解码界面和固定宿主接入，必须先构建视频工具并让私有FFmpeg可用。`scripts/dev.ps1 tools`会恢复并构建所有工具。播放测试仅离屏并静音，不控制桌面。

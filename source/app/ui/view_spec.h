@@ -12,6 +12,9 @@ struct FieldSpec {
     QJsonObject condition;
 };
 struct ViewSpec {
+    int version = 1;
+    QString mediaProbe, mediaPrepare, mediaExport;
+    QJsonObject mediaPrepareWhen;
     QString kind = "text";
     QString inputTitle = QStringLiteral("输入内容");
     QString hint = QStringLiteral("工具输入");

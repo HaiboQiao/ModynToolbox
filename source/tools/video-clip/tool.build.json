@@ -1,0 +1,4 @@
+{
+  "language": "cpp",
+  "build_script": "build.py"
+}

@@ -47,6 +47,12 @@ def build(source, output=None):
     shutil.copy2(source/"integration/ui.json",target/"ui.json")
     (target/"LICENSES").mkdir()
     shutil.copy2(source/"LICENSE.txt",target/"LICENSES"/"TOOL.txt")
+    for name in recipe.get("license_files",[]):
+        license_path=Path(name)
+        if not license_path.is_absolute():license_path=source/license_path
+        destination=target/"LICENSES"/license_path.name
+        if destination.exists():raise ValueError("Duplicate license filename")
+        shutil.copy2(license_path,destination)
     write_json(target/"build-info.json",{"tool":metadata["tool_id"],"version":metadata["package_version"],
                                          "language":recipe["language"],"sdk_protocol":1})
     checksums={}

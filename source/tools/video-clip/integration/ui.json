@@ -1,0 +1,111 @@
+{
+  "view_version": 2,
+  "kind": "files",
+  "input_title": "选择一个本地视频",
+  "hint": "拖入视频，选择需要保留的片段。原视频不会被覆盖。",
+  "extensions": [
+    "mp4",
+    "mov",
+    "mkv",
+    "avi",
+    "webm",
+    "m4v",
+    "mts",
+    "m2ts"
+  ],
+  "media": {
+    "probe_action": "probe",
+    "prepare_action": "prepare",
+    "export_action": "export",
+    "prepare_when": {
+      "field": "mode",
+      "equals": "快速截取"
+    }
+  },
+  "fields": [
+    {
+      "id": "mode",
+      "label": "导出方式",
+      "type": "choice",
+      "options": [
+        "精确裁剪",
+        "快速截取"
+      ],
+      "default": "精确裁剪"
+    },
+    {
+      "id": "quality",
+      "label": "输出画质",
+      "type": "choice",
+      "options": [
+        "较高画质",
+        "均衡",
+        "较小文件"
+      ],
+      "default": "较高画质",
+      "enabled_when": {
+        "field": "mode",
+        "equals": "精确裁剪"
+      }
+    },
+    {
+      "id": "size",
+      "label": "输出尺寸",
+      "type": "choice",
+      "options": [
+        "原尺寸",
+        "最长边1920",
+        "最长边1280"
+      ],
+      "default": "原尺寸",
+      "enabled_when": {
+        "field": "mode",
+        "equals": "精确裁剪"
+      }
+    },
+    {
+      "id": "remove_audio",
+      "label": "移除音频",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "output_dir",
+      "label": "输出目录（留空使用源目录下的 Exports）",
+      "type": "directory",
+      "default": ""
+    },
+    {
+      "id": "filename",
+      "label": "文件名（留空自动命名）",
+      "type": "text",
+      "default": ""
+    }
+  ],
+  "layout": {
+    "type": "column",
+    "children": [
+      {
+        "type": "row",
+        "children": [
+          {
+            "type": "video_editor",
+            "stretch": 2
+          },
+          {
+            "type": "fields"
+          }
+        ]
+      },
+      {
+        "type": "output_table"
+      },
+      {
+        "type": "actions"
+      },
+      {
+        "type": "status"
+      }
+    ]
+  }
+}

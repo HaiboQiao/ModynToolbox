@@ -64,8 +64,9 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
     if (!object.contains("protocol_version"))
         return tool;
     if (object.value("protocol_version") != QJsonValue(1) ||
-        object.value("ui_schema_version") != QJsonValue(1) || tool.viewFile != "ui.json")
+        (object.value("ui_schema_version") != QJsonValue(1) && object.value("ui_schema_version") != QJsonValue(2)) || tool.viewFile != "ui.json")
         return invalid(QStringLiteral("不兼容的执行或界面规范"));
+    tool.uiSchemaVersion = object.value("ui_schema_version").toInt(1);
     tool.entryProgram = object.value("entry_program").toString();
     if (Files::child(root, tool.entryProgram, true).isEmpty())
         return invalid(QStringLiteral("执行入口缺失或越界"));
@@ -113,7 +114,7 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
         if (!identifier.match(item.id).hasMatch() || identifiers.contains(item.id) ||
             item.label.isEmpty() || item.label.size() > 80 || item.confirmation.size() > 1024 ||
             item.requiredContext.size() > 80 || item.timeoutSeconds < 1 ||
-            item.timeoutSeconds > 3600)
+            item.timeoutSeconds > (object.value("ui_schema_version").toInt() == 2 ? 86400 : 3600))
             return invalid(QStringLiteral("动作标识或执行策略无效"));
         identifiers.insert(item.id);
         tool.actions.append(item);

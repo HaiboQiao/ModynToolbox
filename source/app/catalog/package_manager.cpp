@@ -66,6 +66,7 @@ QString PackageManager::install(const QString &source) {
     const auto view = loadViewSpec(source, true);
     if (!view.error.isEmpty())
         return view.error;
+    if (view.version != tool.uiSchemaVersion) return QStringLiteral("工具清单与界面版本不一致");
     const auto destination = packagesRoot + "/" + tool.id + "/" + tool.version;
     if (QFileInfo::exists(destination))
         return QStringLiteral("相同版本已安装，请提高工具版本或先移除闲置版本");

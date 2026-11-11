@@ -2,6 +2,10 @@
 #include "automation.h"
 #include "ui/workbench.h"
 #include "ui/components/tool_panel.h"
+#include "ui/components/video_editor.h"
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QPushButton>
 #include "jobs/scheduler.h"
 #include "core/files.h"
 #include <QApplication>
@@ -77,6 +81,20 @@ class Automation : public QObject {
                                                          : body->input(),
                                   step.value("confirmed").toBool());
             }
+        } else if (op == "preview") {
+            auto *body=window->panel(current);
+            auto *editor=body?body->findChild<VideoEditor *>():nullptr;
+            if (!editor) error="no media editor";
+            else {
+                if (auto *audio=editor->findChild<QAudioOutput *>()) audio->setMuted(true);
+                if (step.value("play").toBool()) editor->findChild<QPushButton *>("videoPlay")->click();
+                else editor->pause();
+                if (step.contains("position_ms"))
+                    if (auto *player=editor->findChild<QMediaPlayer *>()) player->setPosition(step.value("position_ms").toInteger());
+            }
+        } else if (op == "cancel") {
+            if (auto *body=window->panel(current)) emit body->cancelRequested();
+            else error="no active panel";
         } else if (op == "detach")
             window->detachSession(current);
         else if (op == "attach")

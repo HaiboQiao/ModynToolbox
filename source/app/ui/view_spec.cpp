@@ -23,8 +23,21 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
     const auto object = Files::readObject(path, 65536, &error);
     if (!error.isEmpty())
         return invalid(error);
-    if (object.value("view_version") != QJsonValue(1))
+    spec.version = object.value("view_version").toInt();
+    if (spec.version != 1 && spec.version != 2)
         return invalid(QStringLiteral("不支持的界面版本"));
+    if (spec.version == 2 && object.contains("media")) {
+        const auto media = object.value("media").toObject();
+        const QRegularExpression action("^[a-z][a-z0-9-]{0,63}$");
+        spec.mediaPrepareWhen = media.value("prepare_when").toObject();
+        spec.mediaProbe = media.value("probe_action").toString();
+        spec.mediaPrepare = media.value("prepare_action").toString();
+        spec.mediaExport = media.value("export_action").toString();
+        if (!action.match(spec.mediaProbe).hasMatch() || !action.match(spec.mediaPrepare).hasMatch() ||
+            !action.match(spec.mediaExport).hasMatch() || spec.mediaProbe == spec.mediaPrepare ||
+            spec.mediaProbe == spec.mediaExport || spec.mediaPrepare == spec.mediaExport)
+            return invalid(QStringLiteral("媒体动作绑定无效"));
+    }
     spec.kind = object.value("kind").toString();
     if (spec.kind != "text" && spec.kind != "files")
         return invalid(QStringLiteral("不支持的布局"));
@@ -119,6 +132,12 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
         if (!field.condition.isEmpty() &&
             !identifiers.contains(field.condition.value("field").toString()))
             return invalid(QStringLiteral("条件引用不存在"));
+    if (!spec.mediaProbe.isEmpty() &&
+        (spec.kind != "files" || !object.value("layout").isObject() ||
+         spec.mediaPrepareWhen.size() != 2 || !spec.mediaPrepareWhen.contains("equals") ||
+         !identifiers.contains(spec.mediaPrepareWhen.value("field").toString()) ||
+         identifiers.contains("start_ms") || identifiers.contains("end_ms") || identifiers.contains("audio_index")))
+        return invalid(QStringLiteral("媒体布局、条件或保留参数无效"));
     if (object.contains("layout")) {
         if (!object.value("layout").isObject())
             return invalid(QStringLiteral("组件树无效"));
@@ -139,15 +158,16 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
                         return false;
                 return true;
             }
-            if (!QStringList{"files", "text", "fields", "actions", "output_text", "output_table",
-                             "image_preview", "status"}
-                     .contains(type) ||
+            if (!(QStringList{"files", "text", "fields", "actions", "output_text", "output_table",
+                              "image_preview", "status"}.contains(type) ||
+                  (spec.version == 2 && !spec.mediaProbe.isEmpty() && type == "video_editor")) ||
                 components.contains(type))
                 return false;
             components.insert(type);
             return true;
         };
-        if (!validate(spec.layout, 1))
+        if (!validate(spec.layout, 1) ||
+            (!spec.mediaProbe.isEmpty() && (!components.contains("video_editor") || components.contains("files") || components.contains("text"))))
             return invalid(QStringLiteral("未知、重复或超限的界面组件"));
     }
     return spec;
