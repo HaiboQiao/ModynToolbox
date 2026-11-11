@@ -48,7 +48,7 @@ Release、Qt offscreen、暖文件缓存、合成640×360/25fps/6秒素材。以
 
 仓库根及source的Run-Dev.cmd编译运行默认Debug源码；Open-ModynToolbox.cmd定位最近完整本地包。两入口均已获得本轮新界面和视频包。完整本地目录为.local/releases/ModynToolbox-1.1.0-032af42e，根ModynToolbox.exe可双击。data初始为空，PATH只含System32时视频专项通过。正式对外版本号/标签/上传仍由发布指令和release-policy控制。
 
-当前Release与验证包主程序SHA256相同，为6146a90b435e306f828b2868ca8b05cb7678a1ad50fce803e435d45c3b12d6a3。本轮工作区存在开发修改，验证包source_dirty为true，不能作为已绑定正式标签的发布资产。
+当前Release与验证包主程序SHA256相同，为6146a90b435e306f828b2868ca8b05cb7678a1ad50fce803e435d45c3b12d6a3。该包构建当时工作区存在开发修改，包内source_dirty为true，不能作为已绑定正式标签的发布资产。随后源码、测试和交接已保存为本地提交58d121e，代码与上述已验证二进制对应；后续仅补充本段交付来源记录。
 
 最终完整主界面截图.local/design/VID-1-final-main.png，标准/紧凑12/14/18字号矩阵.local/design/VID-1-*.png。生成样片、日志、运行数据与测试残留全部在.local，未使用用户私有视频。
 
