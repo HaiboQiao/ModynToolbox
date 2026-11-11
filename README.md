@@ -11,7 +11,7 @@
 
 ## 直接使用
 
-下载 [ModynToolbox 1.0.2 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.0.2/ModynToolbox-1.0.2-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
+下载 [ModynToolbox 1.1.0 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.1.0/ModynToolbox-1.1.0-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
 
 保留同级 app、tools、data 和 licenses。包内已有图片压缩、JSON、批量重命名和文件校验四个工具，携带所需运行时。目标用户无需安装 Python、Qt 或编译器。
 

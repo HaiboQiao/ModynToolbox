@@ -18,8 +18,10 @@ class LauncherTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="空格 路径 (launch) ", dir=parent) as folder:
             root = Path(folder)
             (root / "source/scripts").mkdir(parents=True)
+            repository_launchers = (REPO / "source").resolve() == SOURCE
             for name in ("Open-ModynToolbox.cmd", "Run-Dev.cmd"):
-                shutil.copy2(REPO / name, root / name)
+                if repository_launchers:
+                    shutil.copy2(REPO / name, root / name)
                 shutil.copy2(SOURCE / name, root / "source" / name)
             stub = """param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Rest = @())
 [IO.File]::WriteAllText($env:MODYN_LAUNCH_TEST_OUTPUT, (@{script=$PSCommandPath;arguments=@($Rest)} | ConvertTo-Json))
@@ -27,10 +29,11 @@ exit [int]$env:MODYN_LAUNCH_TEST_CODE
 """
             for name in ("open-release.ps1", "dev.ps1"):
                 (root / "source/scripts" / name).write_text(stub, encoding="utf-8-sig")
-            cases = [("Open-ModynToolbox.cmd", "open-release.ps1", []),
-                     ("source/Open-ModynToolbox.cmd", "open-release.ps1", []),
-                     ("Run-Dev.cmd", "dev.ps1", ["run"]),
+            cases = [("source/Open-ModynToolbox.cmd", "open-release.ps1", []),
                      ("source/Run-Dev.cmd", "dev.ps1", ["run"])]
+            if repository_launchers:
+                cases += [("Open-ModynToolbox.cmd", "open-release.ps1", []),
+                          ("Run-Dev.cmd", "dev.ps1", ["run"])]
             for relative, expected, arguments in cases:
                 for code in (0, 37):
                     with self.subTest(entry=relative, exit_code=code):

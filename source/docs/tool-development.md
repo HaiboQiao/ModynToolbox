@@ -15,7 +15,7 @@ Python 工具不需要 Qt，C++ 示例工具只用 QtCore 做 JSON 与哈希。�
 3. 编写 integration/ui.json。用字段声明参数，用 row/column 组合公共组件。动作从 manifest 自动生成，动作调用收到 text、files、params、context。
 4. 适配层使用 shared/sdk/python/modyn_sdk.py 或 shared/sdk/cpp/modyn_sdk.h。接收动作，调用自己的核心，返回公共结果。
 5. 编写 tool.build.json 与依赖锁定记录。Python 可参考三个基础工具，native 可参考 file-hash。Python 工具执行 python scripts/build-tool.py tools/<id>。自定义原生构建可在 tool.build.json 声明 build_script，通用 prepare-tools 会调用该工具自己的脚本。file-hash 使用 python tools/file-hash/build.py。这些入口只生成工具包。
-6. 在现有 app 的“管理 → 工具包”安装生成目录。界面由 ui.json 渲染，后端按需启动，无需修改 app 代码、宿主 CMake 或重新编译宿主。
+6. 在现有 app 的“工作区管理 → 工具包”安装生成目录。界面由 ui.json 渲染，后端按需启动，无需修改 app 代码、宿主 CMake 或重新编译宿主。
 7. 独立测试新会话、浮窗、取消、缺依赖和移除。升级用新 package_version，禁止同版本覆盖安装。
 
 现有工具目录可以从其他工程复制进来。需要适配的是界面说明和输入输出协议，原始业务核心可以继续维护在自己的工程。
