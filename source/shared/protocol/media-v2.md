@@ -22,4 +22,4 @@ context.plan包含fingerprint、start_ms、requested_start_ms、end_ms、fast、
 
 公共控件位于app/ui/components/video_editor.*，Qt Multimedia延迟到有效媒体加载时创建播放器；切换隐藏暂停，浮窗搬移复用同一控件，停止/收回不重复提交。预览是宿主内能力，与独立业务进程隔离范围分别说明。
 
-旧公开1.1.0宿主没有这些能力，将拒绝UI v2。当前开发构建仍使用工程版本1.1.0，正式发布时按release-policy分配新宿主版本并更新工具min_host_version。不能声称新工具可直接加入旧公开宿主。
+旧公开1.1.0宿主没有这些能力，将拒绝UI v2。正式宿主1.2.0支持该能力，视频工具min_host_version为1.2.0。不能声称新工具可直接加入旧公开宿主。

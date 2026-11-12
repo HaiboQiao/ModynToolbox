@@ -1,0 +1,43 @@
+{
+  "source_bundle": "ModynToolbox-1.2.0-third-party-source.zip",
+  "inputs": [
+    {
+      "name": "ffmpeg-9.0.2.tar.xz",
+      "component": "ffmpeg",
+      "url": "https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
+      "sha256": "8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e",
+      "bytes": 12040788
+    },
+    {
+      "name": "x264.tar.gz",
+      "component": "x264",
+      "url": "https://codeload.github.com/mirror/x264/tar.gz/c24e06c2e184345ceb33eb20a15d1024d9fd3497",
+      "sha256": "090d730e867fc63631782a1287974635d1237d0fa7c6fd1d09fd543620a56689",
+      "bytes": 1035587
+    },
+    {
+      "name": "ffmpeg-7.1.tar.xz",
+      "component": "qt-ffmpeg",
+      "url": "https://ffmpeg.org/releases/ffmpeg-7.1.tar.xz",
+      "sha256": "40973d44970dbc83ef302b0609f2e74982be2d85916dd2ee7472d30678a7abe6",
+      "bytes": 11011364,
+      "license": "LGPL-2.1-or-later"
+    },
+    {
+      "name": "qtbase-6.8.3.tar.gz",
+      "component": "qtbase",
+      "url": "https://codeload.github.com/qt/qtbase/tar.gz/refs/tags/v6.8.3",
+      "sha256": "cea5c8f2c20d9cbd684f8a402721e63b87a2886e906f6ec7e0f7e1ff69c83206",
+      "bytes": 63784496,
+      "license": "LGPL-3.0 / component terms"
+    },
+    {
+      "name": "qtmultimedia-6.8.3.tar.gz",
+      "component": "qtmultimedia",
+      "url": "https://codeload.github.com/qt/qtmultimedia/tar.gz/refs/tags/v6.8.3",
+      "sha256": "e8b96dc1b5cc541a870a4bcd3d1011e841e59d3a4fb8fbd104a8f0a3d3d1cd42",
+      "bytes": 23734140,
+      "license": "LGPL-3.0 / component terms"
+    }
+  ]
+}

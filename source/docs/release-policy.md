@@ -109,11 +109,11 @@ python scripts/release.py prepare
 python scripts/release.py validate
 ```
 
-prepare 读取最近 package、版本与 Git 来源，生成完整便携 ZIP、四个工具 ZIP、固定提交的源码 ZIP、SHA256SUMS.txt 和 release-manifest.json。输出集中 source/.local/distribution/v<version>。相同版本已有分发输出时核对内容，不静默覆写。
+prepare 读取最近 package、版本与 Git 来源，生成完整便携 ZIP、所有随包工具 ZIP、固定提交的源码 ZIP、SHA256SUMS.txt 和 release-manifest.json。输出集中 source/.local/distribution/v<version>。相同版本已有分发输出时核对内容，不静默覆写。
 
 validate 对 ZIP 做 CRC/路径检查、解压、包内 SHA256 核验、便携业务与工具放目录刷新验证。发布清单记录结果和绑定的源提交。
 
-单独工具发布时，先提高该工具版本并通过独立核心/适配回归，用工具自己的构建入口生成包。以相同目录结构和 SHA256 清单形成独立 ZIP，按第 9 节草稿/校验/公开流程上传到独立工具标签。当前整包脚本覆盖宿主与随包工具资产。
+单独工具发布时，先提高该工具版本并通过独立核心/适配回归，用工具自己的构建入口生成包。以相同目录结构和 SHA256 清单形成独立 ZIP，按第 9 节草稿/校验/公开流程上传到独立工具标签。当前整包脚本覆盖宿主、随包工具、独立媒体引擎及第三方对应源码资产。
 
 ## 9. 上传 GitHub
 
@@ -161,3 +161,8 @@ python scripts/release.py publish
 ## 首次分发网络恢复记录
 
 1.0.1 标签保留最初的固定源提交，未公开为正式 Release。首次大文件传输达到原 HTTP 写入时限后，改用已验证的流式客户端，并补上从认证列表恢复草稿的逻辑。采用新的 1.0.2 标签发布修正后的完整流程，原标签保持其既有来源。
+
+
+## 媒体依赖分发（1.2.0起）
+
+含视频工具时，发布必须附带与实际二进制匹配的媒体引擎及第三方对应源码ZIP。inputs.lock.json、media-sources.lock.json记录源码归档和哈希，构建脚本与配置/工具链记录随源码资产提供，不能仅放泛化上游首页冒充对应源码。发布校验和匿名下载复验必须执行视频专项、实际编码取消、崩溃恢复及目录接入，随包引擎必须能在受限PATH运行。

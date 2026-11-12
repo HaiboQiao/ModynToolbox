@@ -100,3 +100,8 @@ python scripts/measure-resources.py
 ```
 
 新电脑先恢复原开发工具链，再执行工具构建。test现有14组包含真实视频核心、解码界面和固定宿主接入，必须先构建视频工具并让私有FFmpeg可用。`scripts/dev.ps1 tools`会恢复并构建所有工具。播放测试仅离屏并静音，不控制桌面。
+
+
+## 1.2.0视频引擎来源
+
+常规适配器构建从dependencies.lock.json恢复发布中的锁定媒体引擎ZIP，无需安装MSYS2。仅重建FFmpeg本身时使用tools/video-clip/engine/prepare.py和私有UCRT64，具体输入与工具链见该目录README及licenses/MEDIA-SOURCES.md。正式发布同时提供第三方源码归档，不能用旧开发Gyan镜像材料替代本版来源。

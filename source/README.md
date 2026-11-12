@@ -74,7 +74,7 @@ powershell -NoProfile -File scripts/dev.ps1 test
 
 ## 当前范围
 
-包含四个可实际执行的工具、独立窗口与并排会话、版本安装与移除、取消与进程树管理、可选草稿、历史、设置、数据备份恢复和便携发布。
+包含五个可实际执行的工具、独立窗口与并排会话、版本安装与移除、取消与进程树管理、可选草稿、历史、设置、数据备份恢复和便携发布。
 
 默认浅色雾紫主题。大文本超过 32768 个 UTF-16 码元时显示只读预览，完整数据仍参与处理、复制和导出。首版面向可信本地工具，工具拥有当前用户权限。
 
@@ -83,4 +83,4 @@ powershell -NoProfile -File scripts/dev.ps1 test
 界面风格与公共功能设计见 [UI 设计规范](docs/ui-design-system.md)，新工具开发应一并阅读。
 
 
-视频裁剪本地开发增量位于tools/video-clip，使用公共UI v2，开发和使用说明见该工具README与docs/verification/VID-1-video-tool.md。当前公开版1.1.0与本轮开发能力分开记录。
+视频裁剪（1.2.0起）位于tools/video-clip，使用公共UI v2，开发和使用说明见该工具README与docs/verification/VID-1-video-tool.md。当前公开版1.1.0与本轮开发能力分开记录。

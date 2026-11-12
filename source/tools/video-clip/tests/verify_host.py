@@ -2,10 +2,10 @@
 from pathlib import Path
 import argparse,hashlib,json,os,subprocess,time,uuid
 ROOT=Path(__file__).resolve().parents[3]
-parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,required=True);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,required=True);parser.add_argument("--tool-package",type=Path);args=parser.parse_args()
 BINARY=args.binary.resolve()
 BASE=ROOT/".local/video-host-tests"/str(uuid.uuid4());BASE.mkdir(parents=True)
-PACKAGE=Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
+PACKAGE=args.tool_package.resolve() if args.tool_package else Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
 SAMPLE=Path(json.loads((ROOT/".local/video-tests/latest.json").read_text(encoding="utf-8"))["sample"])
 ENV=os.environ.copy();ENV["QT_QPA_PLATFORM"]="offscreen"
 ENV["PATH"]=str(Path(ENV.get("SystemRoot","C:/Windows"))/"System32")

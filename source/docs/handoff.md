@@ -33,3 +33,8 @@
 ## 仓库整理与发布接手
 
 当前 Git 根含 source 和 releases，本工程位于 source。源码包解压后可直接将所在目录作为工程根。发布前读取 release-policy.md，GitHub 公开状态与固定标签的来源见仓库 releases 对应版本回执。历史验证中的旧根路径保留审计背景，当前构建和数据路径从工程根重新解析。
+
+
+## 1.2.0新增接手入口
+
+视频工具位于tools/video-clip；通用媒体契约在shared/protocol/media-v2.md。工具1.0.0需要宿主1.2.0。处理引擎来自engine输入锁和配方，普通工具构建恢复同版公开引擎归档，只有维护者重建媒体引擎需要私有MSYS2。发布必须同时携带第三方对应源码并对下载包运行视频专项。最新发布证据见verification/REL-3-publication.md与仓库releases/1.2.0。

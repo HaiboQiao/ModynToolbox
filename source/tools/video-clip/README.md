@@ -1,6 +1,6 @@
 # 视频裁剪
 
-ModynToolbox 独立工具，开发包 0.1.0。视频分析、裁剪、编码和输出事务在本目录的原生进程运行，前端通过 integration/ui.json 使用公共 UI v2。当前 GitHub 公开宿主 1.1.0 不支持 UI v2，需要本轮源码构建；min_host_version 仍引用当前工程版本，实际兼容还必须满足 ui_schema_version=2。
+ModynToolbox 独立工具，工具包 1.0.0。视频分析、裁剪、编码和输出事务在本目录的原生进程运行，前端通过 integration/ui.json 使用公共 UI v2。需要宿主1.2.0及UI v2，旧1.1.0不兼容。
 
 ## 使用
 
@@ -28,7 +28,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1 tools
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1 test
 ```
 
-build.py 根据 dependencies.lock.json 下载/校验 FFmpeg 9.0.2，构建 ModynVideo.exe 与 ModynVideoCli.exe，调用通用打包器生成完整工具包。CLI接受动作和input.json路径，输入结构与工具协议相同。验证文件、报告与合成视频都位于 .local/video-tests，不触碰用户视频。
+build.py 根据 dependencies.lock.json 下载/校验 FFmpeg 9.0.2-modyn1，构建 ModynVideo.exe 与 ModynVideoCli.exe，调用通用打包器生成完整工具包。CLI接受动作和input.json路径，输入结构与工具协议相同。验证文件、报告与合成视频都位于 .local/video-tests，不触碰用户视频。
 
 ```powershell
 .local/tools/video-clip/native/Release/ModynVideoCli.exe probe input.json

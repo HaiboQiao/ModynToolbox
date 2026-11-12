@@ -1,12 +1,13 @@
 {
-  "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
-  "version": "9.0.2",
-  "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+  "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.2.0/ModynToolbox-media-engine-9.0.2-modyn1-windows-x64.zip",
+  "version": "9.0.2-modyn1",
+  "sha256": "4ac59d4b688c62f329ecfc1ad47d94ec6f732f8b51f2e0672a5b35dd9f48e673",
   "files": {
-    "ffmpeg.exe": "3256173f3f8bffd7df12227c68adf68025edb1832273a9530688a7bb1ed8edec",
-    "ffprobe.exe": "f0d36ecbbdd3bcfac3efa078c96c7271c2e68b3810595552ac3b7f17e9a65c52"
+    "ffmpeg.exe": "f2c118ddba560d0a2e84363ff849cdddfdcf6989191fcfd836766b596c25056b",
+    "ffprobe.exe": "326c8f582713500fddc515d1fd7b9bdb5b0e4ced6de4f6c073e6591c642380b9"
   },
-  "publisher": "Gyan Doshi / GyanD/codexffmpeg",
-  "source": "https://github.com/FFmpeg/FFmpeg/tree/n9.0.2",
-  "distribution_note": "Windows essentials static build. Includes GPL components such as libx264. Keep complete build license and corresponding-source/build references. Public distribution requires reviewing actual build component obligations."
+  "publisher": "ModynToolbox rebuildable source build",
+  "source_inputs": "engine/inputs.lock.json",
+  "source_bundle": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.2.0/ModynToolbox-1.2.0-third-party-source.zip",
+  "license": "GPL-3.0-or-later"
 }

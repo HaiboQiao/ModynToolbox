@@ -1,9 +1,10 @@
 """Send the real JSONL cancellation only after the real encoder has written video bytes."""
 from pathlib import Path
 from ctypes import wintypes as w
-import ctypes as c,json,os,subprocess,time,uuid
+import ctypes as c,json,os,subprocess,time,uuid,argparse
 ROOT=Path(__file__).resolve().parents[3]
-package=Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
+parser=argparse.ArgumentParser();parser.add_argument("--tool-package",type=Path);args=parser.parse_args()
+package=args.tool_package.resolve() if args.tool_package else Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
 base=ROOT/".local/video-cancel-tests"/str(uuid.uuid4());base.mkdir(parents=True)
 source=base/"source.mp4"
 subprocess.run([str(package/"backend/ffmpeg.exe"),"-v","error","-f","lavfi","-i","testsrc2=size=1920x1080:rate=30","-t","20","-c:v","libx264","-threads","2","-preset","ultrafast","-crf","18",str(source)],check=True,capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW)

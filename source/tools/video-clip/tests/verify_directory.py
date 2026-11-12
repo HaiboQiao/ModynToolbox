@@ -2,9 +2,9 @@
 from pathlib import Path
 import argparse,hashlib,json,os,shutil,subprocess,time,uuid
 ROOT=Path(__file__).resolve().parents[3]
-parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,required=True);args=parser.parse_args();binary=args.binary.resolve()
+parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,required=True);parser.add_argument("--tool-package",type=Path);args=parser.parse_args();binary=args.binary.resolve()
 base=ROOT/".local/video-directory-tests"/str(uuid.uuid4());base.mkdir(parents=True)
-package=Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
+package=args.tool_package.resolve() if args.tool_package else Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
 source=json.loads((ROOT/".local/video-tests/latest.json").read_text(encoding="utf-8"))["sample"]
 metadata=json.loads((package/"manifest.json").read_text(encoding="utf-8"))
 target=base/"tools"/metadata["tool_id"]/metadata["package_version"]

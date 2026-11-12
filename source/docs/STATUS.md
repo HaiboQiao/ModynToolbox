@@ -1,5 +1,16 @@
 # 当前状态
 
+更新于2026-11-12。本快照为1.2.0发行源码，新增视频裁剪1.0.0和UI v2，最低宿主1.2.0；四个原工具版本保持不变。公开上传和下载复验结果以releases/1.2.0回执及main最新记录为准。
+
+正式依赖下Release14/14，51.11秒；Debug14/14，83.37秒；视频核心20项、启动器3项通过。Debug初轮测试程序在启动阶段异常，清理该测试exe/ilk并非增量重链后单项连续3次及全量通过，具体底层原因未确定。记录见verification/REL-3-publication.md。
+
+视频处理引擎为项目从锁定FFmpeg9.0.2/x264源码构建的9.0.2-modyn1，仅系统DLL依赖，两程序58.23MiB；源码、配方和构建记录随正式资产提供。旧开发Gyan构建不再用于本版。Qt播放器仍为独立的Qt6.8.3/FFmpeg7.1动态依赖。
+
+物理播放/听感、多DPI/Snap、异机、实机空间/ACL故障与复杂4K等仍按设备范围验收。正式发布规程见release-policy，视频原开发记录见verification/VID-1-video-tool.md。
+
+## 以下保留开发与历史版本记录
+
+
 更新于2026-11-12。本地开发版新增视频裁剪与通用UI v2，已安装到日常工具目录并生成完整本地包。Run-Dev.cmd和Open-ModynToolbox.cmd均可使用本轮功能。当前公开版仍1.1.0，尚未发布视频增量。
 
 最终Release14/14（62.34秒）、Debug14/14（104.02秒）；真实视频核心20项、视频控件8项、便携原业务33步、便携视频34步及崩溃恢复、运行中目录接入11步通过。编码写入后取消0.063秒为本次观测。报告verification/VID-1-video-tool.md，功能文档features/video-clip。
@@ -75,3 +86,8 @@ GitHub Release 为 https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.0.2
 ## VID-1 视频裁剪规划
 
 2026-11-11 按用户本轮要求完成需求与初版技术方案草案，位于 features/video-clip/spec.md、plan.md、task.md、checklist.md。当前未实现；公开版仍为1.1.0。建议独立视频工具包与通用UI v2视频组件，先验证Qt Multimedia/FFmpeg部署、预览、取消和资源约束，再实施。
+
+
+## REL-3 发布准备（2026-11-12）
+
+用户明确要求发布并上传GitHub。版本1.2.0，视频工具1.0.0且最低宿主1.2.0。补齐对应源码/构建材料，将通用静态引擎替换为锁定FFmpeg9.0.2与x264的项目构建。正式验证、固定提交、上传和公开下载复核进行中，尚未报告发布完成。

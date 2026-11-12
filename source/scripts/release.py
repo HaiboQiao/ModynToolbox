@@ -116,6 +116,29 @@ def prepare():
         assets.append(asset(archive, "tool", tool_id=tool["tool_id"], version=tool["package_version"],
                             protocol=tool["protocol_version"], ui_schema=tool["ui_schema_version"],
                             min_host_version=tool.get("min_host_version", "1.0.0")))
+    # Media binaries and exact corresponding sources are published with the application.
+    media_sources = read(ROOT / "licenses/media-sources.lock.json")
+    third_party = output / ("ModynToolbox-" + version + "-third-party-source.zip")
+    with zipfile.ZipFile(third_party, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
+        for item in media_sources["inputs"]:
+            path = ROOT / ".local/media-source" / item["name"]
+            if not path.is_file() or sha(path) != item["sha256"]:
+                raise RuntimeError("Corresponding source missing or changed: " + item["name"])
+            archive.write(path, "third-party-source/archives/" + item["name"])
+        for path in (ROOT / "tools/video-clip/engine").glob("*"):
+            if path.is_file(): archive.write(path, "third-party-source/engine/" + path.name)
+        for name in ("media-sources.lock.json", "MEDIA-SOURCES.md", "NOTICE.md"):
+            archive.write(ROOT / "licenses" / name, "third-party-source/" + name)
+        for path in (ROOT / ".local/media-engine/dist").glob("build-*.txt"):
+            archive.write(path, "third-party-source/build-records/" + path.name)
+    assets.append(asset(third_party, "third_party_source"))
+    engine_lock = read(ROOT / "tools/video-clip/dependencies.lock.json")
+    engine_zip = ROOT / ".local/downloads" / Path(engine_lock["url"]).name
+    if not engine_zip.is_file() or sha(engine_zip) != engine_lock["sha256"]:
+        raise RuntimeError("Pinned processing engine archive missing")
+    engine_target = output / engine_zip.name
+    shutil.copy2(engine_zip, engine_target)
+    assets.append(asset(engine_target, "media_engine"))
     source = output / ("ModynToolbox-" + version + "-source.zip")
     git("archive", "--format=zip", "--prefix=ModynToolbox-source-" + version + "/",
         "--output=" + str(source), commit + ":source")
@@ -152,6 +175,18 @@ def extract(archive, target):
 def portable_test(package):
     subprocess.run([os.sys.executable, str(ROOT / "scripts/verify-portable.py"),
                     "--source", str(package)], cwd=ROOT, check=True)
+
+
+def video_test(package):
+    tool = next((package / "tools/video-clip").glob("*/manifest.json")).parent
+    subprocess.run([os.sys.executable, str(ROOT / "tools/video-clip/tests/verify_host.py"),
+                    "--binary", str(package / "app/ModynToolbox.App.exe"),
+                    "--tool-package", str(tool)], cwd=ROOT, check=True)
+    subprocess.run([os.sys.executable, str(ROOT / "tools/video-clip/tests/verify_directory.py"),
+                    "--binary", str(package / "app/ModynToolbox.App.exe"),
+                    "--tool-package", str(tool)], cwd=ROOT, check=True)
+    subprocess.run([os.sys.executable, str(ROOT / "tools/video-clip/tests/verify_cancel.py"),
+                    "--tool-package", str(tool)], cwd=ROOT, check=True)
 
 
 def directory_drop_test(package, tool_zip, base):
@@ -236,9 +271,12 @@ def validate():
     if actual != "ModynToolbox " + manifest["version"]:
         raise RuntimeError("Compiled application version differs from release manifest")
     portable_test(package)
+    video_test(package)
     tool = next(entry for entry in manifest["assets"] if entry.get("tool_id") == "file-hash")
     directory_drop_test(package, folder / tool["name"], base)
     manifest["validation"] = {"complete": True, "portable_steps": 33, "directory_drop_refresh_execute": True,
+                              "video_host_and_crash_recovery": True, "video_live_directory": True,
+                              "video_encoding_cancel": True, "media_corresponding_sources": True,
                               "platform": "Windows x64, isolated PATH and Qt offscreen",
                               "manual_pending": ["physical multi-DPI/Snap", "another clean computer"],
                               "validated_at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
@@ -429,6 +467,7 @@ def publish():
     unpack = public / ("unpacked-" + str(uuid.uuid4())[:8])
     extract(public / archive["name"], unpack)
     portable_test(unpack / "ModynToolbox")
+    video_test(unpack / "ModynToolbox")
     receipt["public_download_verified"] = True
     receipt["downloaded_assets"] = len(assets)
     write(folder / "publication.json", receipt)
