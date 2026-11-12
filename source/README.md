@@ -42,6 +42,7 @@ source/
 │   ├── image/                 图片压缩与格式转换
 │   ├── rename/                批量重命名、撤销与恢复
 │   ├── file-hash/             独立 C++ 文件校验工具
+│   ├── video-clip/            独立视频裁剪、压缩与媒体引擎
 │   └── tests/                 工具核心测试汇总入口
 ├── shared/                    版本化协议与 Python/C++ SDK
 ├── scripts/                   构建、工具打包、便携发布及验证
