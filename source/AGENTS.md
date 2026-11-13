@@ -69,3 +69,8 @@
 只有用户在本次任务中明确要求发布/发版，才执行正式版本发布。发布规则讨论、源码优化、修复与本地验证按当前任务授权处理。正式发布必须同时同步最新源码、说明、运行资产和发布回执到 GitHub，并完成远端及下载核验。单独源码同步按用户明确的同步授权执行。
 
 新增或修改公共/工具界面前读取 docs/ui-design-system.md。沿用 Theme、UiSpinBox、UiComboBox 和共用工具渲染器，按默认/紧凑/大字号及控件状态验收。
+
+
+## UI v3 与宿主1.3.0接入增量
+
+需要分析结果驱动字段时，先读docs/features/host-extensibility/design.md和shared/protocol/view-v3.schema.json，清单同步ui_schema_version=3、min_host_version=1.3.0。旧v1/v2保持兼容，不为使用现有控件新增工具ID分支。目录自动发现、会话固定版本、缺包新建和受控进程预算的实际边界见该设计及verification/EXT-1-host-extensibility.md；真实浏览器/异机待验不等于合成测试通过。

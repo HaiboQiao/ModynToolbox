@@ -1,5 +1,7 @@
 # ModynToolbox 源码
 
+当前本地开发版1.3.0，公开发布版1.2.0。UI v3动态字段、通用接入改进及跨电脑工具开发例子见[EXT-1设计与接入说明](docs/features/host-extensibility/design.md)，真实验证见[EXT-1报告](docs/verification/EXT-1-host-extensibility.md)。
+
 本目录是完整工程根。仓库根的 releases 维护下载入口，发布前先阅读 docs/release-policy.md。
 
 Windows x64 本地工具箱。C++20 / Qt Widgets 宿主管理统一界面、会话、独立窗口、工具安装和后台作业。每个工具集中在自己的目录，通过独立进程接入。

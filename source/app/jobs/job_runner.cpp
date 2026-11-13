@@ -10,9 +10,11 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QSaveFile>
+
 #include <cmath>
 #define NOMINMAX
 #include <windows.h>
+#include <shlobj.h>
 JobRunner::JobRunner(JobRequest value, QObject *parent)
     : QThread(parent), request(std::move(value)) {
 }
@@ -40,7 +42,7 @@ void JobRunner::run() {
     limits.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE |
                                               JOB_OBJECT_LIMIT_ACTIVE_PROCESS |
                                               JOB_OBJECT_LIMIT_JOB_MEMORY;
-    limits.BasicLimitInformation.ActiveProcessLimit = 16;
+    limits.BasicLimitInformation.ActiveProcessLimit = request.tool.limits.value("max_processes").toInt(16);
     limits.JobMemoryLimit =
         static_cast<SIZE_T>(request.tool.limits.value("memory_mb").toInt(512)) * 1024 * 1024;
     if (!SetInformationJobObject(group, JobObjectExtendedLimitInformation, &limits,
@@ -61,9 +63,23 @@ void JobRunner::run() {
     process.setProgram(request.bridge);
     process.setWorkingDirectory(request.jobRoot);
     QProcessEnvironment environment;
-    for (const auto &key : {"SystemRoot", "WINDIR", "SystemDrive", "COMSPEC"})
+    for (const auto &key : {"SystemRoot", "WINDIR", "SystemDrive", "COMSPEC", "USERPROFILE", "USERNAME", "USERDOMAIN", "HOMEDRIVE", "HOMEPATH", "APPDATA", "LOCALAPPDATA", "ProgramFiles", "ProgramFiles(x86)", "ProgramData"})
         if (qEnvironmentVariableIsSet(key))
             environment.insert(key, qEnvironmentVariable(key));
+    auto userFolder = [&](const QString &key, REFKNOWNFOLDERID folder) {
+        if (!environment.value(key).isEmpty()) return;
+        PWSTR path=nullptr;
+        if (SUCCEEDED(SHGetKnownFolderPath(folder, KF_FLAG_DONT_VERIFY, nullptr, &path)))
+            environment.insert(key, QString::fromWCharArray(path));
+        CoTaskMemFree(path);
+    };
+    userFolder("USERPROFILE", FOLDERID_Profile);
+    userFolder("LOCALAPPDATA", FOLDERID_LocalAppData);
+    userFolder("APPDATA", FOLDERID_RoamingAppData);
+    if (environment.value("USERNAME").isEmpty()) {
+        wchar_t name[257]{}; DWORD size=257;
+        if (GetUserNameW(name, &size)) environment.insert("USERNAME", QString::fromWCharArray(name));
+    }
     environment.insert("PATH", QFileInfo(request.bridge).absolutePath());
     environment.insert("TEMP", request.jobRoot + "/temp");
     environment.insert("TMP", request.jobRoot + "/temp");

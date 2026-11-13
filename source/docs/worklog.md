@@ -187,3 +187,8 @@ REL-3固定源码前验证完成。Release14/14，51.11秒；Debug14/14，83.37�
 下载版原有33步耗时3.310秒，视频包复制观测0.038秒，实际编码写入后取消观测0.037秒（仅本机单次观测，不作为跨机器性能保证）。
 
 以上过程使用私有数据、合成素材和离屏实例，未操作前台桌面。上传日志REL-3-publish、ZIP验证REL-3-validate、源码导出启动器REL-3-exported-source-launchers保存在.local/logs。公开下载包保存在.local/public-downloads/v1.2.0。最终发布回执、分发清单和SHA256SUMS归档到仓库releases/1.2.0；main后续文档提交保留标签对应的程序来源，不移动既有标签或覆盖资产。
+
+
+## 2026-11-14 EXT-1 完成
+
+完成另一台电脑通用工具开发反馈的评估及宿主实现；完整取舍、UI v3及进程预算接入例子见features/host-extensibility/design.md。最终Release14/14、52.40秒，Debug14/14、87.53秒，便携33步、3.217秒；动态/级联/草稿、自动目录升级及真实20子进程已测。当前本地1.3.0，不发布、不推送。失败与修正、截图、来源和实机待验见verification/EXT-1-host-extensibility.md。

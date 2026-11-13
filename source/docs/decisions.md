@@ -78,3 +78,8 @@ UI-R3 将公共会话操作统一迁到导航。单会话紧凑，多会话展�
 ## VID-1 媒体公共组件与独立业务（2026-11-12）
 
 新工具使用UI v2公共媒体角色与组件，保留JSONL协议1和旧UI v1。预览使用Qt Multimedia的QGraphicsVideoItem/QGraphicsView，避免原生子窗口承载在滚动/浮窗生命周期中的已复现离屏退出异常。业务在独立C++核心/CLI/适配内调用锁定的FFmpeg9.0.2，不在宿主按tool_id写业务分支。预览属于宿主共享故障域，独立编码进程不构成权限沙箱。接口见shared/protocol/media-v2.md，取舍与实测见verification/VID-1-video-tool.md。
+
+
+## EXT-1（2026-11-14）
+
+新增UI v3以明确隔离动态字段契约，旧v1/v2继续兼容。缺包会话通过新建可用版本恢复工作，不原地迁移未知参数。动态选项取context的受限对象路径，不识别业务字段；参数修改保留分析，输入修改失效，后端负责最终校验。目录元信息稳定轮询降低大文件监视成本。环境补齐常用用户目录，保持依赖路径隔离；进程预算可声明4–64而不放开Job Object逃逸。完整理由见features/host-extensibility/design.md。

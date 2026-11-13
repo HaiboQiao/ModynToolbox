@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QSlider>
 #include <QTableWidget>
 #include <QMimeData>
@@ -329,6 +330,30 @@ class WorkbenchTests : public QObject {
         QVERIFY(list->topLevelItem(0)->isHidden());
         QVERIFY(!list->topLevelItem(1)->isHidden());
     }
+    void autoDiscoveryAndMissingSessionRecovery() {
+        QTemporaryDir root;
+        const auto packages=root.path()+"/tools";
+        auto write=[&](const QString &version) {
+            const auto path=packages+"/alpha/"+version; QDir().mkpath(path);
+            QFile file(path+"/manifest.json"); QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write(QJsonDocument(QJsonObject{{"manifest_version",1},{"tool_id","alpha"},{"name","Alpha"},{"package_version",version}}).toJson());
+        };
+        write("1.0.0");
+        Workbench window(readCatalog(packages).tools,WorkbenchConfig{root.path()+"/data",packages,{}}); window.show();
+        const int old=window.open("alpha"); QVERIFY(old>0);
+        window.setDraft(old,true); window.editor(old)->setPlainText("keep old draft");
+        QVERIFY(QDir(packages+"/alpha/1.0.0").removeRecursively()); write("2.0.0");
+        QTRY_VERIFY_WITH_TIMEOUT(window.findChild<QPushButton *>("newAvailableVersion"),8000);
+        const int count=window.sessionCount();
+        window.findChild<QPushButton *>("newAvailableVersion")->click();
+        QCOMPARE(window.sessionCount(),count+1);
+        bool preserved=false;
+        for (const auto &value : window.savedState().value("sessions").toArray()) {
+            const auto record=value.toObject();
+            if (record.value("snapshot").toObject().value("text")==QJsonValue("keep old draft")) preserved=true;
+        }
+        QVERIFY(preserved);
+    }
     void balancedPairAndEmptyWorkspace() {
         Workbench window(testTools());
         window.show();
@@ -364,7 +389,7 @@ class WorkbenchTests : public QObject {
         QCOMPARE(window.sessionCount(), 2);
         QCOMPARE(tree->topLevelItem(0)->childCount(), 2);
         QVERIFY(tree->topLevelItem(0)->isExpanded());
-        QCOMPARE(tree->topLevelItem(0)->child(0)->text(0), QStringLiteral("默认会话"));
+        QCOMPARE(tree->topLevelItem(0)->child(0)->text(0), QStringLiteral("默认会话\nv1.0.0"));
         QCOMPARE(window.editor(1)->toPlainText(), QString("preserved"));
         QVERIFY(window.editor(2)->toPlainText().isEmpty());
         QVERIFY(!window.findChild<QComboBox *>("sessionSelector"));

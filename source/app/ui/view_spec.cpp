@@ -24,9 +24,9 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
     if (!error.isEmpty())
         return invalid(error);
     spec.version = object.value("view_version").toInt();
-    if (spec.version != 1 && spec.version != 2)
+    if (spec.version != 1 && spec.version != 2 && spec.version != 3)
         return invalid(QStringLiteral("不支持的界面版本"));
-    if (spec.version == 2 && object.contains("media")) {
+    if (spec.version >= 2 && object.contains("media")) {
         const auto media = object.value("media").toObject();
         const QRegularExpression action("^[a-z][a-z0-9-]{0,63}$");
         spec.mediaPrepareWhen = media.value("prepare_when").toObject();
@@ -79,19 +79,40 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
             item.label.trimmed().isEmpty() || item.label.size() > 80)
             return invalid(QStringLiteral("参数名称或标识无效"));
         identifiers.insert(item.id);
+        if (spec.version >= 3) {
+            for (const auto &key : {"help", "placeholder", "options_source", "options_depends_on"})
+                if (field.contains(key) && (!field.value(key).isString() || field.value(key).toString().size() > 512))
+                    return invalid(QStringLiteral("字段说明或来源无效"));
+            for (const auto &key : {"compact", "advanced", "searchable"})
+                if (field.contains(key) && !field.value(key).isBool())
+                    return invalid(QStringLiteral("字段布局标记无效"));
+            item.help = field.value("help").toString();
+            item.placeholder = field.value("placeholder").toString();
+            item.optionsSource = field.value("options_source").toString();
+            item.optionsDependsOn = field.value("options_depends_on").toString();
+            item.compact = field.value("compact").toBool();
+            item.advanced = field.value("advanced").toBool();
+            item.searchable = field.value("searchable").toBool();
+            if ((!item.optionsSource.isEmpty() && (!QRegularExpression("^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+){0,7}$").match(item.optionsSource).hasMatch() || item.type != "choice")) ||
+                (!item.optionsDependsOn.isEmpty() && item.optionsSource.isEmpty()))
+                return invalid(QStringLiteral("动态选项路径无效"));
+        }
         if (item.type == "choice") {
             const auto options = field.value("options").toArray();
-            if (!field.value("options").isArray() || options.isEmpty() || options.size() > 20 ||
-                !field.value("default").isString())
+            if ((item.optionsSource.isEmpty() && (!field.value("options").isArray() || options.isEmpty())) ||
+                options.size() > (spec.version >= 3 ? 200 : 20) || !field.value("default").isString())
                 return invalid(QStringLiteral("选项结构无效"));
             for (const auto &option : options) {
-                if (!option.isString() || option.toString().isEmpty() ||
-                    option.toString().size() > 80)
-                    return invalid(QStringLiteral("选项文本无效"));
-                item.options.append(option.toString());
+                const auto name = option.isString() ? option.toString() : option.toObject().value("label").toString();
+                const auto value = option.isString() ? option.toString() : option.toObject().value("value").toString();
+                if ((!option.isString() && (spec.version < 3 || !option.isObject() || !option.toObject().value("value").isString())) || name.isEmpty() || name.size() > (spec.version >= 3 ? 160 : 80) ||
+                    value.size() > 512 || (spec.version >= 3 && item.optionValues.contains(value)))
+                    return invalid(QStringLiteral("选项文本或值无效"));
+                item.options.append(name);
+                item.optionValues.append(value);
             }
             item.value = field.value("default").toString();
-            if (!item.options.contains(item.value))
+            if (item.optionsSource.isEmpty() && !item.optionValues.contains(item.value))
                 return invalid(QStringLiteral("默认选项无效"));
         } else if (item.type == "range" || item.type == "number") {
             const int limit = item.type == "range" ? 100 : 1000000;
@@ -128,6 +149,16 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
         }
         spec.fields.append(item);
     }
+    for (const auto &field : spec.fields) {
+        if (!field.optionsDependsOn.isEmpty()) {
+            bool earlier = false;
+            for (const auto &candidate : spec.fields) {
+                if (candidate.id == field.id) break;
+                if (candidate.id == field.optionsDependsOn && candidate.type == "choice") earlier = true;
+            }
+            if (!earlier) return invalid(QStringLiteral("动态选项依赖须引用前面的下拉字段"));
+        }
+    }
     for (const auto &field : spec.fields)
         if (!field.condition.isEmpty() &&
             !identifiers.contains(field.condition.value("field").toString()))
@@ -160,7 +191,7 @@ ViewSpec loadViewSpec(const QString &packageRoot, bool required) {
             }
             if (!(QStringList{"files", "text", "fields", "actions", "output_text", "output_table",
                               "image_preview", "status"}.contains(type) ||
-                  (spec.version == 2 && !spec.mediaProbe.isEmpty() && type == "video_editor")) ||
+                  (spec.version >= 2 && !spec.mediaProbe.isEmpty() && type == "video_editor")) ||
                 components.contains(type))
                 return false;
             components.insert(type);

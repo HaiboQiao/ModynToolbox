@@ -2,6 +2,9 @@
 #include "combo_box.h"
 #include "video_editor.h"
 #include <QMessageBox>
+#include <QCompleter>
+#include <QGroupBox>
+#include <QToolButton>
 #include "icons.h"
 #include "core/files.h"
 #include "ui/theme/theme.h"
@@ -388,6 +391,29 @@ QWidget *ToolPanel::makeFields() {
     layout->setSpacing(8);
     if (!spec.fields.isEmpty())
         layout->addWidget(label(QStringLiteral("参数设置"), "sectionTitle"));
+    frame->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
+    frame->setObjectName("parameterFields"); frame->installEventFilter(this);
+    auto *normalGrid = new QGridLayout;
+    normalGrid->setObjectName("normalFieldGrid"); normalGrid->setAlignment(Qt::AlignTop);
+    normalGrid->setColumnStretch(0, 1); normalGrid->setColumnStretch(1, 1);
+    layout->addLayout(normalGrid);
+    auto *advanced = new QWidget;
+    advanced->setObjectName("advancedFields");
+    auto *advancedGrid = new QGridLayout(advanced);
+    advancedGrid->setObjectName("advancedFieldGrid"); advancedGrid->setAlignment(Qt::AlignTop);
+    advancedGrid->setContentsMargins(0, 0, 0, 0);
+    advancedGrid->setColumnStretch(0, 1); advancedGrid->setColumnStretch(1, 1);
+    auto *toggle = new QPushButton(QStringLiteral("展开高级设置"));
+    toggle->setIcon(uiIcon(UiIcon::Add,Theme::accent));
+    toggle->setObjectName("advancedToggle"); toggle->setCheckable(true);
+    toggle->setAccessibleName(QStringLiteral("展开或收起高级设置"));
+    layout->addWidget(toggle,0,Qt::AlignLeft); layout->addWidget(advanced); advanced->hide();
+    connect(toggle, &QPushButton::toggled, advanced, [advanced, toggle](bool on) {
+        advanced->setVisible(on); toggle->setText(on ? QStringLiteral("收起高级设置") : QStringLiteral("展开高级设置"));
+        toggle->setIcon(uiIcon(on ? UiIcon::Minimize : UiIcon::Add,Theme::accent));
+    });
+    bool hasAdvanced = false;
+    int normalCell = 0, advancedCell = 0;
     for (const auto &field : spec.fields) {
         auto *container = new QWidget;
         auto *group = new QVBoxLayout(container);
@@ -400,10 +426,20 @@ QWidget *ToolPanel::makeFields() {
             auto *choice = new UiComboBox;
             choice->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
             choice->setMinimumContentsLength(8);
-            choice->addItems(field.options);
-            choice->setCurrentText(field.value);
+            for (int i=0; i<field.options.size(); ++i)
+                choice->addItem(field.options[i], field.optionValues.value(i, field.options[i]));
+            choice->setCurrentIndex(choice->findData(field.value));
+            choice->setMaxVisibleItems(12);
+            if (field.searchable) {
+                choice->setEditable(true); choice->setInsertPolicy(QComboBox::NoInsert);
+                choice->completer()->setCaseSensitivity(Qt::CaseInsensitive);
+                choice->completer()->setFilterMode(Qt::MatchContains);
+                choice->completer()->setCompletionMode(QCompleter::PopupCompletion);
+                connect(choice->lineEdit(), &QLineEdit::textChanged, this, [this] { updateActions(); });
+                choice->lineEdit()->setPlaceholderText(field.placeholder.isEmpty() ? QStringLiteral("输入关键字筛选，选择匹配项") : field.placeholder);
+            }
             input = choice;
-            connect(choice, &QComboBox::currentTextChanged, this, [this] { inputChanged(); });
+            connect(choice, &QComboBox::currentIndexChanged, this, [this] { inputChanged(true); });
         } else if (field.type == "range") {
             auto *row = new QHBoxLayout;
             auto *slider = new QSlider(Qt::Horizontal);
@@ -417,25 +453,26 @@ QWidget *ToolPanel::makeFields() {
             group->addLayout(row);
             connect(slider, &QSlider::valueChanged, this, [this, value](int number) {
                 value->setText(QString::number(number));
-                inputChanged();
+                inputChanged(true);
             });
         } else if (field.type == "number") {
             auto *number = new UiSpinBox;
             number->setRange(field.minimum, field.maximum);
             number->setValue(field.number);
             input = number;
-            connect(number, &QSpinBox::valueChanged, this, [this] { inputChanged(); });
+            connect(number, &QSpinBox::valueChanged, this, [this] { inputChanged(true); });
         } else if (field.type == "boolean") {
             auto *check = new QCheckBox(field.label);
             check->setChecked(field.boolean);
             caption->hide();
             input = check;
-            connect(check, &QCheckBox::toggled, this, [this] { inputChanged(); });
+            connect(check, &QCheckBox::toggled, this, [this] { inputChanged(true); });
         } else {
             auto *text = new QLineEdit(field.value);
             text->setMaxLength(512);
+            text->setPlaceholderText(field.placeholder);
             input = text;
-            connect(text, &QLineEdit::textChanged, this, [this] { inputChanged(); });
+            connect(text, &QLineEdit::textChanged, this, [this] { inputChanged(true); });
             if (field.type == "directory") {
                 auto *row = new QHBoxLayout;
                 auto *choose = button(QStringLiteral("选择"));
@@ -457,10 +494,44 @@ QWidget *ToolPanel::makeFields() {
         fieldContainers[field.id] = container;
         if (field.type != "range" && field.type != "directory")
             group->addWidget(input);
-        layout->addWidget(container);
+        if (!field.help.isEmpty()) {
+            auto *help = label(field.help, "secondary"); help->setWordWrap(true); group->addWidget(help);
+            input->setToolTip(field.help); input->setAccessibleDescription(field.help);
+        }
+        auto *grid = field.advanced ? advancedGrid : normalGrid;
+        int &cell = field.advanced ? advancedCell : normalCell;
+        hasAdvanced |= field.advanced;
+        if (!field.compact && cell % 2) ++cell;
+        grid->addWidget(container, cell/2, cell%2, 1, field.compact ? 1 : 2);
+        cell += field.compact ? 1 : 2;
     }
+    toggle->setVisible(hasAdvanced);
     layout->addStretch();
     return frame;
+}
+bool ToolPanel::eventFilter(QObject *object, QEvent *event) {
+    if (object->objectName() == "parameterFields" && event->type() == QEvent::Resize) {
+        auto *frame = qobject_cast<QWidget *>(object);
+        const bool narrow = frame->width() < 460;
+        if (!frame->property("narrowFields").isValid() || frame->property("narrowFields").toBool() != narrow) {
+            frame->setProperty("narrowFields", narrow);
+            for (const auto &name : {"normalFieldGrid", "advancedFieldGrid"}) {
+                auto *grid=frame->findChild<QGridLayout *>(name);
+                if (!grid) continue;
+                while (auto *item=grid->takeAt(0)) delete item;
+                int cell=0;
+                for (const auto &field : spec.fields) {
+                    if (field.advanced != (QString(name)=="advancedFieldGrid")) continue;
+                    if (!field.compact && cell%2 && !narrow) ++cell;
+                    grid->addWidget(fieldContainers.value(field.id), narrow ? cell : cell/2, narrow ? 0 : cell%2,
+                                    1, narrow || field.compact ? 1 : 2);
+                    cell += narrow || field.compact ? 1 : 2;
+                }
+                grid->setColumnStretch(1, narrow ? 0 : 1);
+            }
+        }
+    }
+    return QWidget::eventFilter(object, event);
 }
 QWidget *ToolPanel::makeText() {
     auto *frame = new QWidget;
@@ -619,7 +690,7 @@ QJsonObject ToolPanel::parameters() const {
     QJsonObject values;
     for (auto it = fields.cbegin(); it != fields.cend(); ++it) {
         if (auto *choice = qobject_cast<QComboBox *>(it.value()))
-            values[it.key()] = choice->currentText();
+            values[it.key()] = choice->currentIndex() >= 0 && choice->currentText() == choice->itemText(choice->currentIndex()) ? choice->currentData().toString() : QString();
         else if (auto *slider = qobject_cast<QSlider *>(it.value()))
             values[it.key()] = slider->value();
         else if (auto *number = qobject_cast<QSpinBox *>(it.value()))
@@ -718,12 +789,13 @@ bool ToolPanel::restore(const QJsonObject &state) {
         return false;
     }
     restoring = true;
+    if (spec.version >= 3) { context = state.value("context").toObject(); refreshOptions(); }
     const auto values = state.value("params").toObject();
     for (auto it = fields.begin(); it != fields.end(); ++it)
         if (values.contains(it.key())) {
             const auto value = values.value(it.key());
             if (auto *choice = qobject_cast<QComboBox *>(it.value()))
-                choice->setCurrentText(value.toString());
+                { choice->setCurrentIndex(choice->findData(value.toString())); if (spec.version >= 3) refreshOptions(); }
             else if (auto *slider = qobject_cast<QSlider *>(it.value()))
                 slider->setValue(value.toInt());
             else if (auto *number = qobject_cast<QSpinBox *>(it.value()))
@@ -733,6 +805,13 @@ bool ToolPanel::restore(const QJsonObject &state) {
             else if (auto *text = qobject_cast<QLineEdit *>(it.value()))
                 text->setText(value.toString());
         }
+    if (spec.version >= 3) for (const auto &field : spec.fields) {
+        if (field.type != "choice" || !values.contains(field.id)) continue;
+        refreshOptions();
+        auto *choice=qobject_cast<QComboBox *>(fields.value(field.id));
+        const QSignalBlocker block(choice);
+        choice->setCurrentIndex(choice->findData(values.value(field.id).toString()));
+    }
     if (textInput)
         textInput->setContent(state.value("text").toString());
     if (videoEditor) {
@@ -773,21 +852,56 @@ bool ToolPanel::restore(const QJsonObject &state) {
         QTimer::singleShot(0, this, [this, state] {
             bodyScroll->verticalScrollBar()->setValue(state.value("body_scroll").toInt());
         });
+    if (spec.version >= 3) refreshOptions();
     restoring = false;
     verifyRestoredFiles();
     conditions();
     updateActions();
     return true;
 }
-void ToolPanel::inputChanged() {
+void ToolPanel::inputChanged(bool parameterOnly) {
     if (restoring)
         return;
-    if (videoEditor && context.contains("media"))
+    if (spec.version >= 3 && parameterOnly) { refreshOptions(); }
+    else if (videoEditor && context.contains("media"))
         context = {{"media", context.value("media")}};
-    else context = {};
+    else { context = {}; if (spec.version >= 3) refreshOptions(); }
     conditions();
     updateActions();
     emit changed();
+}
+void ToolPanel::refreshOptions() {
+    for (const auto &field : spec.fields) {
+        if (field.optionsSource.isEmpty()) continue;
+        auto *choice = qobject_cast<QComboBox *>(fields.value(field.id));
+        if (!choice) continue;
+        QJsonValue source(context);
+        for (const auto &part : field.optionsSource.split('.')) source = source.toObject().value(part);
+        if (!field.optionsDependsOn.isEmpty()) source = source.toObject().value(parameters().value(field.optionsDependsOn).toString());
+        QSet<QString> seen;
+        QStringList titles, values;
+        const auto options = source.toArray();
+        if (options.size() <= 2000) for (const auto &option : options) {
+            const auto title = option.isString() ? option.toString() : option.toObject().value("label").toString();
+            const auto value = option.isString() ? option.toString() : option.toObject().value("value").toString();
+            if (title.isEmpty() || title.size() > 160 || value.size() > 512 || seen.contains(value) || (!option.isString() && !option.toObject().value("value").isString())) continue;
+            seen.insert(value); titles.append(title); values.append(value);
+        }
+        bool same=choice->count()==titles.size();
+        for (int i=0; same && i<titles.size(); ++i)
+            same=choice->itemText(i)==titles[i] && choice->itemData(i).toString()==values[i];
+        choice->setPlaceholderText(titles.isEmpty() ? QStringLiteral("请先分析输入") : QStringLiteral("请选择"));
+        // Do not reset a combo's model from inside its own selection signal.
+        if (same) continue;
+        const QSignalBlocker block(choice);
+        const auto selected = choice->currentData().toString();
+        choice->clear();
+        for (int i=0; i<titles.size(); ++i) choice->addItem(titles[i],values[i]);
+        int index = choice->findData(selected);
+        if (index < 0) index = choice->findData(field.value);
+        choice->setCurrentIndex(index);
+        choice->setPlaceholderText(choice->count() ? QStringLiteral("请选择") : QStringLiteral("请先分析输入"));
+    }
 }
 void ToolPanel::conditions() {
     const auto values = parameters();
@@ -801,10 +915,15 @@ void ToolPanel::conditions() {
         }
 }
 void ToolPanel::updateActions() {
+    bool validChoices=true;
+    for (const auto &field : spec.fields) if (field.searchable) {
+        auto *choice=qobject_cast<QComboBox *>(fields.value(field.id));
+        if (choice && choice->currentText() != choice->itemText(choice->currentIndex()) && !choice->currentText().isEmpty()) validChoices=false;
+    }
     for (const auto &action : tool.actions)
         if (actions.contains(action.id))
             actions[action.id]->setEnabled(
-                tool.executable && !busy && !scanning &&
+                tool.executable && validChoices && !busy && !scanning &&
                 (action.requiredContext.isEmpty() || context.contains(action.requiredContext)));
     if (videoEditor) {
         const bool ready = context.contains("media");
@@ -873,7 +992,8 @@ void ToolPanel::addPaths(const QStringList &paths) {
 }
 void ToolPanel::setResult(const QJsonObject &value) {
     lastResult = value;
-    context = value.value("context").toObject();
+    if (spec.version < 3 || value.contains("context")) context = value.value("context").toObject();
+    if (spec.version >= 3) refreshOptions();
     if (videoEditor) {
         if (context.contains("media")) {
             const auto metadata=context.value("media").toObject();
@@ -887,6 +1007,7 @@ void ToolPanel::setResult(const QJsonObject &value) {
         }
         if (context.contains("plan")) videoEditor->showPlan(context.value("plan").toObject());
     }
+    conditions();
     updateActions();
     if (textResult) {
         const auto text = value.value("text").toString();

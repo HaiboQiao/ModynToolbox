@@ -24,6 +24,7 @@
 #include <QtConcurrent>
 #include <QScreen>
 #include <QTimer>
+#include <QDirIterator>
 #include <QSplitter>
 #include <QUuid>
 #include "theme/theme.h"
@@ -267,6 +268,31 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     connect(search, &QLineEdit::textChanged, this, [this] { filterNavigation(); });
     connect(categories, &QComboBox::currentIndexChanged, this, [this] { filterNavigation(); });
     rebuildNavigation();
+    if (!config.packagesRoot.isEmpty()) {
+        auto *discovery = new QTimer(this);
+        discovery->setInterval(2000);
+        connect(discovery, &QTimer::timeout, this, [this, previous=QString(), accepted=QString()]() mutable {
+            QStringList entries;
+            QDirIterator dirs(config.packagesRoot, QDir::Dirs | QDir::NoDotAndDotDot);
+            while (dirs.hasNext()) {
+                const QDir tool(dirs.next());
+                for (const auto &version : tool.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
+                    for (const auto &name : {"manifest.json", "checksums.json"}) {
+                        const QFileInfo file(version.absoluteFilePath()+"/"+name);
+                        entries.append(file.absoluteFilePath()+":"+QString::number(file.size())+":"+QString::number(file.lastModified().toMSecsSinceEpoch()));
+                    }
+                }
+            }
+            entries.sort(); const auto signature = entries.join('|');
+            if (signature == previous && signature != accepted) {
+                accepted = signature;
+                refreshTools();
+                if (auto *badge=findChild<QLabel *>("catalogStatus")) badge->setToolTip(QStringLiteral("目录变化已自动检查；复制完整工具包后可用，F5立即复查"));
+            }
+            previous = signature;
+        });
+        discovery->start();
+    }
     auto *find = new QShortcut(QKeySequence(QStringLiteral("Ctrl+K")), this);
     connect(find, &QShortcut::activated, search, [search] {
         search->setFocus();
@@ -487,6 +513,15 @@ void Workbench::ensureView(int id) {
     it->view = view;
     it->panel = body;
     layout->addWidget(body, 1);
+    if (it->missing) {
+        const auto available = std::find_if(definitions.cbegin(), definitions.cend(), [&](const auto &tool) { return tool.id == it->toolId; });
+        if (available != definitions.cend()) {
+            auto *create = new QPushButton(QStringLiteral("用可用版本 v%1 新建会话").arg(available->version));
+            create->setObjectName("newAvailableVersion");
+            layout->addWidget(create);
+            connect(create, &QPushButton::clicked, this, [this, toolId=it->toolId] { open(toolId, true); });
+        }
+    }
     workspace->addWidget(view);
     if (!it->missing && !it->parked.isEmpty())
         it->preserveSnapshot = !body->restore(it->parked);
@@ -930,7 +965,7 @@ bool Workbench::refreshTools() {
             return entry.id == session.toolId && entry.version == session.tool.version;
         });
         const bool missing = tool == versions.cend();
-        if (missing != session.missing) {
+        if (missing != session.missing || missing) {
             if (session.panel && !session.missing && !session.preserveSnapshot)
                 session.parked = session.panel->snapshot();
             if (session.floating) {
@@ -1213,7 +1248,7 @@ void Workbench::syncNavigation(int selected) {
     QTreeWidgetItem *selection = nullptr;
     for (const auto &tool : tools) {
         auto *item = new QTreeWidgetItem(navigation);
-        item->setText(0, tool.name);
+        item->setText(0, tool.name + "\nv" + tool.version);
         item->setIcon(0, uiIcon(navigationIcon(tool.icon), Theme::accent));
         item->setData(0, ToolNavigation::ToolRole, tool.id);
         item->setData(0, ToolNavigation::SearchRole,
@@ -1244,7 +1279,7 @@ void Workbench::syncNavigation(int selected) {
                 const auto name = !session.customTitle && session.title == QStringLiteral("会话 1")
                                       ? QStringLiteral("默认会话")
                                       : session.title;
-                child->setText(0, name + (session.floating ? QStringLiteral(" ↗") : QString()) +
+                child->setText(0, name + "\nv" + session.tool.version + (session.tool.version != tool.version ? QStringLiteral(" · 可用新版") : QString()) + (session.floating ? QStringLiteral(" ↗") : QString()) +
                                       (session.missing ? QStringLiteral(" · 缺包") : QString()));
                 child->setData(0, ToolNavigation::ToolRole, tool.id);
                 child->setData(0, ToolNavigation::SessionRole, id);
@@ -1259,10 +1294,12 @@ void Workbench::syncNavigation(int selected) {
             item->setExpanded(navigationExpansion.value(tool.id).toBool(true));
         } else if (ids.size() == 1) {
             const auto &session = sessions[ids.first()];
+            item->setToolTip(0, item->toolTip(0)+QStringLiteral("\n会话锁定版本 v%1；新建使用 v%2").arg(session.tool.version,tool.version));
+            if (session.tool.version != tool.version) item->setText(0, tool.name + "\nv" + session.tool.version + QStringLiteral(" · 可用新版"));
             if (session.floating)
-                item->setText(0, tool.name + QStringLiteral(" ↗"));
+                item->setText(0, tool.name + "\nv" + session.tool.version + QStringLiteral(" ↗"));
             if (session.missing)
-                item->setText(0, tool.name + QStringLiteral(" · 缺包"));
+                item->setText(0, tool.name + "\nv" + session.tool.version + QStringLiteral(" · 缺包"));
             if (ids.first() == selected)
                 selection = item;
         }

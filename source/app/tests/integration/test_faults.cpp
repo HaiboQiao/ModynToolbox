@@ -47,6 +47,24 @@ class FaultTests : public QObject {
         tool = definitionFromManifest(destination, manifest, &error);
         QVERIFY2(error.isEmpty(), qPrintable(error));
     }
+    void userEnvironmentAndLargerProcessBudget() {
+        for (const auto &mode : {"environment", "budget"}) {
+            QTemporaryDir root;
+            auto definition=tool; definition.limits["max_processes"]=32;
+            Scheduler scheduler(root.path(),bridge); QSignalSpy finished(&scheduler,&Scheduler::finished);
+            QVERIFY(!scheduler.submit(definition,"runtime-test",1,"run",{{"params",QJsonObject{{"mode",mode}}}}).isEmpty());
+            QTRY_COMPARE_WITH_TIMEOUT(finished.size(),1,20000);
+            QCOMPARE(finished.first().at(4).toString(),QString("succeeded"));
+            QCOMPARE(finished.first().at(3).toJsonObject().value("text").toString(),QString(mode)=="budget" ? QString("20") : QString("ok"));
+        }
+        auto manifest=Files::readObject(tool.packageRoot+"/manifest.json",65536);
+        auto limits=manifest.value("limits").toObject();
+        QString error;
+        for (double budget : {3.0,65.0,24.5}) {
+            limits["max_processes"]=budget;manifest["limits"]=limits;
+            definitionFromManifest(tool.packageRoot,manifest,&error); QVERIFY(!error.isEmpty());
+        }
+    }
     void malformedAndCrashedWorkers_data() {
         QTest::addColumn<QString>("mode");
         for (const auto &mode : {"crash", "flood", "wrong-id", "memory"})

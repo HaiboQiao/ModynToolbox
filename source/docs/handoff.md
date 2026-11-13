@@ -38,3 +38,8 @@
 ## 1.2.0新增接手入口
 
 视频工具位于tools/video-clip；通用媒体契约在shared/protocol/media-v2.md。工具1.0.0需要宿主1.2.0。处理引擎来自engine输入锁和配方，普通工具构建恢复同版公开引擎归档，只有维护者重建媒体引擎需要私有MSYS2。发布必须同时携带第三方对应源码并对下载包运行视频专项。最新发布证据见verification/REL-3-publication.md与仓库releases/1.2.0。
+
+
+## EXT-1 通用接入增量（本地1.3.0）
+
+UI v3支持动态/级联选项、显示名与固定值、搜索、compact、help/placeholder、advanced。独立工具采用新字段前读取docs/features/host-extensibility/design.md（从源码根定位），同步声明最低宿主1.3.0。旧v1/v2继续兼容。工具进程可声明max_processes（4–64，默认16），用户目录环境由宿主补齐，工具包目录变化自动检查，会话仍固定版本。实际证据见verification/EXT-1-host-extensibility.md。

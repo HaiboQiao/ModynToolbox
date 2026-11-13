@@ -84,3 +84,8 @@ manifest 可指定 category（最多 40 字符）和 keywords（最多 20 项、
 video-clip提供独立原生核心、CLI、薄适配器、锁定的媒体引擎及声明式视频界面。UI v2支持video_editor、角色动作、prepare_when和长作业，详见shared/protocol/media-v2.md。已有v1工具无需迁移。新增同类工具可复用该公共能力；宿主1.2.0起支持，旧1.1.0不兼容。
 
 通用tool.build.json新增可选license_files字符串数组，构建时复制到LICENSES并计入完整性索引，同名拒绝；其他配方行为不变。视频工具实际的FFmpeg静态依赖约201MiB，独立工具包按需安装；安装并不等于启动编码进程。
+
+
+## EXT-1 通用接入增量（本地1.3.0）
+
+UI v3支持动态/级联选项、显示名与固定值、搜索、compact、help/placeholder、advanced。独立工具采用新字段前读取docs/features/host-extensibility/design.md（从源码根定位），同步声明最低宿主1.3.0。旧v1/v2继续兼容。工具进程可声明max_processes（4–64，默认16），用户目录环境由宿主补齐，工具包目录变化自动检查，会话仍固定版本。实际证据见verification/EXT-1-host-extensibility.md。

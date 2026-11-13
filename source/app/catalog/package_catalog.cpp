@@ -64,7 +64,7 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
     if (!object.contains("protocol_version"))
         return tool;
     if (object.value("protocol_version") != QJsonValue(1) ||
-        (object.value("ui_schema_version") != QJsonValue(1) && object.value("ui_schema_version") != QJsonValue(2)) || tool.viewFile != "ui.json")
+        (object.value("ui_schema_version") != QJsonValue(1) && object.value("ui_schema_version") != QJsonValue(2) && object.value("ui_schema_version") != QJsonValue(3)) || tool.viewFile != "ui.json")
         return invalid(QStringLiteral("不兼容的执行或界面规范"));
     tool.uiSchemaVersion = object.value("ui_schema_version").toInt(1);
     tool.entryProgram = object.value("entry_program").toString();
@@ -90,6 +90,11 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
     if (maxFiles < 0 || maxFiles > 2000 || maxBytes < 1 || maxBytes > 5 * 1024 * 1024 ||
         memory < 64 || memory > 2048)
         return invalid(QStringLiteral("容量预算无效"));
+    if (tool.limits.contains("max_processes")) {
+        const auto budget = tool.limits.value("max_processes").toDouble(-1);
+        if (budget < 4 || budget > 64 || budget != static_cast<int>(budget))
+            return invalid(QStringLiteral("进程预算须为4至64的整数"));
+    }
     const auto actions = object.value("actions").toArray();
     if (actions.isEmpty() || actions.size() > 12)
         return invalid(QStringLiteral("动作数量无效"));
@@ -114,7 +119,7 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
         if (!identifier.match(item.id).hasMatch() || identifiers.contains(item.id) ||
             item.label.isEmpty() || item.label.size() > 80 || item.confirmation.size() > 1024 ||
             item.requiredContext.size() > 80 || item.timeoutSeconds < 1 ||
-            item.timeoutSeconds > (object.value("ui_schema_version").toInt() == 2 ? 86400 : 3600))
+            item.timeoutSeconds > (object.value("ui_schema_version").toInt() >= 2 ? 86400 : 3600))
             return invalid(QStringLiteral("动作标识或执行策略无效"));
         identifiers.insert(item.id);
         tool.actions.append(item);

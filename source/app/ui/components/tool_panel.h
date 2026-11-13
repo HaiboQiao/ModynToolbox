@@ -39,6 +39,8 @@ class ToolPanel : public QWidget {
     void cancelRequested();
     void exportRequested(const QString &path, const QJsonObject &document, bool plainText);
 
+  protected:
+    bool eventFilter(QObject *object, QEvent *event) override;
   private:
     QWidget *node(const QJsonObject &description);
     QWidget *makeFields();
@@ -46,7 +48,8 @@ class ToolPanel : public QWidget {
     QWidget *makeText();
     QWidget *makeActions();
     QJsonObject parameters() const;
-    void inputChanged();
+    void inputChanged(bool parameterOnly = false);
+    void refreshOptions();
     void conditions();
     void updateActions();
     void verifyRestoredFiles();

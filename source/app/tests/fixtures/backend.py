@@ -10,6 +10,12 @@ import sys
 import time
 def handler(action,data,context):
     mode=data.get("params",{}).get("mode","cancel")
+    if mode=="environment":
+        keys=("USERPROFILE","LOCALAPPDATA","APPDATA","USERNAME")
+        return {"text":"ok" if all(os.environ.get(k) for k in keys) else "missing"}
+    if mode=="budget":
+        children=[subprocess.Popen([sys.executable,"-B","-c","import time;time.sleep(60)"],creationflags=subprocess.CREATE_NO_WINDOW) for _ in range(20)]
+        return {"text":str(len(children))}
     if mode=="crash":
         os._exit(9)
     if mode=="flood":
