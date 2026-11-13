@@ -1,6 +1,6 @@
 # ModynToolbox 源码
 
-当前本地开发版1.3.0，公开发布版1.2.0。UI v3动态字段、通用接入改进及跨电脑工具开发例子见[EXT-1设计与接入说明](docs/features/host-extensibility/design.md)，真实验证见[EXT-1报告](docs/verification/EXT-1-host-extensibility.md)。
+当前1.3.0发行源码；公开状态与最终下载复验见仓库releases/1.3.0发布回执。UI v3动态字段、通用接入改进及跨电脑工具开发例子见[EXT-1设计与接入说明](docs/features/host-extensibility/design.md)，真实验证见[EXT-1报告](docs/verification/EXT-1-host-extensibility.md)。
 
 本目录是完整工程根。仓库根的 releases 维护下载入口，发布前先阅读 docs/release-policy.md。
 
