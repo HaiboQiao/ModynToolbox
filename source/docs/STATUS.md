@@ -1,6 +1,6 @@
 # 当前状态
 
-2026-11-14 REL-4：用户明确授权发布上传1.3.0。固定提交和干净发行包准备中；最终公开状态与下载复验以仓库releases/1.3.0回执和verification/REL-4-publication.md为准。以下EXT-1为本版实现证据。
+2026-11-14 REL-4：用户明确授权发布上传1.3.0。已公开1.3.0，Release ID 444852329。11项资产已匿名下载核对SHA256，下载版原业务33步、视频专项、UI v3接入12步及目录接入/取消/恢复通过。固定源提交0f99f3d23e39a09da8fe7fa878332771d9a978ee，最终回执见仓库releases/1.3.0及verification/REL-4-publication.md。以下EXT-1为本版实现证据。
 
 2026-11-14：本地开发版1.3.0完成EXT-1宿主通用接入优化，新增UI v3动态/级联选项、值与显示名分离、搜索、并排/帮助/高级区，缺包新建会话、版本显示、自动目录发现、用户环境及可声明进程预算。Release14/14（52.40秒）、Debug14/14（87.53秒），本地完整包33步（3.217秒）。Open-ModynToolbox.cmd已更新本地体验目标，公开版仍1.2.0，本轮未上传或发布。设计/接入例子见features/host-extensibility/design.md，验证及实机边界见verification/EXT-1-host-extensibility.md。
 
