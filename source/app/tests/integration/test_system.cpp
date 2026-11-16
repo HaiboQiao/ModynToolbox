@@ -34,12 +34,22 @@
 #include <QtTest>
 class SystemTests : public QObject {
     Q_OBJECT
+    QTemporaryDir legacyFixtures;
     QString package(const QString &id) {
-        return Files::readObject(qEnvironmentVariable("MODYN_SOURCE_ROOT") + "/.local/tools/" + id +
+        const auto original = Files::readObject(qEnvironmentVariable("MODYN_SOURCE_ROOT") + "/.local/tools/" + id +
                                      "/latest.json",
                                  4096)
             .value("package")
             .toString();
+        auto manifest=Files::readObject(original+"/manifest.json",65536);
+        if(!manifest.contains("frontend")) return original;
+        auto root=legacyFixtures.path()+"/"+id;
+        if(QFileInfo::exists(root+"/manifest.json"))return root;
+        QString error;if(!Files::copyTree(original,root,&error))return {};
+        const auto ui=Files::readObject(qEnvironmentVariable("MODYN_SOURCE_ROOT")+"/tools/"+id+"/integration/ui.json",65536);
+        Files::writeObject(root+"/ui.json",ui);
+        manifest.remove("frontend");manifest["manifest_version"]=1;manifest["ui_schema_version"]=ui.value("view_version");manifest["view_file"]="ui.json";
+        auto checks=Files::readObject(root+"/checksums.json",1024*1024);checks["ui.json"]=Files::sha256(root+"/ui.json");Files::writeObject(root+"/checksums.json",checks);manifest["integrity_sha256"]=Files::sha256(root+"/checksums.json");Files::writeObject(root+"/manifest.json",manifest);return root;
     }
     void write(const QString &path, const QByteArray &value) {
         QDir().mkpath(QFileInfo(path).absolutePath());

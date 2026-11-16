@@ -15,6 +15,9 @@ struct ToolDefinition {
     QString id, name, version, description, packageRoot;
     QString icon = "files";
     QString viewFile;
+    QString frontend;
+    QStringList frontendCapabilities;
+    int frontendStateVersion = 1;
     int uiSchemaVersion = 1;
     bool executable = false;
     QString entryProgram;

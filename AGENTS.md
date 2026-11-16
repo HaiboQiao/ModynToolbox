@@ -1,15 +1,8 @@
 # ModynToolbox 仓库入口
+<!-- project-status: current -->
 
-本仓库按 source 和 releases 分工。任何开发先读 source/AGENTS.md、source/README.md 和 source/docs/STATUS.md，后续遵守源码目录的协作约定。业务代码、测试、开发依赖、数据与生成物集中 source 内对应目录。
+仓库分source（源码/开发）和releases（公开发行索引/回执）。任何开发先读source/AGENTS.md、[当前背景](source/docs/project-baseline.md)、[行为契约](source/docs/behavior-contracts.md)、source/docs/STATUS.md及source/docs/change-policy.md，再按任务进入模块；不要从历史记录推导当前授权。
 
-releases 保存公开发布的索引、版本说明和校验记录。可运行压缩包通过 GitHub Releases 分发。
+业务代码、工具、依赖、数据、测试及输出集中source对应目录。保留本项目和其他窗口的未提交工作，不改其他独立项目。工具有完整自有前端/后端，公共宿主保持通用，具体约束以当前基线为准。
 
-## 发布必须先读
-
-用户要求发布、打包、上传 GitHub 或更新版本时，先读 source/docs/release-policy.md，再核对 source/docs/STATUS.md 和 releases 中相应版本记录。按规程连续执行已授权步骤并保存证据。上传必须属于用户授权的仓库和范围。
-
-目录结构改造已获用户明确授权。项目历史、规划和验证记录保存在 source/docs。历史报告中的旧根路径按记录当时环境理解，当前操作入口以 source 的最新文档为准。
-
-## 发布触发边界
-
-只有用户在本次任务中明确要求发布/发版，才执行正式版本发布。发布规则讨论、源码优化、修复与本地验证按当前任务授权处理。正式发布必须同时同步最新源码、说明、运行资产和发布回执到 GitHub，并完成远端及下载核验。单独源码同步按用户明确的同步授权执行。
+规则与源码随项目保存，README/handoff为不自动读AGENTS的AI提供入口。普通优化不发布、不推送；只有当前用户明确要求发布/上传才完整读取source/docs/release-policy.md并按授权执行源码与运行资产同步、校验和公开下载复验。历史“已授权发布”不触发新发布。

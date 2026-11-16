@@ -3,6 +3,7 @@
 #include <QToolButton>
 #include <QStyle>
 #include <QWidget>
+#include <QWindow>
 #ifdef Q_OS_WIN
 #define NOMINMAX
 #include <windows.h>
@@ -35,6 +36,8 @@ bool handleWindowFrame(QWidget *window, QWidget *titleBar, QToolButton *maximize
 #ifdef Q_OS_WIN
     if (QGuiApplication::platformName() != "windows" || !titleBar || !maximize) return false;
     const auto *event = static_cast<MSG *>(message);
+    if(event->message==WM_ENTERSIZEMOVE)window->setProperty("nativeSizing",true);
+    if(event->message==WM_EXITSIZEMOVE||event->message==WM_CANCELMODE)window->setProperty("nativeSizing",false);
     if (event->message == WM_NCCALCSIZE && event->wParam) {
         // The window still owns native frame styles. Only the client-area calculation is customized.
         if (IsZoomed(event->hwnd)) {
@@ -76,6 +79,12 @@ bool handleWindowFrame(QWidget *window, QWidget *titleBar, QToolButton *maximize
             return true;
         }
     }
+    if (event->message == WM_NCLBUTTONDOWN &&
+        event->wParam >= HTLEFT && event->wParam <= HTBOTTOMRIGHT && !IsZoomed(event->hwnd)) {
+        // Qt's frameless handler must not swallow the native sizing loop.
+        *result = DefWindowProcW(event->hwnd, event->message, event->wParam, event->lParam);
+        return true;
+    }
     if (event->message == WM_NCLBUTTONDOWN && event->wParam == HTMAXBUTTON) {
         maximize->setDown(true);
         SetCapture(event->hwnd);
@@ -109,6 +118,39 @@ bool handleWindowFrame(QWidget *window, QWidget *titleBar, QToolButton *maximize
     }
 #else
     Q_UNUSED(window); Q_UNUSED(titleBar); Q_UNUSED(maximize); Q_UNUSED(message); Q_UNUSED(result);
+#endif
+    return false;
+}
+
+void configureResizeHandle(QWidget *widget) {
+#ifdef Q_OS_WIN
+    if(QGuiApplication::platformName()!="windows")return;
+    const auto hwnd=reinterpret_cast<HWND>(widget->winId());
+    if(widget->property("nativeLayerReady").toBool()&&widget->property("nativeLayerHandle").toULongLong()==qulonglong(hwnd))return;
+    widget->setProperty("nativeLayerHandle",qulonglong(hwnd));
+    widget->setProperty("nativeLayerApplyCount",widget->property("nativeLayerApplyCount").toInt()+1);
+    // Keep Qt's platform state consistent: otherwise a subsequent show/style update clears layering.
+    if(widget->windowHandle())widget->windowHandle()->setOpacity(1.0/255.0);
+    SetWindowLongPtrW(hwnd,GWL_EXSTYLE,GetWindowLongPtrW(hwnd,GWL_EXSTYLE)|WS_EX_LAYERED|WS_EX_NOACTIVATE);
+    // Alpha zero is click-through. One remains hittable without painting a visible frame.
+    const bool layered=SetLayeredWindowAttributes(hwnd,0,1,LWA_ALPHA);
+    widget->setProperty("nativeLayerReady",layered);widget->setProperty("nativeLayerError",layered?0:int(GetLastError()));
+    SetWindowPos(hwnd,HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+#else
+    Q_UNUSED(widget);
+#endif
+}
+bool handleResizeHandle(QWidget *window,int hit,void *message,qintptr *result) {
+#ifdef Q_OS_WIN
+    if(QGuiApplication::platformName()!="windows")return false;
+    const auto *event=static_cast<MSG *>(message);
+    if(event->message==WM_NCHITTEST){*result=hit;return true;}
+    if(event->message==WM_NCLBUTTONDOWN){
+        *result=DefWindowProcW(reinterpret_cast<HWND>(window->winId()),WM_NCLBUTTONDOWN,hit,event->lParam);
+        return true;
+    }
+#else
+    Q_UNUSED(window);Q_UNUSED(hit);Q_UNUSED(message);Q_UNUSED(result);
 #endif
     return false;
 }

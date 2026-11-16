@@ -2,6 +2,9 @@
 #include "ui/theme/theme.h"
 #include "ui/components/spin_box.h"
 #include <QHBoxLayout>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QTimer>
 #include <QStyleOptionSpinBox>
 #include <QPlainTextEdit>
 #include <QLineEdit>
@@ -56,6 +59,9 @@ class WorkbenchTests : public QObject {
                 return {};
             auto object = QJsonDocument::fromJson(source.readAll()).object();
             object.remove("protocol_version");
+            object.remove("frontend");
+            object["manifest_version"]=1;
+            object["view_file"]="ui.json";
             object["package_version"] = "0.2.0";
             QFile output(destination + "/manifest.json");
             if (!output.open(QIODevice::WriteOnly))
@@ -68,6 +74,43 @@ class WorkbenchTests : public QObject {
         return readCatalog(root).tools;
     }
   private slots:
+    void cacheSettingsApplyAndCancel() {
+        QTemporaryDir temp;Workbench window(testTools(),{temp.path()+"/data",{}, {}});window.show();
+        bool checked=false;
+        QTimer::singleShot(0,&window,[&]{auto *dialog=window.findChild<QDialog *>("preferencesDialog");if(!dialog)return;
+            auto *limit=dialog->findChild<QSpinBox *>("preferenceWebCache");auto *idle=dialog->findChild<QSpinBox *>("preferenceWebIdle");
+            if(!limit||!idle){dialog->reject();return;}checked=limit->value()==2&&idle->value()==5;
+            limit->setValue(5);idle->setValue(10);dialog->findChild<QComboBox *>("preferenceWorkspace")->setCurrentIndex(1);dialog->findChild<QDialogButtonBox *>()->button(QDialogButtonBox::Ok)->click();});
+        window.findChild<QPushButton *>("settingsShortcut")->click();QVERIFY(checked);
+        auto prefs=window.savedState().value("preferences").toObject();QVERIFY(!prefs.value("workspace_inset").toBool());QCOMPARE(window.findChild<QWidget *>("toolWorkspaceHost")->layout()->contentsMargins(),QMargins(0,0,0,0));QCOMPARE(prefs.value("web_cache_limit").toInt(),5);QCOMPARE(prefs.value("web_cache_minutes").toInt(),10);
+        QTimer::singleShot(0,&window,[&]{auto *dialog=window.findChild<QDialog *>("preferencesDialog");if(!dialog)return;dialog->findChild<QSpinBox *>("preferenceWebCache")->setValue(0);dialog->reject();});
+        window.findChild<QPushButton *>("settingsShortcut")->click();QCOMPARE(window.savedState().value("preferences").toObject(),prefs);
+    }
+    void oldSessionHasAnExplicitLatestVersionAction() {
+        QTemporaryDir temp;auto packages=temp.path()+"/packages";
+        auto write=[&](QString version){auto path=packages+"/alpha/"+version;QDir().mkpath(path);QFile f(path+"/manifest.json");QVERIFY(f.open(QIODevice::WriteOnly));f.write(QJsonDocument(QJsonObject{{"manifest_version",1},{"tool_id","alpha"},{"name","Alpha"},{"package_version",version}}).toJson());};
+        write("1.0.0");Workbench window(readPackages(packages),{temp.path()+"/data",packages,{}});
+        window.show();const int old=window.open("alpha");window.setDraft(old,true);window.editor(old)->setPlainText("retained original input");
+        write("2.0.0");QVERIFY(window.refreshTools());
+        auto *update=window.findChild<QPushButton *>("openAvailableVersion");QVERIFY(update);QVERIFY(update->isVisible());
+        QVERIFY(update->toolTip().contains("1.0.0")&&update->toolTip().contains("2.0.0"));
+        const int before=window.sessionCount();update->click();QCOMPARE(window.sessionCount(),before+1);QVERIFY(!update->isVisible());
+        QCOMPARE(window.editor(old)->toPlainText(),QString("retained original input"));
+        int oldVersions=0,newVersions=0;for(const auto &item:window.savedState().value("sessions").toArray()) {oldVersions+=item.toObject().value("version")==QJsonValue("1.0.0");newVersions+=item.toObject().value("version")==QJsonValue("2.0.0");}
+        QCOMPARE(oldVersions,1);QCOMPARE(newVersions,1);
+    }
+    void workspaceUsesEntireHost() {
+        Workbench window(testTools()); window.resize(1200,780); window.show();
+        QCoreApplication::processEvents();
+        auto *host=window.findChild<QWidget *>("toolWorkspaceHost");
+        auto *workspace=window.findChild<QStackedWidget *>("primaryWorkspace");
+        QVERIFY(host && workspace);
+        QCOMPARE(workspace->mapTo(host,QPoint()),QPoint(10,10));
+        QCOMPARE(workspace->size(),host->size()-QSize(20,20));
+        QCOMPARE(window.findChild<QSplitter *>("navigationSplitter")->handleWidth(),1);
+        QCOMPARE(window.sessionView(1)->size(),workspace->contentsRect().size());
+    }
+
     void initTestCase() {
         const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";
         QVERIFY(QFontDatabase::addApplicationFont(fonts + "segoeui.ttf") >= 0);

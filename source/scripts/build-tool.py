@@ -35,6 +35,8 @@ def build(source, output=None):
         shutil.copy2(ROOT/"shared/sdk/python/modyn_sdk.py",backend/"modyn_sdk.py")
         metadata["entry_program"]="runtime/python.exe"
         metadata["entry_args"]=["-B","{package}/backend/adapter.py"]
+    elif recipe["language"] == "frontend":
+        pass
     else:
         built = Path(recipe["built_binary"])
         if not built.is_absolute():
@@ -44,8 +46,14 @@ def build(source, output=None):
             shutil.copy2(Path(name),backend/Path(name).name)
         metadata["entry_program"]="backend/"+built.name
         metadata["entry_args"]=[]
-    shutil.copy2(source/"integration/ui.json",target/"ui.json")
+    if metadata.get("frontend"):
+        shutil.copytree(source/"frontend",target/"frontend",ignore=shutil.ignore_patterns("node_modules","src","*.map"))
+        shutil.copy2(ROOT/"shared/frontend-sdk/modyn.js",target/"frontend/modyn.js")
+    else:
+        shutil.copy2(source/"integration/ui.json",target/"ui.json")
     (target/"LICENSES").mkdir()
+    for notice in (source/"frontend").glob("vendor/*LICENSE*"):
+        shutil.copy2(notice,target/"LICENSES"/notice.name)
     shutil.copy2(source/"LICENSE.txt",target/"LICENSES"/"TOOL.txt")
     for name in recipe.get("license_files",[]):
         license_path=Path(name)

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frontend bridge request v1",
+  "type": "object",
+  "required": [
+    "bridgeVersion",
+    "requestId",
+    "method"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "bridgeVersion": {
+      "const": 1
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "session.checkpoint",
+        "session.dirty",
+        "jobs.submit",
+        "jobs.query",
+        "jobs.cancel",
+        "files.pick",
+        "files.drop",
+        "files.url",
+        "artifacts.read",
+        "artifacts.open",
+        "artifacts.save",
+        "clipboard.write",
+        "window.detach",
+        "window.attach",
+        "payload.begin",
+        "payload.append",
+        "payload.dispatch"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

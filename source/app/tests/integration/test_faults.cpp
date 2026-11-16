@@ -48,14 +48,21 @@ class FaultTests : public QObject {
         QVERIFY2(error.isEmpty(), qPrintable(error));
     }
     void userEnvironmentAndLargerProcessBudget() {
-        for (const auto &mode : {"environment", "budget"}) {
+        for (const auto &mode : {"environment", "budget", "error-mode"}) {
             QTemporaryDir root;
             auto definition=tool; definition.limits["max_processes"]=32;
+            if(QString(mode)=="budget") {
+                // Test process count independently from the separate 128MiB memory-failure test.
+                definition.limits["memory_mb"]=512;
+                definition.actions.first().timeoutSeconds=15;
+            }
             Scheduler scheduler(root.path(),bridge); QSignalSpy finished(&scheduler,&Scheduler::finished);
             QVERIFY(!scheduler.submit(definition,"runtime-test",1,"run",{{"params",QJsonObject{{"mode",mode}}}}).isEmpty());
             QTRY_COMPARE_WITH_TIMEOUT(finished.size(),1,20000);
             QCOMPARE(finished.first().at(4).toString(),QString("succeeded"));
-            QCOMPARE(finished.first().at(3).toJsonObject().value("text").toString(),QString(mode)=="budget" ? QString("20") : QString("ok"));
+            const auto output=finished.first().at(3).toJsonObject();
+            QCOMPARE(output.value("text").toString(),QString(mode)=="budget" ? QString("20") : QString(mode)=="error-mode" ? QString("1") : QString("ok"));
+            if(QString(mode)=="budget")QCOMPARE(output.value("initialized_children").toInt(),20);
         }
         auto manifest=Files::readObject(tool.packageRoot+"/manifest.json",65536);
         auto limits=manifest.value("limits").toObject();

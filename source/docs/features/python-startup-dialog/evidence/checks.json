@@ -1,0 +1,19 @@
+{
+  "scope": "side-conversation Python startup fix only",
+  "checks": {
+    "jobs": "passed",
+    "worker_faults": "passed",
+    "host_crash_tree": "passed"
+  },
+  "seconds": 9.28,
+  "source_sha256": {
+    "app/worker_host/main.cpp": "1283738e100253c17ee62d7e8739a03da9ffc1821101746aa883da1fad4aeaca",
+    "app/jobs/job_runner.cpp": "a860856eef0179bde25ff7b4dd89a693d1580d3f4a73cb32a83e33469313b507",
+    "app/tests/fixtures/backend.py": "ea15bc017bbac456785142380bf9995e749783af110545612243faea4fae533c",
+    "app/tests/integration/test_faults.cpp": "88287f46e6e8fc227dab68b943c0f79f01774107cc3e714cb0aa0588b0abdf68"
+  },
+  "worker_host_sha256": "aac2df77b2e63f813e35aaa0606b87fcd420d91675d0f912d3fee9d3db0ed099",
+  "production_limits_changed": false,
+  "published_or_latest_replaced": false,
+  "full_ui_suite": "not run by this side conversation"
+}

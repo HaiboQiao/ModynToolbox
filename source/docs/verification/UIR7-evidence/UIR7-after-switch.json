@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "page_identity_preserved_on_every_return": true,
+  "load_wait_ms": [
+    507,
+    50,
+    51,
+    50,
+    50,
+    50,
+    50,
+    405
+  ],
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r7-after\\3c3399a8",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r7-after\\3c3399a8\\report.json"
+}

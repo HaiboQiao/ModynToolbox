@@ -1,0 +1,7 @@
+{
+  "disabled_builtin_tools": [
+    "file-hash",
+    "json",
+    "rename"
+  ]
+}

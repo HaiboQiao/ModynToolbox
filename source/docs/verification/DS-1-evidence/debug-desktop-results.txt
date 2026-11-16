@@ -1,0 +1,21 @@
+********* Start testing of DesktopStartupTests *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) debug build; by MSVC 2022), windows 11
+PASS   : DesktopStartupTests::initTestCase()
+QWARN  : DesktopStartupTests::closeControlStates() QFontDatabase: Cannot find font directory D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-check/bin/Debug/lib/fonts.
+Note that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig.
+PASS   : DesktopStartupTests::closeControlStates()
+PASS   : DesktopStartupTests::shortcutLifecycleAndArguments()
+PASS   : DesktopStartupTests::shortcutFailurePreservesForeignFiles()
+PASS   : DesktopStartupTests::validForeignAndBrokenShortcutStayProtected()
+QWARN  : DesktopStartupTests::settingsCancelApplyAndDisable() This plugin does not support propagateSizeHints()
+QWARN  : DesktopStartupTests::settingsCancelApplyAndDisable() This plugin does not support propagateSizeHints()
+QWARN  : DesktopStartupTests::settingsCancelApplyAndDisable() This plugin does not support propagateSizeHints()
+PASS   : DesktopStartupTests::settingsCancelApplyAndDisable()
+PASS   : DesktopStartupTests::instanceActivationSilentAndRecovery()
+PASS   : DesktopStartupTests::unresponsivePrimaryDoesNotOpenAnother()
+PASS   : DesktopStartupTests::simultaneousLaunchesHaveOnePrimary()
+QWARN  : DesktopStartupTests::logicalWindowRestorePreservesMaximized() This plugin does not support propagateSizeHints()
+PASS   : DesktopStartupTests::logicalWindowRestorePreservesMaximized()
+PASS   : DesktopStartupTests::cleanupTestCase()
+Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, 5937ms
+********* Finished testing of DesktopStartupTests *********

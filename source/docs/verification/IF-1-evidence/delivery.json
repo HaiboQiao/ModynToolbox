@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "version": "1.4.0",
+  "package": ".local/releases/ModynToolbox-1.4.0-7bde1419",
+  "host_sha256": "b0848293db84849029a8bfd1c6f09cd6ff92f79d4795b48b4504f387c3236996",
+  "initial_data_empty": true,
+  "package_checksums_verified": true,
+  "source_dirty": true,
+  "portable_steps": 48,
+  "portable_seconds": 16.687,
+  "release_ctest": "15/15",
+  "debug_ctest": "15/15",
+  "published": false
+}

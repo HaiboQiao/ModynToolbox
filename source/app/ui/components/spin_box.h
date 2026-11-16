@@ -7,4 +7,5 @@ class UiSpinBox : public QSpinBox {
     using QSpinBox::QSpinBox;
   protected:
     void paintEvent(QPaintEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 };

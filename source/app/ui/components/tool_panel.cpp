@@ -188,7 +188,7 @@ QPushButton *button(const QString &text) {
 }
 } // namespace
 ToolPanel::ToolPanel(ToolDefinition definition, ViewSpec view, QWidget *parent)
-    : QWidget(parent), tool(std::move(definition)), spec(std::move(view)) {
+    : ToolSurface(parent), tool(std::move(definition)), spec(std::move(view)) {
     setObjectName("toolPanel");
     setAttribute(Qt::WA_StyledBackground, true);
     auto *layout = new QVBoxLayout(this);
@@ -391,7 +391,8 @@ QWidget *ToolPanel::makeFields() {
     layout->setSpacing(8);
     if (!spec.fields.isEmpty())
         layout->addWidget(label(QStringLiteral("参数设置"), "sectionTitle"));
-    frame->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
+    // Fill the allocated row height; the trailing stretch keeps fields at the top.
+    frame->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     frame->setObjectName("parameterFields"); frame->installEventFilter(this);
     auto *normalGrid = new QGridLayout;
     normalGrid->setObjectName("normalFieldGrid"); normalGrid->setAlignment(Qt::AlignTop);

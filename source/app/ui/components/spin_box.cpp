@@ -1,3 +1,4 @@
+#include <QWheelEvent>
 #include "spin_box.h"
 #include "ui/theme/theme.h"
 #include <QPainter>
@@ -25,4 +26,8 @@ void UiSpinBox::paintEvent(QPaintEvent *event) {
                                       center + QPointF(0, 1.5 * direction),
                                       center + QPointF(3, -1.5 * direction)});
     }
+}
+
+void UiSpinBox::wheelEvent(QWheelEvent *event) {
+    event->ignore(); // Let a parent scroll without changing a parameter.
 }

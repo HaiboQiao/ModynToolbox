@@ -35,6 +35,7 @@ shutil.copy2(runtime/"Qt6Core.dll",native/"Release/Qt6Core.dll")
 for dll in runtime.glob("*.dll"):shutil.copy2(dll,native/"Release"/dll.name)
 prepared=OUTPUT/"package-source";(prepared/"integration").mkdir(parents=True,exist_ok=True)
 for name in ("manifest.json","ui.json"):shutil.copy2(SOURCE/"integration"/name,prepared/"integration"/name)
+if (SOURCE/"frontend").is_dir():shutil.copytree(SOURCE/"frontend",prepared/"frontend",dirs_exist_ok=True)
 (prepared/"LICENSE.txt").write_text((SOURCE/"LICENSE.txt").read_text(encoding="utf-8")+"\n\nFFmpeg build license\n"+(deps/"LICENSE").read_text(encoding="utf-8"),encoding="utf-8")
 recipe={"language":"cpp","built_binary":str(native/"Release/ModynVideo.exe"),"runtime_files":[str(native/"Release/ModynVideoCli.exe"),str(SOURCE/"dependencies.lock.json"),str(deps/"README.txt")]+[str(p) for p in sorted(runtime.glob("*.dll"))]+[str(deps/n) for n in lock["files"]]}
 recipe["license_files"]=[str(ROOT/"licenses/LGPL-3.0-only.txt"),str(ROOT/"licenses/GPL-3.0-only.txt"),str(SOURCE/"licenses/README.md"),str(ROOT/"licenses/MinGW-runtime-notices.txt"),str(ROOT/"licenses/MEDIA-SOURCES.md"),str(SOURCE/"engine/inputs.lock.json"),str(SOURCE/"engine/build-msys2.sh")]

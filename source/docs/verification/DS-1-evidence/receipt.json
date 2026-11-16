@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "local_package": ".local/releases/ModynToolbox-1.4.0-6c876e79",
+  "version": "1.4.0",
+  "host_sha256": "a3352c32c2e7072c83b3efe8cff649980a5dbf8c077381bd65afc498709486bf",
+  "source_dirty": true,
+  "initial_data_empty": true,
+  "package_checksums_verified": true,
+  "release_full": "16/16 95.72s",
+  "debug_full_before_final_polish": "16/16 138.62s",
+  "debug_final_desktop": "11 Qt cases incl init/cleanup, 5.937s",
+  "final_entry_regressions": "host_start/window_native/desktop_startup 3/3",
+  "portable": {
+    "success": true,
+    "steps": 48,
+    "business_steps": 44,
+    "restore_steps": 4,
+    "seconds": 14.255,
+    "path": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\fa55814d\\ModynToolbox",
+    "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\fa55814d\\business-report.json",
+    "restore_report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\fa55814d\\restore-report.json",
+    "isolated_path": "C:\\WINDOWS\\System32",
+    "system_python_used_by_app": false,
+    "bundled_fixed_runtime_observed": true,
+    "runtime_version": "157.0.4341.60",
+    "screenshots": [
+      "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\fa55814d\\json.png",
+      "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\fa55814d\\video.png"
+    ]
+  },
+  "tools_changed_this_task": false,
+  "real_user_startup_changed_by_tests": false,
+  "published": false
+}

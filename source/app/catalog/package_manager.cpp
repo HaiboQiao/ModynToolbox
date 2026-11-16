@@ -11,7 +11,7 @@ PackageManager::PackageManager(QString root) : packagesRoot(QDir(root).absoluteP
     QDir().mkpath(packagesRoot);
 }
 QString PackageManager::verify(const ToolDefinition &tool) const {
-    if (!tool.executable)
+    if (!tool.executable && tool.frontend.isEmpty())
         return QStringLiteral("预览包没有执行入口");
     QString error;
     const auto manifest = Files::readObject(tool.packageRoot + "/manifest.json", 65536, &error);
@@ -58,15 +58,17 @@ QString PackageManager::install(const QString &source) {
     if (!error.isEmpty())
         return error;
     const auto tool = definitionFromManifest(source, manifest, &error);
-    if (!error.isEmpty() || !tool.executable)
+    if (!error.isEmpty() || (!tool.executable && tool.frontend.isEmpty()))
         return error.isEmpty() ? QStringLiteral("需要正式 v1 工具包") : error;
     error = verify(tool);
     if (!error.isEmpty())
         return error;
+    if (tool.frontend.isEmpty()) {
     const auto view = loadViewSpec(source, true);
     if (!view.error.isEmpty())
         return view.error;
     if (view.version != tool.uiSchemaVersion) return QStringLiteral("工具清单与界面版本不一致");
+    }
     const auto destination = packagesRoot + "/" + tool.id + "/" + tool.version;
     if (QFileInfo::exists(destination))
         return QStringLiteral("相同版本已安装，请提高工具版本或先移除闲置版本");

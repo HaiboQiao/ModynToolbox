@@ -15,6 +15,8 @@ bool sqlite(const QString &path) {
     return file.open(QIODevice::ReadOnly) && file.read(16) == QByteArray("SQLite format 3\0", 16);
 }
 bool excluded(const QString &relative, const QString &path) {
+    const auto parts=relative.split('/');
+    if(parts.size()>=3 && parts[0]=="tools" && (parts[2]=="ui-profiles"||parts[2]=="ui-transfer")) return true;
     if (relative == "host/instance.lock" || relative == "host/migration.json" ||
         (relative == "host/backups" || relative.startsWith("host/backups/")) ||
         (relative == "host/staging" || relative.startsWith("host/staging/")))

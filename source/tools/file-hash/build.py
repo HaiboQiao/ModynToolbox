@@ -27,6 +27,7 @@ for dll in redist.glob("*.dll"):
 prepared=OUTPUT/"package-source"
 (prepared/"integration").mkdir(parents=True,exist_ok=True)
 for name in ("manifest.json","ui.json"):shutil.copy2(SOURCE/"integration"/name,prepared/"integration"/name)
+if (SOURCE/"frontend").is_dir():shutil.copytree(SOURCE/"frontend",prepared/"frontend",dirs_exist_ok=True)
 shutil.copy2(SOURCE/"LICENSE.txt",prepared/"LICENSE.txt")
 recipe=json.loads((SOURCE/"tool.build.json").read_text(encoding="utf-8"))
 recipe["built_binary"]=str(native/"Release/ModynHash.exe")

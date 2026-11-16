@@ -1,0 +1,21 @@
+********* Start testing of WebFrontendTests *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows 11
+PASS   : WebFrontendTests::initTestCase()
+QWARN  : WebFrontendTests::completePageSurvivesWindowMoves() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-jDnxil" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::completePageSurvivesWindowMoves()
+QINFO  : WebFrontendTests::warmSwitchAndBoundedCheckpointCache() UIR7 warm switch including evaluation ms 25
+QWARN  : WebFrontendTests::warmSwitchAndBoundedCheckpointCache() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-IfCyAF" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::warmSwitchAndBoundedCheckpointCache()
+QWARN  : WebFrontendTests::idleCacheReclaimsOnlyUnpinnedPages() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-JzUndK" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::idleCacheReclaimsOnlyUnpinnedPages()
+QWARN  : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-bsVfQy" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser()
+QWARN  : WebFrontendTests::realIndependentToolPages() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-IkPGWB" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::realIndependentToolPages()
+QWARN  : WebFrontendTests::browserFailureIsLocalAndRecoverable() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-dQqOxp" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::browserFailureIsLocalAndRecoverable()
+QWARN  : WebFrontendTests::resourceProfile() QTemporaryDir: Unable to remove "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release\\tests\\tmp\\modyn_web_tests-sIaHgP" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::resourceProfile()
+PASS   : WebFrontendTests::cleanupTestCase()
+Totals: 9 passed, 0 failed, 0 skipped, 0 blacklisted, 58957ms
+********* Finished testing of WebFrontendTests *********

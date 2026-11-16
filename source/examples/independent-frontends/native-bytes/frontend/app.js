@@ -1,0 +1,2 @@
+import {modyn} from './modyn.js';
+const app=Vue.createApp({data:()=>({content:'',count:0,bins:[],message:'就绪'}),methods:{run(){modyn.submit('analyze',{content:this.content}).catch(e=>this.message=e.message)}},mounted(){modyn.setCheckpointProvider(()=>({state:{},input:{content:this.content}}));modyn.on('bootstrap',b=>this.content=b.input?.content||'');modyn.on('job',j=>this.message=j.message||j.state);modyn.on('result',r=>{this.count=r.byte_count;this.bins=r.histogram||[]});modyn.ready()}}).mount('#app');window.byteApp=app;

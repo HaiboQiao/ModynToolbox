@@ -2,6 +2,9 @@
 #include "ui/components/tool_panel.h"
 #include "ui/theme/theme.h"
 #include <QComboBox>
+#include "ui/components/spin_box.h"
+#include "ui/components/combo_box.h"
+#include <QWheelEvent>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDir>
@@ -29,6 +32,53 @@ private slots:
         const auto fonts = qEnvironmentVariable("WINDIR") + "/Fonts/";
         QVERIFY(QFontDatabase::addApplicationFont(fonts + "segoeui.ttf") >= 0);
         QVERIFY(QFontDatabase::addApplicationFont(fonts + "msyh.ttc") >= 0);
+    }
+    void fileParametersStayAtTop() {
+        const auto source = qEnvironmentVariable("MODYN_SOURCE_ROOT");
+        for (bool compact : {false, true}) {
+            for (int font : {12, 14, 18}) {
+                Theme::setPreferences(font, compact);
+                for (const auto &id : {"rename", "image", "file-hash"}) {
+                    const auto spec = loadViewSpec(source + "/tools/" + id + "/integration", true);
+                    QVERIFY2(spec.error.isEmpty(), qPrintable(spec.error));
+                    ToolDefinition tool;
+                    ToolPanel panel(tool, spec);
+                    panel.show();
+                    for (const auto &size : {QSize(1200, 760), QSize(1200, 1100), QSize(560, 900)}) {
+                        panel.resize(size);
+                        QTest::qWait(10);
+                        auto *fields = panel.findChild<QWidget *>("parameterFields");
+                        auto *files = panel.findChild<QWidget *>("fileDropArea");
+                        QVERIFY(fields && files);
+                        const auto fieldTop = fields->mapTo(&panel, QPoint()).y();
+                        const auto fileTop = files->mapTo(&panel, QPoint()).y();
+                        if (size.width() >= 650)
+                            QVERIFY2(qAbs(fieldTop - fileTop) <= 1, qPrintable(QString("%1 %2px compact=%3: fields=%4 files=%5").arg(id).arg(font).arg(compact).arg(fieldTop).arg(fileTop)));
+                        else
+                            QVERIFY(fieldTop > fileTop);
+                        const auto path = qEnvironmentVariable("MODYN_LAYOUT_PREVIEW");
+                        if (!path.isEmpty() && QString(id) == "rename" && font == 14 && !compact)
+                            QVERIFY(panel.grab().save(path + QString("-%1x%2.png").arg(size.width()).arg(size.height())));
+                    }
+                }
+            }
+        }
+        Theme::setPreferences(14, false);
+    }
+    void wheelDoesNotEditParameters() {
+        UiSpinBox number; number.setRange(0,100); number.setValue(20);
+        UiComboBox choice; choice.addItems({"one","two","three"}); choice.setCurrentIndex(1);
+        for (auto *control : {static_cast<QWidget *>(&number),static_cast<QWidget *>(&choice)}) {
+            for (int delta : {-120,120}) {
+                QWheelEvent event(QPointF(5,5),QPointF(5,5),QPoint(),QPoint(0,delta),Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+                QApplication::sendEvent(control,&event);
+                QVERIFY(!event.isAccepted());
+                QCOMPARE(number.value(),20); QCOMPARE(choice.currentIndex(),1);
+            }
+        }
+        QTest::keyClick(&number,Qt::Key_Up); QCOMPARE(number.value(),21);
+        QTest::keyClick(&choice,Qt::Key_Down); QCOMPARE(choice.currentIndex(),2);
+        number.stepUp(); QCOMPARE(number.value(),22);
     }
     void legacyFallback() {
         QTemporaryDir root;

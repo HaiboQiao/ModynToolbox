@@ -1,0 +1,8 @@
+********* Start testing of WebFrontendTests *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows 11
+PASS   : WebFrontendTests::initTestCase()
+QWARN  : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser() QTemporaryDir: Unable to remove "C:\\Users\\qhb16\\AppData\\Local\\Temp\\modyn_web_tests-wAFsxg" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser()
+PASS   : WebFrontendTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 3899ms
+********* Finished testing of WebFrontendTests *********

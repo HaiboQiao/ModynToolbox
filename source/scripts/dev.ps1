@@ -2,7 +2,8 @@ param(
     [ValidateSet('doctor','configure','build','run','test','tools','package')]
     [string]$Action = 'run',
     [ValidateSet('windows-dev','windows-check','windows-complete','windows-release')]
-    [string]$Preset = 'windows-complete'
+    [string]$Preset = 'windows-complete',
+    [string]$GuardTask = ''
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -17,12 +18,17 @@ if ($env:MODYN_QT_ROOT) { $qtRoot = $env:MODYN_QT_ROOT }
 if (-not (Test-Path -LiteralPath (Join-Path $qtRoot 'lib\cmake\Qt6\Qt6Config.cmake'))) { throw 'Qt SDK missing. Set MODYN_QT_ROOT or install the project Qt 6.8.3 SDK.' }
 if (-not (Test-Path -LiteralPath $cmake)) { throw 'Visual Studio CMake component is required.' }
 $env:MODYN_QT_ROOT = $qtRoot
+$webRuntimeRecord = Join-Path $projectRoot ".local/toolchains/WebView2Runtime/runtime.json"
+if (Test-Path -LiteralPath $webRuntimeRecord) { $env:MODYN_WEBVIEW2_RUNTIME = (Get-Content -LiteralPath $webRuntimeRecord -Raw | ConvertFrom-Json).root }
 function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     & $Program @Arguments
     if ($LASTEXITCODE -ne 0) { throw "$Program failed with exit code $LASTEXITCODE" }
 }
 Push-Location $projectRoot
 try {
+    if ($Action -in @('test','package')) {
+        Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts/change-guard.py'),'validate')
+    }
     if ($Action -eq 'doctor') {
         Write-Output "Project: $projectRoot"
         Write-Output "Visual Studio: $vsRoot"
@@ -43,7 +49,11 @@ try {
     }
     Copy-Item -LiteralPath (Join-Path $qtRoot $(if ($configuration -eq 'Release') { 'plugins\platforms\qoffscreen.dll' } else { 'plugins\platforms\qoffscreend.dll' })) -Destination (Join-Path $binaryRoot 'platforms') -Force
     if ($Action -eq 'test') {
-        Invoke-Checked $ctest @('--preset',$Preset)
+        if ($GuardTask) {
+            Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts/change-guard.py'),'verify',$GuardTask,'--preset',$Preset,'--ctest',$ctest)
+        } else {
+            Invoke-Checked $ctest @('--preset',$Preset)
+        }
     }
     if ($Action -eq 'tools') {
         Invoke-Checked 'python' @((Join-Path $projectRoot 'scripts\prepare-tools.py'),'--binary',(Join-Path $binaryRoot 'ModynToolbox.App.exe'))

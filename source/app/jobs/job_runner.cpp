@@ -250,6 +250,10 @@ void JobRunner::run() {
                     .arg(terminal)
                     .arg(stderrBytes);
     }
+    if (!error.isEmpty() && quint32(process.exitCode()) == 0xC0000142u)
+        error = QStringLiteral("工具运行时初始化失败（0xC0000142），尚未执行工具代码；请检查运行时依赖和资源限额（%1 MiB / %2 进程）。")
+                    .arg(request.tool.limits.value("memory_mb").toInt(512))
+                    .arg(request.tool.limits.value("max_processes").toInt(16)) + error;
     CloseHandle(group);
     if (error.isEmpty()) {
         const auto path = Files::child(request.jobRoot, "result.json", true);
@@ -313,10 +317,10 @@ void JobRunner::run() {
         }
     if (result.contains("text") && !result.value("text").isString())
         error = QStringLiteral("文本结果类型无效");
-    if (!result.value("status").isString())
+    if (error.isEmpty() && !result.value("status").isString())
         error = QStringLiteral("结果缺少终态标识");
     QString outcome = result.value("status").toString("succeeded");
-    if (!QStringList{"succeeded", "failed", "cancelled"}.contains(outcome))
+    if (error.isEmpty() && !QStringList{"succeeded", "failed", "cancelled"}.contains(outcome))
         error = QStringLiteral("结果状态无效");
     if (!error.isEmpty()) {
         result = {{"status", "failed"}, {"message", error}, {"partial_effects", externalMayRun}};

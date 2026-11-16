@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "host_unchanged": true,
+  "host_sha256": "b0848293db84849029a8bfd1c6f09cd6ff92f79d4795b48b4504f387c3236996",
+  "independent_sdk_has_no_app_source": true,
+  "frameworks": [
+    "Vanilla HTML/JS",
+    "Vue"
+  ],
+  "backends": [
+    "Python",
+    "C++"
+  ],
+  "build_seconds": {
+    "python-statistics": 0.439,
+    "native-bytes": 8.355
+  },
+  "directory_copy_seconds": {
+    "python-statistics": 0.074,
+    "native-bytes": 0.038
+  },
+  "automatic_discovery_without_refresh": true,
+  "host_acceptance_seconds": 17.204,
+  "steps": 20,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\p4\\9ffd4ec0",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\p4\\9ffd4ec0\\report.json"
+}

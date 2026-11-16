@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "task": "gp1-background-protection",
+  "baseline_file_count": 402,
+  "runtime_or_tool_source_changes": [],
+  "historical_originals_preserved": [
+    "spec.md",
+    "plan.md",
+    "handoff.md",
+    "tool-development.md",
+    "ui-design-system.md",
+    "STATUS.md",
+    "task.md",
+    "checklist.md"
+  ],
+  "ctest_groups": 17,
+  "ctest_seconds": 112.3,
+  "guard_unit_cases": 21,
+  "guard_unit_passed": 20,
+  "guard_unit_skipped": 1,
+  "skip_reason": "Windows did not permit creating the private symlink fixture (1314); no system setting/privilege change attempted.",
+  "frozen_frontends": {
+    "success": true,
+    "host_unchanged": true,
+    "host_sha256": "a3352c32c2e7072c83b3efe8cff649980a5dbf8c077381bd65afc498709486bf",
+    "independent_sdk_has_no_app_source": true,
+    "frameworks": [
+      "Vanilla HTML/JS",
+      "Vue"
+    ],
+    "backends": [
+      "Python",
+      "C++"
+    ],
+    "build_seconds": {
+      "python-statistics": 0.43,
+      "native-bytes": 8.487
+    },
+    "directory_copy_seconds": {
+      "python-statistics": 0.072,
+      "native-bytes": 0.04
+    },
+    "automatic_discovery_without_refresh": true,
+    "host_acceptance_seconds": 17.083,
+    "steps": 20,
+    "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\p4\\85d47ee7",
+    "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\p4\\85d47ee7\\report.json"
+  },
+  "cold_source_export": {
+    "success": true,
+    "source_copy_files": 398,
+    "no_git_root": true,
+    "no_sdk_or_build": true,
+    "steps": [
+      {
+        "step": "validate",
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "step": "start",
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "step": "review",
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "step": "verify",
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "step": "finish",
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "step": "reject-unrelated",
+        "exit_code": 2,
+        "expected": 2
+      },
+      {
+        "step": "reject-missing-baseline",
+        "exit_code": 2,
+        "expected": 2
+      }
+    ],
+    "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\guard-cold-check\\ac2682db",
+    "note": "Local source-export cold check, not another AI/computer acceptance. Private copy mutations do not modify the real project."
+  },
+  "code_digest": "eb9cdf8c39818186ae2860b344186968042175d494c410c07a282f767b7e6147",
+  "artifacts_digest": "c525c0fbfd54e642810fb00802edec8cd579414da072da649e1f65a18cf467b4",
+  "published": false
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Complete tool frontend v1",
+  "type": "object",
+  "required": [
+    "type",
+    "entry",
+    "bridge_version",
+    "state_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "web"
+    },
+    "entry": {
+      "type": "string",
+      "pattern": "^frontend/",
+      "maxLength": 512
+    },
+    "bridge_version": {
+      "const": 1
+    },
+    "state_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 6,
+      "items": {
+        "enum": [
+          "jobs",
+          "files",
+          "clipboard",
+          "export",
+          "window",
+          "state"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26300.
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR) 
+-- Configuring done (0.5s)
+-- Generating done (0.6s)
+-- Build files have been written to: D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-release
+适用于 .NET Framework MSBuild 版本 18.9.1+a81b43525
+
+  Automatic MOC for target ModynLauncher
+  ModynLauncher.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.exe
+  Automatic MOC for target modyn_shell
+  single_instance.cpp
+  workbench.cpp
+  正在生成代码...
+  modyn_shell.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\Release\modyn_shell.lib
+  Automatic MOC for target ModynToolboxApp
+  ModynToolboxApp.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.App.exe
+  Automatic MOC for target ModynWorkerHost
+  ModynWorkerHost.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.WorkerHost.exe
+  Automatic MOC for target modyn_catalog_tests
+  modyn_catalog_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_catalog_tests.exe
+  Automatic MOC for target modyn_desktop_startup_tests
+  test_desktop_startup.cpp
+  modyn_desktop_startup_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_desktop_startup_tests.exe
+  Automatic MOC for target modyn_fault_tests
+  modyn_fault_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_fault_tests.exe
+  Automatic MOC for target modyn_job_tests
+  modyn_job_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_job_tests.exe
+  Automatic MOC for target modyn_native_tests
+  modyn_native_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_native_tests.exe
+  Automatic MOC for target modyn_sdk_compile
+  modyn_sdk_compile.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\Release\modyn_sdk_compile.exe
+  Automatic MOC for target modyn_shell_tests
+  modyn_shell_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_shell_tests.exe
+  Automatic MOC for target modyn_system_tests
+  modyn_system_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_system_tests.exe
+  Automatic MOC for target modyn_video_tests
+  modyn_video_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_video_tests.exe
+  Automatic MOC for target modyn_view_tests
+  modyn_view_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_view_tests.exe
+  Automatic MOC for target modyn_web_tests
+  modyn_web_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_web_tests.exe
+  Automatic MOC for target modyn_worker
+  modyn_worker.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_worker.exe
+Warning: Translations will not be available due to the following error.
+Cannot open D:/Workspace/01_Projects/ModynToolbox/source/.local/toolchains/Qt/6.8.3/msvc2022_64/translations/catalogs.json
+D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.App.exe 64 bit, release executable
+Adding in plugin type generic for module: Qt6Gui
+Adding in plugin type imageformats for module: Qt6Gui
+Adding in plugin type multimedia for module: Qt6Multimedia
+Adding in plugin type networkinformation for module: Qt6Network
+Adding in plugin type platforms for module: Qt6Gui
+Adding in plugin type sqldrivers for module: Qt6Sql
+Adding in plugin type styles for module: Qt6Widgets
+Adding in plugin type tls for module: Qt6Network
+Skipping plugin qopensslbackend.dll. Use -force-openssl or specify -openssl-root if you want to use it.
+Direct dependencies: Qt6Core Qt6Gui Qt6Multimedia Qt6MultimediaWidgets Qt6Network Qt6Sql Qt6Widgets
+All dependencies   : Qt6Core Qt6Gui Qt6Multimedia Qt6MultimediaWidgets Qt6Network Qt6Sql Qt6Widgets
+To be deployed     : Qt6Core Qt6Gui Qt6Multimedia Qt6MultimediaWidgets Qt6Network Qt6Sql Qt6Widgets
+Warning: Cannot find any version of the dxcompiler.dll and dxil.dll.
+Warning: Cannot find Visual Studio installation directory, VCINSTALLDIR is not set.
+Qt6Core.dll is up to date.
+Qt6Gui.dll is up to date.
+Qt6Multimedia.dll is up to date.
+Qt6MultimediaWidgets.dll is up to date.
+Qt6Network.dll is up to date.
+Qt6Sql.dll is up to date.
+Qt6Widgets.dll is up to date.
+D3Dcompiler_47.dll is up to date.
+avcodec-61.dll is up to date.
+avformat-61.dll is up to date.
+avutil-59.dll is up to date.
+swresample-5.dll is up to date.
+swscale-8.dll is up to date.
+qtuiotouchplugin.dll is up to date.
+qgif.dll is up to date.
+qico.dll is up to date.
+qjpeg.dll is up to date.
+ffmpegmediaplugin.dll is up to date.
+windowsmediaplugin.dll is up to date.
+qnetworklistmanager.dll is up to date.
+qwindows.dll is up to date.
+qsqlite.dll is up to date.
+qsqlmimer.dll is up to date.
+qsqlodbc.dll is up to date.
+qsqlpsql.dll is up to date.
+qmodernwindowsstyle.dll is up to date.
+qcertonlybackend.dll is up to date.
+qschannelbackend.dll is up to date.
+Test project D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-release
+      Start  1: workbench
+ 1/16 Test  #1: workbench ........................   Passed    5.63 sec
+      Start  2: worker_transport
+ 2/16 Test  #2: worker_transport .................   Passed    0.15 sec
+      Start  3: package_catalog
+ 3/16 Test  #3: package_catalog ..................   Passed    0.21 sec
+      Start  4: view_spec
+ 4/16 Test  #4: view_spec ........................   Passed    1.72 sec
+      Start  5: window_native
+ 5/16 Test  #5: window_native ....................   Passed    0.38 sec
+      Start  6: host_start
+ 6/16 Test  #6: host_start .......................   Passed    0.89 sec
+      Start  7: jobs
+ 7/16 Test  #7: jobs .............................   Passed    1.81 sec
+      Start  8: full_system
+ 8/16 Test  #8: full_system ......................   Passed    8.04 sec
+      Start  9: business_cores
+ 9/16 Test  #9: business_cores ...................   Passed    3.72 sec
+      Start 10: worker_faults
+10/16 Test #10: worker_faults ....................   Passed    5.79 sec
+      Start 11: host_crash_tree
+11/16 Test #11: host_crash_tree ..................   Passed    1.34 sec
+      Start 12: video_core
+12/16 Test #12: video_core .......................   Passed    5.50 sec
+      Start 13: video_editor
+13/16 Test #13: video_editor .....................   Passed    4.77 sec
+      Start 14: video_host
+14/16 Test #14: video_host .......................   Passed   20.86 sec
+      Start 15: web_frontend
+15/16 Test #15: web_frontend .....................   Passed   29.54 sec
+      Start 16: desktop_startup
+16/16 Test #16: desktop_startup ..................   Passed    5.34 sec
+
+100% tests passed, 0 tests failed out of 16
+
+Total Test time (real) =  95.72 sec

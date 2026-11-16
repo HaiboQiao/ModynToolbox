@@ -1,0 +1,1 @@
+Project-authored integration and UI. No Pot or LibreTranslate application code is bundled. External services retain their own terms and licenses. Python runtime notices are included in runtime distribution.

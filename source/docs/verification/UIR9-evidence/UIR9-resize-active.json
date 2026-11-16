@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "tools": [
+    "image",
+    "video-clip",
+    "translate"
+  ],
+  "native_resizes_per_tool": 40,
+  "steps": 21,
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\resize-active\\1ded70cb\\report.json",
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\resize-active\\1ded70cb",
+  "note": "Owned off-desktop HWND resize messages; no global mouse input. Not a physical high-speed screen recording."
+}

@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.24)
+project(ExampleBytes LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+add_executable(ExampleBytes core/main.cpp)
+target_compile_options(ExampleBytes PRIVATE /utf-8)
+target_include_directories(ExampleBytes PRIVATE "${MODYN_INTEGRATION_SDK}/shared/sdk/cpp")
+target_link_libraries(ExampleBytes PRIVATE Qt6::Core)

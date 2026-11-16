@@ -5,6 +5,10 @@ ROOT=Path(__file__).resolve().parents[3]
 parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,required=True);parser.add_argument("--tool-package",type=Path);args=parser.parse_args();binary=args.binary.resolve()
 base=ROOT/".local/video-directory-tests"/str(uuid.uuid4());base.mkdir(parents=True)
 package=args.tool_package.resolve() if args.tool_package else Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
+# Retain native legacy lifecycle coverage separately from complete web portable validation.
+import importlib.util
+spec=importlib.util.spec_from_file_location('legacy_fixture',ROOT/'scripts/legacy-test-package.py');legacy=importlib.util.module_from_spec(spec);spec.loader.exec_module(legacy)
+package=legacy.legacy_package(package,base/'legacy-package',ROOT)
 source=json.loads((ROOT/".local/video-tests/latest.json").read_text(encoding="utf-8"))["sample"]
 metadata=json.loads((package/"manifest.json").read_text(encoding="utf-8"))
 target=base/"tools"/metadata["tool_id"]/metadata["package_version"]

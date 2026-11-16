@@ -1,0 +1,39 @@
+Test project D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-release
+      Start  1: workbench
+ 1/17 Test  #1: workbench ........................   Passed    6.56 sec
+      Start  2: worker_transport
+ 2/17 Test  #2: worker_transport .................   Passed    0.16 sec
+      Start  3: package_catalog
+ 3/17 Test  #3: package_catalog ..................   Passed    0.20 sec
+      Start  4: view_spec
+ 4/17 Test  #4: view_spec ........................   Passed    1.75 sec
+      Start  5: window_native
+ 5/17 Test  #5: window_native ....................   Passed    0.40 sec
+      Start  6: host_start
+ 6/17 Test  #6: host_start .......................   Passed    0.79 sec
+      Start  7: jobs
+ 7/17 Test  #7: jobs .............................   Passed    1.61 sec
+      Start  8: full_system
+ 8/17 Test  #8: full_system ......................   Passed   10.43 sec
+      Start  9: business_cores
+ 9/17 Test  #9: business_cores ...................   Passed    3.68 sec
+      Start 10: worker_faults
+10/17 Test #10: worker_faults ....................   Passed    5.91 sec
+      Start 11: host_crash_tree
+11/17 Test #11: host_crash_tree ..................   Passed    1.23 sec
+      Start 12: video_core
+12/17 Test #12: video_core .......................   Passed    5.45 sec
+      Start 13: video_editor
+13/17 Test #13: video_editor .....................   Passed    4.93 sec
+      Start 14: video_host
+14/17 Test #14: video_host .......................   Passed   22.49 sec
+      Start 15: web_frontend
+15/17 Test #15: web_frontend .....................   Passed   39.43 sec
+      Start 16: desktop_startup
+16/17 Test #16: desktop_startup ..................   Passed    5.23 sec
+      Start 17: change_guard
+17/17 Test #17: change_guard .....................   Passed    2.02 sec
+
+100% tests passed, 0 tests failed out of 17
+
+Total Test time (real) = 112.30 sec

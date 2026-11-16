@@ -1,10 +1,8 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "protocol_version": 1,
-  "ui_schema_version": 1,
   "tool_id": "image",
-  "package_version": "1.0.1",
-  "view_file": "ui.json",
+  "package_version": "1.2.3",
   "name": "图片压缩",
   "description": "保留原图，批量转换与压缩静态图片。",
   "icon": "image",
@@ -29,5 +27,20 @@
     "压缩",
     "WebP",
     "格式转换"
-  ]
+  ],
+  "min_host_version": "1.4.0",
+  "frontend": {
+    "type": "web",
+    "entry": "frontend/index.html",
+    "bridge_version": 1,
+    "state_version": 1,
+    "capabilities": [
+      "jobs",
+      "files",
+      "clipboard",
+      "export",
+      "window",
+      "state"
+    ]
+  }
 }

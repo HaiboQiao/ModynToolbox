@@ -40,6 +40,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR command, int) {
                     MB_OK | MB_ICONERROR);
         return 3;
     }
+    // Forward the user-initiated launch permission to the real app, which can hand it to the existing instance.
+    AllowSetForegroundWindow(process.dwProcessId);
     CloseHandle(process.hThread);
     CloseHandle(process.hProcess);
     return 0;

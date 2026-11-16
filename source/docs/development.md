@@ -1,5 +1,7 @@
 # 开发、构建与迁移
 
+IF-1（本地1.4.0）：工具完整前端接入请先读[独立前端指南](independent-frontend.md)。旧ui.json为兼容路径。新电脑先运行python scripts/setup-webview2.py恢复锁定SDK/Fixed Runtime，再使用dev.ps1；集成SDK可单独导出，不含app源码。当前真实结果见verification/IF-1-independent-frontend.md。
+
 更新于 2026-11-10。本文件记录当前可执行入口。早期规划中的文件名与测试名以实际实现和本文件为准。
 
 ## 工具链
@@ -105,3 +107,36 @@ python scripts/measure-resources.py
 ## 1.2.0视频引擎来源
 
 常规适配器构建从dependencies.lock.json恢复发布中的锁定媒体引擎ZIP，无需安装MSYS2。仅重建FFmpeg本身时使用tools/video-clip/engine/prepare.py和私有UCRT64，具体输入与工具链见该目录README及licenses/MEDIA-SOURCES.md。正式发布同时提供第三方源码归档，不能用旧开发Gyan镜像材料替代本版来源。
+
+
+## DS-1 桌面启动边界
+
+正常Windows UI入口在工作区写入/扫描前通过SingleInstance竞争，按用户SID哈希和当前登录Session命名，不按EXE或data路径分组。QLockFile继续保护同一数据根。message-only窗口只传递激活，不处理业务输入。--autostart表示登录启动，已有实例时不请求前台。系统禁止抢前台时只提醒任务栏。
+
+--automation、Qt offscreen和--tool-package为明确的隔离开发通路，不参与正常主程序竞争；仍受数据根锁约束。平台专项测试使用单独随机scope及私有Startup目录，不要通过正常启动项或生产broker验证而影响用户窗口。真实登录/焦点测试不在无人值守过程中执行。
+
+StartupRegistration只在设置应用时写用户Startup目录，不存工作区中的auto_start布尔值，不在启动/备份恢复时重新注册。main负责注入真实服务；测试注入私有目录。修改需复验desktop_startup及受影响主窗/会话行为，记录设备验证边界。设计见features/desktop-startup，结果见verification/DS-1-desktop-startup.md。
+
+## UIR-7 本地交互优化
+
+宿主仍1.4.0，内置完整工具新增不可变1.2.3包；旧会话锁定原版，使用工具名右侧+新建新版会话后看到工具自有焦点/留白/滚轮更新。旧包和数据保留，不强制迁移。
+
+页面缓存默认两个闲置页/60秒，优先级是数据完整性：忙碌或未完成检查点的页面可能暂时超过额度。缩放边缘与主/浮窗复用，最大化时边缘归零。方案见features/ui-r7-interaction/spec.md。物理拖动、Snap、多DPI需设备验收；自动化保持屏幕外且不激活。当前CTest实际17组（包含Web、启动和变更护栏），早期“11组”为历史阶段数量。
+
+
+## UIR-8 实际开发入口
+
+Run-Dev.cmd和VS Code仍使用windows-complete/Debug，不要求改用别的入口才能看到宿主更新。固定旧包的会话会在侧栏显示“旧版会话 · 打开新版”，点击创建已安装最新版会话，旧输入/版本不改动。公共外框以不挤占布局的原生输入区处理缩放；宿主及其测试统一嵌入app/resources/windows.manifest的Windows10兼容声明，不能遗漏后仅凭根窗口消息测试认定缩放有效。
+
+缓存默认2闲置页/5分钟、设置可调。WebViewSurface::testInput仅后台验证模式接受三种输入/焦点白名单命令，用于目标浏览器的可信事件，不发送全局键鼠。生产工具没有此桥能力。首开、热切换、超额/超时重建分别记录。
+
+
+## UIR-9 默认工具集与独立翻译
+
+默认构建/本地分发由tools/toolset.json控制，停用file-hash/json/rename，保留源代码和历史测试。prepare-tools.py与package.py共用tool_selection.py，不在宿主按工具ID封锁外部复制工具。默认输出image、video-clip、translate；用户自己复制的其他工具仍按通用目录发现。
+
+翻译源文件集中tools/translate，独立HTML/CSS/JS与标准库Python后端，不增加宿主业务UI；构建仍用现有build-tool/prepare流程。当前翻译包1.0.3，最初嵌入Python路径失败的1.0.0保留验证历史、从安装库移出。服务协议单元8项、translation_host真实Web/WorkerHost回归进入19组CTest；本机HTTP夹具不冒充译质，公共服务示例实测另记。
+
+移除工具前正常退出开发程序。此轮三个工具安装目录转存.local/disabled-tools/uir9-*，活动会话移出前通过SQLite备份API保存data/host/backups/uir9-*/state.sqlite；data/tools下的原数据不动，历史发行包不删。确需恢复时可重新启用toolset并执行tools构建/安装，再按需开会话；不要直接用整库旧备份覆盖已有新数据。
+
+缩放回归检查30次连续尺寸改变后浏览器父窗口/可见性及透明层配置无重复变化、页面身份不变、视口尺寸一致；不能用最终静态截图替代物理拖动帧观测。公共工作区新增轻留白/贴边设置，默认10px淡边，工具内部视图仍独立。

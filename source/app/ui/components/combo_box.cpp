@@ -1,3 +1,4 @@
+#include <QWheelEvent>
 #include "combo_box.h"
 #include "ui/theme/theme.h"
 #include <QPainter>
@@ -9,4 +10,8 @@ void UiComboBox::paintEvent(QPaintEvent *event) {
     const QPointF center(width()-16,height()/2.0);
     painter.drawLine(center+QPointF(-3,-1.5),center+QPointF(0,1.5));
     painter.drawLine(center+QPointF(0,1.5),center+QPointF(3,-1.5));
+}
+
+void UiComboBox::wheelEvent(QWheelEvent *event) {
+    event->ignore(); // Let a parent scroll without changing a parameter.
 }

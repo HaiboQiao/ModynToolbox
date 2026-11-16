@@ -1,0 +1,9 @@
+********* Start testing of WebFrontendTests *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022), windows 11
+PASS   : WebFrontendTests::initTestCase()
+FAIL!  : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser() 'waitExpression(browser,QString("Math.abs(window.innerWidth-%1)<=2 && document.documentElement.scrollWidth<=window.innerWidth+2").arg(browser->width()))' returned FALSE. (Qt=817x590 DPR=1.25 boundsUpdates=32 JS="{\"inner\":681,\"client\":666,\"scroll\":666,\"dpr\":1.5}")
+D:\Workspace\01_Projects\ModynToolbox\source\app\tests\integration\test_web_frontend.cpp(132) : failure location
+QWARN  : WebFrontendTests::trustedWheelAndRealFocusInOwnBrowser() QTemporaryDir: Unable to remove "C:\\Users\\qhb16\\AppData\\Local\\Temp\\modyn_web_tests-RmJnkD" most likely due to the presence of read-only files.
+PASS   : WebFrontendTests::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 16532ms
+********* Finished testing of WebFrontendTests *********

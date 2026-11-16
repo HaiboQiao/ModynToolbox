@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(ModynToolbox VERSION 1.3.0 LANGUAGES CXX)
+project(ModynToolbox VERSION 1.4.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -10,6 +10,11 @@ endif()
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Sql Concurrent Test Multimedia MultimediaWidgets)
 enable_testing()
 add_library(modyn_shell
+  app/platform/windows/single_instance.cpp app/platform/windows/single_instance.h
+  app/platform/windows/startup_registration.cpp app/platform/windows/startup_registration.h
+  app/ui/tool_runtime/tool_surface.h
+  app/ui/tool_runtime/web_tool_view.cpp app/ui/tool_runtime/web_tool_view.h
+  app/platform/windows/webview_surface.cpp app/platform/windows/webview_surface.h
   app/ui/components/video_surface.cpp app/ui/components/video_surface.h
   app/ui/components/video_editor.cpp app/ui/components/video_editor.h
   app/resources/assets.qrc
@@ -30,6 +35,15 @@ add_library(modyn_shell
   app/ui/window/chrome_window.cpp app/ui/window/chrome_window.h
   app/catalog/package_catalog.cpp
   app/platform/windows/window_chrome.cpp)
+if(WIN32)
+  target_sources(modyn_shell INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/app/resources/windows.manifest")
+endif()
+set(MODYN_WEBVIEW2_SDK "${CMAKE_SOURCE_DIR}/.local/toolchains/WebView2/1.0.4314.35" CACHE PATH "Pinned WebView2 SDK")
+if(NOT EXISTS "${MODYN_WEBVIEW2_SDK}/build/native/include/WebView2.h")
+ message(FATAL_ERROR "WebView2 SDK missing; run scripts/setup-webview2.py")
+endif()
+target_include_directories(modyn_shell PRIVATE "${MODYN_WEBVIEW2_SDK}/build/native/include")
+target_link_libraries(modyn_shell PRIVATE "${MODYN_WEBVIEW2_SDK}/build/native/x64/WebView2LoaderStatic.lib" oleaut32 shlwapi version)
 target_link_libraries(modyn_shell PUBLIC Qt6::Widgets Qt6::Sql Qt6::Concurrent Qt6::Multimedia Qt6::MultimediaWidgets)
 target_include_directories(modyn_shell PUBLIC app)
 target_compile_definitions(modyn_shell PUBLIC MODYN_VERSION="${PROJECT_VERSION}")
@@ -127,3 +141,25 @@ set_tests_properties(video_editor PROPERTIES TIMEOUT 90 DEPENDS video_core
 
 add_test(NAME video_host COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/tools/video-clip/tests/verify_host.py" --binary "$<TARGET_FILE:ModynToolboxApp>")
 set_tests_properties(video_host PROPERTIES TIMEOUT 180 DEPENDS video_core)
+
+add_executable(modyn_web_tests app/tests/integration/test_web_frontend.cpp)
+target_link_libraries(modyn_web_tests PRIVATE modyn_shell Qt6::Test psapi)
+set_target_properties(modyn_web_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+add_test(NAME web_frontend COMMAND modyn_web_tests -o web-results.txt,txt)
+set_tests_properties(web_frontend PROPERTIES TIMEOUT 180 ENVIRONMENT "MODYN_SOURCE_ROOT=${CMAKE_SOURCE_DIR};QT_QPA_PLATFORM=windows;TEMP=${CMAKE_BINARY_DIR}/tests/tmp;TMP=${CMAKE_BINARY_DIR}/tests/tmp")
+
+add_executable(modyn_desktop_startup_tests app/tests/integration/test_desktop_startup.cpp)
+target_link_libraries(modyn_desktop_startup_tests PRIVATE modyn_shell Qt6::Test)
+set_target_properties(modyn_desktop_startup_tests PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+add_test(NAME desktop_startup COMMAND modyn_desktop_startup_tests -o -,txt -o desktop-startup-results.txt,txt)
+set_tests_properties(desktop_startup PROPERTIES TIMEOUT 60 ENVIRONMENT "MODYN_SOURCE_ROOT=${CMAKE_SOURCE_DIR};QT_QPA_PLATFORM=offscreen;TEMP=${CMAKE_BINARY_DIR}/tests/tmp;TMP=${CMAKE_BINARY_DIR}/tests/tmp")
+
+# Portable project guidance/scope checks use only the existing developer Python.
+add_test(NAME change_guard COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_SOURCE_DIR}/app/tests/integration/test_change_guard.py")
+set_tests_properties(change_guard PROPERTIES TIMEOUT 60 ENVIRONMENT "MODYN_SOURCE_ROOT=${CMAKE_SOURCE_DIR}")
+
+add_test(NAME translation_core COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_SOURCE_DIR}/tools/translate/tests/test_translation.py")
+set_tests_properties(translation_core PROPERTIES TIMEOUT 30 ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1")
+
+add_test(NAME translation_host COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_SOURCE_DIR}/tools/translate/tests/verify_host.py" --binary "$<TARGET_FILE:ModynToolboxApp>")
+set_tests_properties(translation_host PROPERTIES TIMEOUT 120 DEPENDS translation_core)

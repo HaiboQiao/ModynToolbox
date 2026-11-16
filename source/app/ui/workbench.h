@@ -2,21 +2,27 @@
 #include "catalog/package_catalog.h"
 #include "ui/window/chrome_window.h"
 #include <QMap>
+#include <QElapsedTimer>
 #include <QSet>
 #include <QJsonObject>
 #include <memory>
+#include <functional>
 class ToolNavigation;
 class QMenu;
 class QStackedWidget;
 class QPlainTextEdit;
 class QComboBox;
 class QSplitter;
-class ToolPanel;
+class ToolSurface;
 class Scheduler;
 class QPushButton;
 class StateRepository;
+class StartupRegistration;
 struct WorkbenchConfig {
     QString dataRoot, packagesRoot, bridge;
+    std::shared_ptr<StartupRegistration> startup;
+    int webCacheLimit = 2;
+    int webCacheIdleMs = 300000;
 };
 class Workbench : public ChromeWindow {
     Q_OBJECT
@@ -38,7 +44,7 @@ class Workbench : public ChromeWindow {
     bool refreshTools();
     QString installPackage(const QString &folder);
     QString removePackage(const QString &id, const QString &version);
-    ToolPanel *panel(int id) const;
+    ToolSurface *panel(int id) const;
     Scheduler *jobScheduler() const {
         return scheduler;
     }
@@ -57,10 +63,12 @@ class Workbench : public ChromeWindow {
         QString toolId, uuid, job, title;
         ToolDefinition tool;
         QWidget *view = nullptr;
-        ToolPanel *panel = nullptr;
+        ToolSurface *panel = nullptr;
         ChromeWindow *floating = nullptr;
         QJsonObject parked;
         QByteArray geometry;
+        quint64 lastUse = 0;
+        qint64 inactiveSince = -1;
         int revision = 0;
         bool draft = false, missing = false, customTitle = false, preserveSnapshot = false;
     };
@@ -72,6 +80,7 @@ class Workbench : public ChromeWindow {
     void ensureView(int id);
     void parkUnused();
     void initializeServices();
+    void flushFrontendState(std::function<void(bool)>);
     void showManager();
     void showHistory();
     void showPreferences();
@@ -91,7 +100,7 @@ class Workbench : public ChromeWindow {
     QStackedWidget *workspace = nullptr, *secondary = nullptr;
     QComboBox *categories = nullptr;
     QSplitter *splitter = nullptr, *navigationSplit = nullptr;
-    QPushButton *activity = nullptr;
+    QPushButton *activity = nullptr, *versionUpdate = nullptr;
     QJsonObject preferences, navigationExpansion;
     QSet<int> pendingSessionClose;
     int unreadErrors = 0, navigationWidth = 190;
@@ -99,8 +108,11 @@ class Workbench : public ChromeWindow {
     QWidget *floatingNotice = nullptr;
     QString currentTool;
     int nextId = 1, activeId = 0, pairedId = 0;
+    QElapsedTimer cacheClock;
+    quint64 useSequence = 0;
     WorkbenchConfig config;
     Scheduler *scheduler = nullptr;
     std::unique_ptr<StateRepository> repository;
     bool restoring = false, closing = false, waitingExit = false;
+    bool flushingFrontends=false,frontendsFlushed=false;
 };

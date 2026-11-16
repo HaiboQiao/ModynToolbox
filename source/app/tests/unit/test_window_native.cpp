@@ -47,6 +47,49 @@ private slots:
         QCOMPARE(SendMessageW(handle,WM_NCHITTEST,0,MAKELPARAM(closePoint.x,closePoint.y)),LRESULT(HTCLIENT));
         QVERIFY(!IsWindowVisible(handle));
     }
+    void shownFrameKeepsEightResizeEdges() {
+        Theme::apply();
+        ChromeWindow window;
+        window.setWindowFlag(Qt::Tool);
+        window.setAttribute(Qt::WA_ShowWithoutActivating);
+        auto *content = new QWidget;
+        content->setAttribute(Qt::WA_NativeWindow);
+        window.setContentWidget(content);
+        window.setMinimumSize(620,460);
+        window.resize(1000,700);
+        window.move(-20000,-20000);
+        window.show();
+        QTest::qWait(30);
+        const auto hwnd = reinterpret_cast<HWND>(window.winId());
+        QVERIFY(IsWindowVisible(hwnd));
+        QVERIFY(GetWindowLongPtrW(hwnd,GWL_STYLE) & WS_THICKFRAME);
+        RECT b{}; QVERIFY(GetWindowRect(hwnd,&b));
+        const int x=(b.left+b.right)/2,y=(b.top+b.bottom)/2;
+        const struct {int x,y;LRESULT hit;} points[] = {
+            {b.left+1,y,HTLEFT},{b.right-1,y,HTRIGHT},{x,b.top+1,HTTOP},{x,b.bottom-1,HTBOTTOM},
+            {b.left+1,b.top+1,HTTOPLEFT},{b.right-1,b.top+1,HTTOPRIGHT},
+            {b.left+1,b.bottom-1,HTBOTTOMLEFT},{b.right-1,b.bottom-1,HTBOTTOMRIGHT}};
+        for (const auto &point:points)
+            QCOMPARE(SendMessageW(hwnd,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y)),point.hit);
+        // Ask the actual top native child at the pointer location, not just the main HWND.
+        for(const auto &point:points) {
+            POINT local{point.x,point.y};ScreenToClient(hwnd,&local);
+            const auto child=ChildWindowFromPointEx(hwnd,local,CWP_SKIPINVISIBLE|CWP_SKIPDISABLED|CWP_SKIPTRANSPARENT);
+            QVERIFY(child && child!=hwnd);
+            QCOMPARE(SendMessageW(child,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y)),point.hit);
+            COLORREF key{};BYTE alpha{};DWORD flags{};
+            auto *grip=QWidget::find(WId(child));QVERIFY(grip);QCOMPARE(grip->objectName(),QString("windowResizeHandle"));QVERIFY(grip->property("nativeLayerReady").toBool());
+            const bool attributes=GetLayeredWindowAttributes(child,&key,&alpha,&flags);
+            QVERIFY2(attributes,qPrintable(QString("layer attributes error=%1 exstyle=%2").arg(GetLastError()).arg(qulonglong(GetWindowLongPtrW(child,GWL_EXSTYLE)))));QCOMPARE(alpha,BYTE(1));
+        }
+        QCOMPARE(content->mapTo(&window,QPoint()).x(),0);
+        QCOMPARE(content->mapTo(&window,content->rect().bottomRight()).x(),window.width()-1);
+        window.resize(850,550); QCoreApplication::processEvents();
+        QCOMPARE(window.size(),QSize(850,550));
+        window.resize(100,100); QCoreApplication::processEvents();
+        QCOMPARE(window.size(),window.minimumSize());
+        window.hide();
+    }
     void maximizeCaptureCanBeCancelled() {
         Theme::apply();
         ChromeWindow window;

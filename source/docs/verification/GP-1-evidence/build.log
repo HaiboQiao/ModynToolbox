@@ -1,0 +1,34 @@
+适用于 .NET Framework MSBuild 版本 18.9.1+a81b43525
+
+  Automatic MOC for target ModynLauncher
+  ModynLauncher.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.exe
+  Automatic MOC for target modyn_shell
+  modyn_shell.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\Release\modyn_shell.lib
+  Automatic MOC for target ModynToolboxApp
+  ModynToolboxApp.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.App.exe
+  Automatic MOC for target ModynWorkerHost
+  ModynWorkerHost.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\ModynToolbox.WorkerHost.exe
+  Automatic MOC for target modyn_catalog_tests
+  modyn_catalog_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_catalog_tests.exe
+  Automatic MOC for target modyn_desktop_startup_tests
+  modyn_desktop_startup_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_desktop_startup_tests.exe
+  Automatic MOC for target modyn_fault_tests
+  modyn_fault_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_fault_tests.exe
+  Automatic MOC for target modyn_job_tests
+  modyn_job_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_job_tests.exe
+  Automatic MOC for target modyn_native_tests
+  modyn_native_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_native_tests.exe
+  Automatic MOC for target modyn_sdk_compile
+  modyn_sdk_compile.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\Release\modyn_sdk_compile.exe
+  Automatic MOC for target modyn_shell_tests
+  modyn_shell_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_shell_tests.exe
+  Automatic MOC for target modyn_system_tests
+  modyn_system_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_system_tests.exe
+  Automatic MOC for target modyn_video_tests
+  modyn_video_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_video_tests.exe
+  Automatic MOC for target modyn_view_tests
+  modyn_view_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_view_tests.exe
+  Automatic MOC for target modyn_web_tests
+  modyn_web_tests.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_web_tests.exe
+  Automatic MOC for target modyn_worker
+  modyn_worker.vcxproj -> D:\Workspace\01_Projects\ModynToolbox\source\.local\build\windows-release\bin\Release\modyn_worker.exe

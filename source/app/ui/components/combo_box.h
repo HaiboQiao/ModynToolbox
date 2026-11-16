@@ -5,4 +5,5 @@ public:
     using QComboBox::QComboBox;
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 };

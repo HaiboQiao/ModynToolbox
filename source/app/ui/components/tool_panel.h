@@ -3,7 +3,7 @@
 #include "ui/view_spec.h"
 #include <QJsonObject>
 #include <QMap>
-#include <QWidget>
+#include "ui/tool_runtime/tool_surface.h"
 #include <QElapsedTimer>
 class VideoEditor;
 class QLabel;
@@ -14,7 +14,7 @@ class QProgressBar;
 class QPushButton;
 class QTableWidget;
 class QTimer;
-class ToolPanel : public QWidget {
+class ToolPanel : public ToolSurface {
     Q_OBJECT
   public:
     ToolPanel(ToolDefinition tool, ViewSpec spec, QWidget *parent = nullptr);
@@ -32,13 +32,6 @@ class ToolPanel : public QWidget {
     bool hasVolatileInput() const;
     QPlainTextEdit *editor() const;
     QString resultText() const;
-  signals:
-    void changed();
-    void ready();
-    void actionRequested(const QString &action, const QJsonObject &input);
-    void cancelRequested();
-    void exportRequested(const QString &path, const QJsonObject &document, bool plainText);
-
   protected:
     bool eventFilter(QObject *object, QEvent *event) override;
   private:

@@ -1,0 +1,154 @@
+{
+  "task": "ui-r8-delivery",
+  "priority": "P1",
+  "risk": "high",
+  "evidence": "current",
+  "changes": [
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/webview_surface.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/webview_surface.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/window_chrome.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/window_chrome.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/resources/windows.manifest",
+      "action": "added"
+    },
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_window_native.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/theme/theme.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/tool_runtime/web_tool_view.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/tool_runtime/web_tool_view.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/window/chrome_window.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/window/chrome_window.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/workbench.h",
+      "action": "modified"
+    },
+    {
+      "path": "docs/development.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/features/ui-r8-delivery/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r8-delivery/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r8-delivery/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r8-delivery/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/independent-frontend.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/ui-design-system.md",
+      "action": "modified"
+    }
+  ],
+  "out_of_scope": [],
+  "unsafe_links": [],
+  "review_required": [
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_window_native.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    }
+  ],
+  "unknown_paths": [
+    "app/resources/windows.manifest",
+    "app/tests/integration/test_web_frontend.cpp",
+    "app/tests/unit/test_window_native.cpp",
+    "app/tests/unit/test_workbench.cpp"
+  ],
+  "areas": [
+    "build",
+    "frontend-runtime",
+    "guardrails",
+    "sessions",
+    "window"
+  ],
+  "retired_checks_for_review": [],
+  "required_checks": [
+    "business_cores",
+    "change_guard",
+    "desktop_startup",
+    "frozen_frontends",
+    "full_system",
+    "host_crash_tree",
+    "host_start",
+    "jobs",
+    "package_catalog",
+    "video_core",
+    "video_editor",
+    "video_host",
+    "view_spec",
+    "web_frontend",
+    "window_native",
+    "workbench",
+    "worker_faults",
+    "worker_transport"
+  ]
+}

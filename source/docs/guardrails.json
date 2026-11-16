@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "baseline_ids": [
+    "PB-01",
+    "PB-02",
+    "PB-03",
+    "PB-04",
+    "PB-05",
+    "PB-06",
+    "PB-07",
+    "PB-08"
+  ],
+  "contracts": [
+    {
+      "id": "BC-01",
+      "baseline": "PB-01",
+      "tests": [
+        "web_frontend",
+        "package_catalog",
+        "frozen_frontends"
+      ],
+      "reference": "app/tests/integration/test_web_frontend.cpp",
+      "symbols": [
+        "realIndependentToolPages"
+      ]
+    },
+    {
+      "id": "BC-02",
+      "baseline": "PB-03",
+      "tests": [
+        "workbench",
+        "web_frontend",
+        "jobs"
+      ],
+      "reference": "app/tests/unit/test_workbench.cpp",
+      "symbols": [
+        "independentSessions",
+        "detachAndReturn"
+      ]
+    },
+    {
+      "id": "BC-03",
+      "baseline": "PB-04",
+      "tests": [
+        "full_system",
+        "package_catalog"
+      ],
+      "reference": "app/tests/integration/test_system.cpp",
+      "symbols": [
+        "packageInstallVerifyRemove"
+      ]
+    },
+    {
+      "id": "BC-04",
+      "baseline": "PB-05",
+      "tests": [
+        "business_cores",
+        "video_core",
+        "full_system"
+      ],
+      "reference": "tools/tests/verify_cores.py",
+      "symbols": []
+    },
+    {
+      "id": "BC-05",
+      "baseline": "PB-06",
+      "tests": [
+        "full_system",
+        "web_frontend"
+      ],
+      "reference": "app/tests/integration/test_system.cpp",
+      "symbols": [
+        "invalidDraftSurvivesAutomaticSave"
+      ]
+    },
+    {
+      "id": "BC-06",
+      "baseline": "PB-02",
+      "tests": [
+        "worker_faults",
+        "host_crash_tree",
+        "jobs",
+        "web_frontend"
+      ],
+      "reference": "app/tests/integration/test_faults.cpp",
+      "symbols": [
+        "descendantsTerminateWithJob"
+      ]
+    },
+    {
+      "id": "BC-07",
+      "baseline": "PB-03",
+      "tests": [
+        "desktop_startup",
+        "host_start",
+        "window_native"
+      ],
+      "reference": "app/tests/integration/test_desktop_startup.cpp",
+      "symbols": [
+        "instanceActivationSilentAndRecovery",
+        "settingsCancelApplyAndDisable"
+      ]
+    },
+    {
+      "id": "BC-08",
+      "baseline": "PB-01",
+      "tests": [
+        "view_spec",
+        "window_native",
+        "web_frontend"
+      ],
+      "reference": "app/tests/unit/test_view_spec.cpp",
+      "symbols": [
+        "fileParametersStayAtTop"
+      ]
+    },
+    {
+      "id": "BC-09",
+      "baseline": "PB-08",
+      "tests": [
+        "change_guard"
+      ],
+      "reference": "scripts/change-guard.py",
+      "symbols": [
+        "validate"
+      ]
+    }
+  ],
+  "current_documents": [
+    "AGENTS.md",
+    "README.md",
+    "docs/project-baseline.md",
+    "docs/behavior-contracts.md",
+    "docs/change-policy.md",
+    "docs/STATUS.md",
+    "docs/handoff.md",
+    "docs/spec.md",
+    "docs/plan.md",
+    "docs/tool-development.md",
+    "docs/ui-design-system.md"
+  ],
+  "historical_documents": [
+    "docs/history/gp1-before/spec.md",
+    "docs/history/gp1-before/plan.md",
+    "docs/history/gp1-before/handoff.md",
+    "docs/history/gp1-before/tool-development.md",
+    "docs/history/gp1-before/ui-design-system.md",
+    "docs/history/gp1-before/STATUS.md",
+    "docs/history/gp1-before/task.md",
+    "docs/history/gp1-before/checklist.md"
+  ],
+  "protected_paths": [
+    "AGENTS.md",
+    "@repo/AGENTS.md",
+    "docs/project-baseline.md",
+    "docs/behavior-contracts.md",
+    "docs/change-policy.md",
+    "docs/guardrails.json",
+    "scripts/change-guard.py",
+    "README.md",
+    "@repo/README.md",
+    "CMakeLists.txt",
+    "scripts/dev.ps1"
+  ],
+  "bookkeeping": [
+    "docs/STATUS.md",
+    "docs/worklog.md",
+    "docs/task.md",
+    "docs/checklist.md",
+    "docs/verification/**",
+    "docs/features/*/task.md",
+    "docs/features/*/checklist.md"
+  ],
+  "checks": {
+    "change_guard": "python",
+    "workbench": "ctest",
+    "worker_transport": "ctest",
+    "package_catalog": "ctest",
+    "view_spec": "ctest",
+    "window_native": "ctest",
+    "host_start": "ctest",
+    "jobs": "ctest",
+    "full_system": "ctest",
+    "business_cores": "ctest",
+    "worker_faults": "ctest",
+    "host_crash_tree": "ctest",
+    "video_core": "ctest",
+    "video_editor": "ctest",
+    "video_host": "ctest",
+    "web_frontend": "ctest",
+    "desktop_startup": "ctest",
+    "frozen_frontends": "python_frozen",
+    "translation_core": "ctest",
+    "translation_host": "ctest"
+  },
+  "areas": [
+    {
+      "id": "guardrails",
+      "paths": [
+        "AGENTS.md",
+        "README.md",
+        "@repo/AGENTS.md",
+        "@repo/README.md",
+        "docs/**",
+        "scripts/change-guard.py",
+        "app/tests/integration/test_change_guard.py"
+      ],
+      "risk": "low",
+      "tests": [
+        "change_guard"
+      ]
+    },
+    {
+      "id": "build",
+      "paths": [
+        "CMakeLists.txt",
+        "CMakePresets.json",
+        "scripts/dev.ps1"
+      ],
+      "risk": "high",
+      "tests": [
+        "workbench",
+        "worker_transport",
+        "package_catalog",
+        "view_spec",
+        "window_native",
+        "host_start",
+        "jobs",
+        "full_system",
+        "business_cores",
+        "worker_faults",
+        "host_crash_tree",
+        "video_core",
+        "video_editor",
+        "video_host",
+        "web_frontend",
+        "desktop_startup"
+      ]
+    },
+    {
+      "id": "sessions",
+      "paths": [
+        "app/ui/workbench.*"
+      ],
+      "risk": "high",
+      "tests": [
+        "workbench",
+        "full_system",
+        "web_frontend",
+        "desktop_startup"
+      ]
+    },
+    {
+      "id": "window",
+      "paths": [
+        "app/ui/window/**",
+        "app/ui/theme/**",
+        "app/platform/windows/window_chrome.*"
+      ],
+      "risk": "medium",
+      "tests": [
+        "workbench",
+        "view_spec",
+        "window_native",
+        "desktop_startup"
+      ]
+    },
+    {
+      "id": "desktop",
+      "paths": [
+        "app/main.cpp",
+        "app/launcher.cpp",
+        "app/platform/windows/single_instance.*",
+        "app/platform/windows/startup_registration.*"
+      ],
+      "risk": "high",
+      "tests": [
+        "desktop_startup",
+        "host_start",
+        "window_native",
+        "full_system",
+        "web_frontend"
+      ]
+    },
+    {
+      "id": "storage",
+      "paths": [
+        "app/storage/**",
+        "app/core/**"
+      ],
+      "risk": "high",
+      "tests": [
+        "full_system",
+        "jobs",
+        "web_frontend"
+      ]
+    },
+    {
+      "id": "jobs",
+      "paths": [
+        "app/jobs/**",
+        "app/worker_host/**"
+      ],
+      "risk": "high",
+      "tests": [
+        "jobs",
+        "worker_transport",
+        "worker_faults",
+        "host_crash_tree",
+        "full_system",
+        "web_frontend"
+      ]
+    },
+    {
+      "id": "frontend-runtime",
+      "paths": [
+        "app/ui/tool_runtime/**",
+        "app/platform/windows/webview_surface.*",
+        "shared/frontend-sdk/**"
+      ],
+      "risk": "high",
+      "tests": [
+        "web_frontend",
+        "workbench",
+        "full_system",
+        "package_catalog",
+        "frozen_frontends"
+      ]
+    },
+    {
+      "id": "protocol",
+      "paths": [
+        "app/catalog/**",
+        "shared/protocol/**",
+        "shared/sdk/**"
+      ],
+      "risk": "high",
+      "tests": [
+        "package_catalog",
+        "worker_transport",
+        "full_system",
+        "web_frontend",
+        "business_cores",
+        "frozen_frontends"
+      ]
+    },
+    {
+      "id": "legacy-ui",
+      "paths": [
+        "app/ui/components/**",
+        "app/ui/view_spec.*"
+      ],
+      "risk": "medium",
+      "tests": [
+        "view_spec",
+        "workbench",
+        "video_editor",
+        "full_system"
+      ]
+    },
+    {
+      "id": "tools",
+      "paths": [
+        "tools/**",
+        "examples/**"
+      ],
+      "risk": "medium",
+      "tests": [
+        "business_cores",
+        "video_core",
+        "web_frontend",
+        "translation_core",
+        "translation_host"
+      ]
+    },
+    {
+      "id": "distribution",
+      "paths": [
+        "scripts/package.py",
+        "scripts/release.py",
+        "scripts/build-tool.py",
+        "scripts/prepare-tools.py",
+        "scripts/export-tool-sdk.py",
+        "scripts/verify-*"
+      ],
+      "risk": "high",
+      "tests": [
+        "full_system",
+        "package_catalog",
+        "host_start",
+        "web_frontend",
+        "frozen_frontends"
+      ]
+    }
+  ],
+  "source_inputs": [
+    "app/**",
+    "tools/**",
+    "shared/**",
+    "scripts/**",
+    "examples/**",
+    "CMakeLists.txt",
+    "CMakePresets.json",
+    "licenses/**",
+    "docs/guardrails.json"
+  ]
+}

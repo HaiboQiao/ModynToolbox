@@ -1,0 +1,4 @@
+/* Development-only bridge simulator. It does not execute native tools or write user files. */
+(()=>{if(globalThis.chrome?.webview)return;const callbacks=new Set(),checkpoint={};const send=m=>setTimeout(()=>callbacks.forEach(fn=>fn({data:m})),0);
+ globalThis.chrome=globalThis.chrome||{};globalThis.chrome.webview={addEventListener(type,fn){if(type==='message')callbacks.add(fn)},postMessage(m){let result={},error='';if(m.method==='ready'){send({event:'bootstrap',sequence:'1',payload:{toolId:'development',sessionId:'mock',state:{},input:{},result:{},theme:{fontSize:14,accent:'#7054d8'}}});result={ready:true}}else if(m.method==='session.checkpoint'){Object.assign(checkpoint,m.payload);result={saved:true}}else if(m.method==='session.dirty'){}else if(m.method==='jobs.query')result={job:{state:'idle'},result:{}};else error='开发模拟器不执行此宿主能力，请使用 --tool-package 连接真实工具箱';send({requestId:m.requestId,result,error})}};
+})();

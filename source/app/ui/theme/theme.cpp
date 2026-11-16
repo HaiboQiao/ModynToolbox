@@ -24,13 +24,18 @@ void Theme::apply() {
         QWidget#titleBar { background:qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #fcfbff,stop:1 @navigation); border-bottom:1px solid @border; }
         QLabel#appTitle { font-size:14px; font-weight:600; }
         QLabel#caption, QLabel#description, QLabel#secondary, QLabel#catalogStatus { color:@muted; font-size:12px; }
-        QWidget#sidebar { background:@navigation; border-right:1px solid @border; }
+        QWidget#sidebar { background:@navigation; border:0; }
+        QSplitter#navigationSplitter::handle { background:@border; }
+        QSplitter#navigationSplitter::handle:hover { background:#b7a6e9; }
+        QWidget#toolWorkspaceHost { background:#f7f6fb; }
+        QStackedWidget#primaryWorkspace[insetSurface="true"] { background:@panel; border:1px solid #e5e0ed; border-radius:0; }
+        QStackedWidget#primaryWorkspace[insetSurface="false"] { background:@panel; border:0; }
         QTreeWidget#toolNavigation { background:transparent; border:0; outline:0; }
         QTreeWidget#toolNavigation::item { min-height:24px; padding:7px 3px; border-radius:0; border:0; }
         QTreeWidget#toolNavigation::item:hover { background:#eae5f6; }
         QTreeWidget#toolNavigation::item:selected { background:@selection; color:#5438b6; }
         QLabel#heading { font-size:23px; font-weight:600; }
-        QWidget#toolPanel { background:@panel; border:1px solid @border; border-radius:12px; }
+        QWidget#toolPanel { background:@panel; border:0; border-radius:0; }
         QLineEdit,QPlainTextEdit,QComboBox,QSpinBox { background:@panel; border:1px solid @border; border-radius:7px; padding:@controlPaddingpx 10px; selection-background-color:@accent; }
         QLineEdit,QComboBox,QSpinBox { min-height:@controlContentpx; }
         QSpinBox { padding-right:36px; }
@@ -67,7 +72,8 @@ void Theme::apply() {
         QToolButton#windowControl { background:transparent; border:0; border-radius:4px; }
         QToolButton#windowControl:hover { background:#e5dff4; }
         QToolButton#windowClose { background:transparent; border:0; border-radius:4px; }
-        QToolButton#windowClose:hover { background:#f5ccd4; }
+        QToolButton#windowClose:hover { background:@closeHover; }
+        QToolButton#windowClose:pressed { background:@closePressed; }
         QToolButton[nativeHover="true"] { background:#e5dff4; }
         QSlider::groove:horizontal { height:5px; background:#e5dfef; border-radius:2px; }
         QSlider::sub-page:horizontal { background:@accent; border-radius:2px; }
@@ -84,6 +90,7 @@ void Theme::apply() {
         QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical { height:0; }
         QToolTip { background:@panel; color:@text; border:1px solid @border; padding:6px; }
     )");
+    style.replace("@closeHover",closeHover.name()).replace("@closePressed",closePressed.name());
     style.replace("@videoBackground", videoBackground.name()).replace("@videoForeground", videoForeground.name());
     style.replace("@background", background.name())
         .replace("@navigation", navigation.name())

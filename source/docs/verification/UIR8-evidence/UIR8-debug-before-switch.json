@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "page_preserved_on_short_return": true,
+  "load_wait_ms": [
+    923,
+    582,
+    51,
+    49,
+    51,
+    50,
+    51
+  ],
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r8-debug-before",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r8-debug-before\\report.json"
+}

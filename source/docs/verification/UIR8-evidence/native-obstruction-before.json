@@ -1,0 +1,170 @@
+[
+  {
+    "edge": "left",
+    "chain": [
+      {
+        "class": "Qt683dQWindowToolSaveBits",
+        "hit": 10
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 1
+      }
+    ]
+  },
+  {
+    "edge": "right",
+    "chain": [
+      {
+        "class": "Qt683dQWindowToolSaveBits",
+        "hit": 11
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 1
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Chrome_WidgetWin_0",
+        "hit": 0
+      },
+      {
+        "class": "Chrome_WidgetWin_1",
+        "hit": 0
+      }
+    ]
+  },
+  {
+    "edge": "top",
+    "chain": [
+      {
+        "class": "Qt683dQWindowToolSaveBits",
+        "hit": 12
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 1
+      }
+    ]
+  },
+  {
+    "edge": "bottom",
+    "chain": [
+      {
+        "class": "Qt683dQWindowToolSaveBits",
+        "hit": 15
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 1
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Qt683dQWindowIcon",
+        "hit": 0
+      },
+      {
+        "class": "Chrome_WidgetWin_0",
+        "hit": 0
+      },
+      {
+        "class": "Chrome_WidgetWin_1",
+        "hit": 0
+      }
+    ]
+  },
+  {
+    "edge": "left",
+    "chain": [
+      {
+        "class": "Qt683dScreenChangeObserverWindow",
+        "hit": 18
+      }
+    ]
+  },
+  {
+    "edge": "right",
+    "chain": [
+      {
+        "class": "Qt683dScreenChangeObserverWindow",
+        "hit": 18
+      }
+    ]
+  },
+  {
+    "edge": "top",
+    "chain": [
+      {
+        "class": "Qt683dScreenChangeObserverWindow",
+        "hit": 2
+      }
+    ]
+  },
+  {
+    "edge": "bottom",
+    "chain": [
+      {
+        "class": "Qt683dScreenChangeObserverWindow",
+        "hit": 18
+      }
+    ]
+  }
+]

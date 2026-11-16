@@ -1,0 +1,26 @@
+test_added_and_deleted_outside_scope_fail (__main__.ChangeGuardTests.test_added_and_deleted_outside_scope_fail) ... ok
+test_changed_source_invalidates_previous_green (__main__.ChangeGuardTests.test_changed_source_invalidates_previous_green) ... ok
+test_changing_policy_cannot_silently_shrink_original_scope_or_routing (__main__.ChangeGuardTests.test_changing_policy_cannot_silently_shrink_original_scope_or_routing) ... ok
+test_external_directory_link_is_inventoried_not_followed (__main__.ChangeGuardTests.test_external_directory_link_is_inventoried_not_followed) ... skipped "OS did not allow private symlink fixture: [WinError 1314] 客户端没有所需的特权。: 'D:\\\\Workspace\\\\01_Projects\\\\ModynToolbox\\\\source\\\\.local\\\\guard-tests\\\\scope-nrmak33y\\\\external' -> 'D:\\\\Workspace\\\\01_Projects\\\\ModynToolbox\\\\source\\\\.local\\\\guard-tests\\\\scope-nrmak33y\\\\source\\\\external-link'"
+test_finish_needs_actual_verification (__main__.ChangeGuardTests.test_finish_needs_actual_verification) ... ok
+test_git_snapshot_includes_untracked_without_other_projects (__main__.ChangeGuardTests.test_git_snapshot_includes_untracked_without_other_projects) ... ok
+test_later_failure_cannot_reuse_earlier_green_same_source (__main__.ChangeGuardTests.test_later_failure_cannot_reuse_earlier_green_same_source) ... ok
+test_low_priority_does_not_reduce_high_risk (__main__.ChangeGuardTests.test_low_priority_does_not_reduce_high_risk) ... ok
+test_native_build_runs_before_tests_and_artifact_changes_invalidate (__main__.ChangeGuardTests.test_native_build_runs_before_tests_and_artifact_changes_invalidate) ... ok
+test_no_collected_ctests_is_not_success (__main__.ChangeGuardTests.test_no_collected_ctests_is_not_success) ... ok
+test_no_git_export_prunes_generated_but_not_tool_named_data (__main__.ChangeGuardTests.test_no_git_export_prunes_generated_but_not_tool_named_data) ... ok
+test_original_test_route_survives_area_removed_from_current_policy (__main__.ChangeGuardTests.test_original_test_route_survives_area_removed_from_current_policy) ... ok
+test_preexisting_dirty_changes_are_not_this_task (__main__.ChangeGuardTests.test_preexisting_dirty_changes_are_not_this_task) ... ok
+test_protected_policy_edit_requires_review_note (__main__.ChangeGuardTests.test_protected_policy_edit_requires_review_note) ... ok
+test_real_current_project_guidance_is_consistent (__main__.ChangeGuardTests.test_real_current_project_guidance_is_consistent) ... ok
+test_removing_protected_behavior_symbol_fails (__main__.ChangeGuardTests.test_removing_protected_behavior_symbol_fails) ... ok
+test_runtime_inputs_cannot_be_hidden_by_bad_bookkeeping_config (__main__.ChangeGuardTests.test_runtime_inputs_cannot_be_hidden_by_bad_bookkeeping_config) ... ok
+test_status_bookkeeping_does_not_stale_business_evidence (__main__.ChangeGuardTests.test_status_bookkeeping_does_not_stale_business_evidence) ... ok
+test_task_baseline_cannot_be_overwritten_or_escape (__main__.ChangeGuardTests.test_task_baseline_cannot_be_overwritten_or_escape) ... ok
+test_unclassified_source_requires_all_registered_ctests (__main__.ChangeGuardTests.test_unclassified_source_requires_all_registered_ctests) ... ok
+test_wrong_build_source_rejected_before_native_tests (__main__.ChangeGuardTests.test_wrong_build_source_rejected_before_native_tests) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.879s
+
+OK (skipped=1)

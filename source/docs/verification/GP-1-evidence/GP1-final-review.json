@@ -1,0 +1,231 @@
+{
+  "task": "gp1-background-protection",
+  "priority": "P1",
+  "risk": "high",
+  "evidence": "current",
+  "changes": [
+    {
+      "path": "@repo/AGENTS.md",
+      "action": "modified"
+    },
+    {
+      "path": "@repo/README.md",
+      "action": "modified"
+    },
+    {
+      "path": "AGENTS.md",
+      "action": "modified"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "README.md",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_change_guard.py",
+      "action": "added"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/behavior-contracts.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/change-policy.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/checklist.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/features/project-guardrails/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/project-guardrails/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/project-guardrails/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/project-guardrails/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/guardrails.json",
+      "action": "added"
+    },
+    {
+      "path": "docs/handoff.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/history/gp1-before/README.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/STATUS.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/handoff.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/tool-development.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/history/gp1-before/ui-design-system.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/independent-frontend.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/plan.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/project-baseline.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/spec.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/task.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/tool-development.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/ui-design-system.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/verification/GP-1-project-guardrails.md",
+      "action": "added"
+    },
+    {
+      "path": "scripts/change-guard.py",
+      "action": "added"
+    },
+    {
+      "path": "scripts/dev.ps1",
+      "action": "modified"
+    },
+    {
+      "path": "scripts/verify-frozen-frontends.py",
+      "action": "modified"
+    }
+  ],
+  "out_of_scope": [],
+  "unsafe_links": [],
+  "review_required": [
+    {
+      "path": "@repo/AGENTS.md",
+      "action": "modified"
+    },
+    {
+      "path": "@repo/README.md",
+      "action": "modified"
+    },
+    {
+      "path": "AGENTS.md",
+      "action": "modified"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "README.md",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_change_guard.py",
+      "action": "added"
+    },
+    {
+      "path": "docs/behavior-contracts.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/change-policy.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/guardrails.json",
+      "action": "added"
+    },
+    {
+      "path": "docs/project-baseline.md",
+      "action": "added"
+    },
+    {
+      "path": "scripts/change-guard.py",
+      "action": "added"
+    },
+    {
+      "path": "scripts/dev.ps1",
+      "action": "modified"
+    }
+  ],
+  "unknown_paths": [],
+  "areas": [
+    "build",
+    "distribution",
+    "guardrails"
+  ],
+  "retired_checks_for_review": [],
+  "required_checks": [
+    "business_cores",
+    "change_guard",
+    "desktop_startup",
+    "frozen_frontends",
+    "full_system",
+    "host_crash_tree",
+    "host_start",
+    "jobs",
+    "package_catalog",
+    "video_core",
+    "video_editor",
+    "video_host",
+    "view_spec",
+    "web_frontend",
+    "window_native",
+    "workbench",
+    "worker_faults",
+    "worker_transport"
+  ]
+}

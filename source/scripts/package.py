@@ -1,3 +1,4 @@
+from tool_selection import recipes
 """Assemble a fresh portable release folder. Existing releases are never overwritten."""
 import argparse
 import hashlib
@@ -33,7 +34,7 @@ def package(binary_root, qt_root):
     for path in (app/"sqldrivers").glob("*.dll"):
         if path.name!="qsqlite.dll":path.unlink()
     shutil.copy2(binary_root/"ModynToolbox.exe",output/"ModynToolbox.exe")
-    for recipe in sorted((ROOT/"tools").glob("*/tool.build.json")):
+    for recipe in recipes():
         record=json.loads((ROOT/".local/tools"/recipe.parent.name/"latest.json").read_text(encoding="utf-8"))
         source=Path(record["package"]);metadata=json.loads((source/"manifest.json").read_text(encoding="utf-8"))
         shutil.copytree(source,output/"tools"/metadata["tool_id"]/metadata["package_version"])
@@ -46,6 +47,9 @@ def package(binary_root, qt_root):
         revision=ROOT/"SOURCE-REVISION.json"
         commit=json.loads(revision.read_text(encoding="utf-8")).get("commit") if revision.exists() else None
         dirty=None
+    runtime_record=json.loads((ROOT/".local/toolchains/WebView2Runtime/runtime.json").read_text(encoding="utf-8"))
+    shutil.copytree(Path(runtime_record["root"]),output/"runtime/webview2")
+    (output/"runtime/webview2-runtime.json").write_text(json.dumps({k:runtime_record[k] for k in ("version","url","sha256")},indent=2),encoding="utf-8")
     metadata={"product":"ModynToolbox","version":version,"platform":"windows-x64","source_commit":commit,"source_dirty":dirty,"built_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"tools":{}}
     for manifest_path in sorted((output/"tools").glob("*/*/manifest.json")):
         manifest=json.loads(manifest_path.read_text(encoding="utf-8"));metadata["tools"][manifest["tool_id"]]=manifest["package_version"]

@@ -1,13 +1,18 @@
+#include "platform/windows/startup_registration.h"
 #include "workbench.h"
 #include "components/icons.h"
 #include "components/tool_panel.h"
+#include "tool_runtime/web_tool_view.h"
 #include "components/tool_navigation.h"
 #include "catalog/package_manager.h"
 #include "jobs/scheduler.h"
 #include "storage/state_repository.h"
 #include "storage/data_transfer.h"
 #include <QJsonArray>
+#include <QPointer>
+#include <QRegularExpression>
 #include <QMenu>
+#include <QStyle>
 #include <QDialog>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -79,6 +84,11 @@ Workbench::Workbench(QVector<ToolDefinition> tools, QWidget *parent)
 }
 Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWidget *parent)
     : ChromeWindow(parent), definitions(std::move(tools)), config(std::move(options)) {
+    cacheClock.start();
+    auto *cacheTimer = new QTimer(this);
+    cacheTimer->setInterval(qBound(20, config.webCacheIdleMs / 2, 10000));
+    connect(cacheTimer, &QTimer::timeout, this, &Workbench::parkUnused);
+    cacheTimer->start();
     Theme::apply();
     resize(1200, 780);
     setMinimumSize(760, 480);
@@ -160,6 +170,12 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     addUtility(QStringLiteral("设置"), "settingsShortcut", QStringLiteral("界面与运行设置"),
                &Workbench::showPreferences);
     sideLayout->addLayout(utilities);
+    versionUpdate = new QPushButton(QStringLiteral("旧版会话 · 打开新版"));
+    versionUpdate->setObjectName("openAvailableVersion");versionUpdate->hide();
+    sideLayout->addWidget(versionUpdate);
+    connect(versionUpdate,&QPushButton::clicked,this,[this] {
+        if(sessions.contains(activeId))open(sessions[activeId].toolId,true);
+    });
     activity = new QPushButton;
     activity->setObjectName("activityButton");
     activity->hide();
@@ -179,8 +195,8 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     sideLayout->addWidget(manage);
     auto *content = new QWidget;
     auto *contentLayout = new QVBoxLayout(content);
-    contentLayout->setContentsMargins(Theme::pageInset, Theme::pageInset, Theme::pageInset,
-                                      Theme::pageInset);
+    content->setObjectName("toolWorkspaceHost");
+    contentLayout->setContentsMargins(10, 10, 10, 10);
     contentLayout->setSpacing(Theme::gap);
     workspace = new QStackedWidget;
     workspace->setObjectName("primaryWorkspace");
@@ -210,7 +226,7 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
     navigationSplit = new QSplitter;
     navigationSplit->setObjectName("navigationSplitter");
     navigationSplit->setChildrenCollapsible(false);
-    navigationSplit->setHandleWidth(3);
+    navigationSplit->setHandleWidth(1);
     navigationSplit->addWidget(sidebar);
     navigationSplit->addWidget(content);
     navigationSplit->setStretchFactor(0, 0);
@@ -350,7 +366,7 @@ QWidget *Workbench::sessionView(int id) const {
 QPlainTextEdit *Workbench::editor(int id) const {
     return panel(id) ? panel(id)->editor() : nullptr;
 }
-ToolPanel *Workbench::panel(int id) const {
+ToolSurface *Workbench::panel(int id) const {
     const_cast<Workbench *>(this)->ensureView(id);
     return sessions.value(id).panel;
 }
@@ -376,6 +392,8 @@ void Workbench::activateSession(int id) {
     auto it = sessions.find(id);
     if (it == sessions.end())
         return;
+    it->lastUse = ++useSequence;
+    it->inactiveSince = -1;
     activeId = id;
     currentTool = it->toolId;
     recentSessions[currentTool] = id;
@@ -392,7 +410,7 @@ void Workbench::activateSession(int id) {
             it->floating->showNormal();
         else
             it->floating->show();
-        if (QGuiApplication::platformName() != "offscreen") {
+        if (QGuiApplication::platformName() != "offscreen" && !qEnvironmentVariableIsSet("MODYN_BACKGROUND_VALIDATION")) {
             it->floating->raise();
             it->floating->activateWindow();
         }
@@ -503,13 +521,19 @@ void Workbench::ensureView(int id) {
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(12);
     auto spec = loadViewSpec(it->tool.packageRoot, !it->tool.viewFile.isEmpty());
-    if (it->tool.executable && spec.version != it->tool.uiSchemaVersion) spec.error = QStringLiteral("工具清单与界面版本不一致");
+    if (it->tool.frontend.isEmpty() && it->tool.executable && spec.version != it->tool.uiSchemaVersion) spec.error = QStringLiteral("工具清单与界面版本不一致");
     if (it->missing)
         spec.error =
             QStringLiteral(
                 "该会话固定的工具包 %1 已移除。重新安装相同版本并刷新后可继续。输入草稿已保留。")
                 .arg(it->tool.version);
-    auto *body = new ToolPanel(it->tool, spec);
+    ToolSurface *body = it->tool.frontend.isEmpty() || it->missing
+        ? static_cast<ToolSurface *>(new ToolPanel(it->tool, spec))
+        : static_cast<ToolSurface *>(new WebToolView(it->tool, config.dataRoot, it->uuid));
+    body->setDraftEnabled(it->draft);
+    body->setJobIdentity(it->job);
+    connect(body, &ToolSurface::detachRequested, this, [this,id] { detachSession(id); });
+    connect(body, &ToolSurface::attachRequested, this, [this,id] { attachSession(id); });
     it->view = view;
     it->panel = body;
     layout->addWidget(body, 1);
@@ -525,13 +549,13 @@ void Workbench::ensureView(int id) {
     workspace->addWidget(view);
     if (!it->missing && !it->parked.isEmpty())
         it->preserveSnapshot = !body->restore(it->parked);
-    connect(body, &ToolPanel::changed, this, [this, id] {
+    connect(body, &ToolSurface::changed, this, [this, id] {
         if (!sessions.contains(id))
             return;
         sessions[id].preserveSnapshot = false;
         ++sessions[id].revision;
     });
-    connect(body, &ToolPanel::exportRequested, this,
+    connect(body, &ToolSurface::exportRequested, this,
             [this, id](const QString &path, const QJsonObject &document, bool plainText) {
                 if (!scheduler || !sessions.contains(id))
                     return;
@@ -553,12 +577,12 @@ void Workbench::ensureView(int id) {
                     session.panel->setJobState(record.state, QStringLiteral("准备导出结果"), 0, 1,
                                                true);
             });
-    connect(body, &ToolPanel::actionRequested, this,
+    connect(body, &ToolSurface::actionRequested, this,
             [this, id](const QString &action, const QJsonObject &input) {
                 runAction(id, action, input);
             });
-    connect(body, &ToolPanel::ready, this, &Workbench::parkUnused, Qt::QueuedConnection);
-    connect(body, &ToolPanel::cancelRequested, this, [this, id] {
+    connect(body, &ToolSurface::ready, this, &Workbench::parkUnused, Qt::QueuedConnection);
+    connect(body, &ToolSurface::cancelRequested, this, [this, id] {
         if (scheduler)
             scheduler->cancel(sessions[id].job);
     });
@@ -568,12 +592,30 @@ void Workbench::ensureView(int id) {
     }
 }
 void Workbench::parkUnused() {
+    if(flushingFrontends)return;
     if (config.dataRoot.isEmpty())
         return;
+    const auto now = cacheClock.elapsed();
+    QVector<int> warm;
     for (auto it = sessions.begin(); it != sessions.end(); ++it) {
-        if (it.key() == activeId || it.key() == pairedId || it->floating || !it->panel ||
-            !it->panel->canPark())
+        if (it.key() == activeId || it.key() == pairedId || it->floating || !it->panel) {
+            it->inactiveSince = -1;
             continue;
+        }
+        if (it->inactiveSince < 0) it->inactiveSince = now;
+        if (it->panel->opaqueState()) warm.append(it.key());
+    }
+    std::sort(warm.begin(), warm.end(), [this](int a, int b) {
+        return sessions[a].lastUse > sessions[b].lastUse;
+    });
+    for (auto it = sessions.begin(); it != sessions.end(); ++it) {
+        if (it.key() == activeId || it.key() == pairedId || it->floating || !it->panel)
+            continue;
+        const auto rank = warm.indexOf(it.key());
+        if (rank >= 0 && rank < qMax(0, config.webCacheLimit) &&
+            now - it->inactiveSince < qMax(0, config.webCacheIdleMs)) continue;
+        // Busy pages and unsuccessful checkpoints remain resident; never discard their state.
+        if (!it->panel->canPark()) {it->panel->requestPark();continue;}
         if (!it->missing && !it->preserveSnapshot)
             it->parked = it->panel->snapshot();
         workspace->removeWidget(it->view);
@@ -593,6 +635,10 @@ void Workbench::detachSession(int id) {
         secondary->hide();
     }
     auto *window = new ToolWindow;
+    if (qEnvironmentVariableIsSet("MODYN_BACKGROUND_VALIDATION")) {
+        window->setWindowFlag(Qt::Tool);
+        window->setAttribute(Qt::WA_ShowWithoutActivating);
+    }
     window->setWindowTitle(
         QStringLiteral("ModynToolbox · %1 · %2").arg(it->tool.name).arg(it->title));
     window->resize(840, 700);
@@ -605,13 +651,15 @@ void Workbench::detachSession(int id) {
     secondary->removeWidget(it->view);
     auto *frame = new QWidget;
     auto *layout = new QVBoxLayout(frame);
-    layout->setContentsMargins(20, 20, 20, 20);
+    const int inset=0;
+    layout->setContentsMargins(inset,inset,inset,inset);
     layout->addWidget(it->view);
     window->setContentWidget(frame);
     it->floating = window;
     if (!it->geometry.isEmpty())
         window->restoreGeometry(it->geometry);
     it->view->show();
+    if (qEnvironmentVariableIsSet("MODYN_BACKGROUND_VALIDATION")) window->move(-20000,-20000);
     window->show();
     activateSession(id);
 }
@@ -628,7 +676,7 @@ void Workbench::attachSession(int id) {
     window->deleteLater();
     if (isMinimized())
         showNormal();
-    if (QGuiApplication::platformName() != "offscreen") {
+    if (QGuiApplication::platformName() != "offscreen" && !qEnvironmentVariableIsSet("MODYN_BACKGROUND_VALIDATION")) {
         raise();
         activateWindow();
     }
@@ -738,7 +786,10 @@ void Workbench::closeSession(int id, bool confirmed) {
 }
 void Workbench::setDraft(int id, bool enabled) {
     if (sessions.contains(id))
+    {
         sessions[id].draft = enabled;
+        if (sessions[id].panel) sessions[id].panel->setDraftEnabled(enabled);
+    }
 }
 void Workbench::runAction(int id, const QString &actionId, const QJsonObject &input,
                           bool confirmed) {
@@ -760,6 +811,7 @@ void Workbench::runAction(int id, const QString &actionId, const QJsonObject &in
         QMessageBox::question(this, action->label, confirmation) != QMessageBox::Yes)
         return;
     session.job = scheduler->submit(session.tool, session.uuid, session.revision, actionId, input);
+    if (session.panel) session.panel->setJobIdentity(session.job);
     if (session.job.isEmpty()) {
         if (session.panel)
             session.panel->setJobState("failed", QStringLiteral("作业未提交，队列或输入不符合限制"),
@@ -771,6 +823,15 @@ void Workbench::runAction(int id, const QString &actionId, const QJsonObject &in
     }
 }
 void Workbench::initializeServices() {
+    if (config.dataRoot.isEmpty()) return;
+    // Recover only host-owned transient upload files; never enumerate user documents.
+    for(const auto &id:QDir(config.dataRoot+"/tools").entryList(QDir::Dirs|QDir::NoDotAndDotDot|QDir::NoSymLinks)){
+        const auto root=Files::child(config.dataRoot,"tools/"+id+"/ui-transfer",true);
+        if(root.isEmpty())continue;
+        for(const auto &file:QDir(root).entryInfoList(QDir::Files|QDir::NoSymLinks))
+            if(QRegularExpression("^[a-f0-9]{32}$").match(file.fileName()).hasMatch())QFile::remove(file.absoluteFilePath());
+    }
+
     if (config.dataRoot.isEmpty())
         return;
     repository = std::make_unique<StateRepository>(config.dataRoot);
@@ -805,7 +866,7 @@ void Workbench::initializeServices() {
             [this](const QString &sessionId, const QString &job, int revision,
                    const QJsonObject &result, const QString &outcome) {
                 for (auto &session : sessions)
-                    if (session.uuid == sessionId && session.revision == revision &&
+                    if (session.uuid == sessionId && (session.revision == revision || !session.tool.frontend.isEmpty()) &&
                         session.job == job) {
                         const bool exportOnly =
                             scheduler->record(job).request.kind == JobKind::FileExport;
@@ -916,7 +977,9 @@ QJsonObject Workbench::savedState() const {
         auto snapshot = it->panel && !it->missing && !it->preserveSnapshot
                             ? it->panel->snapshot(it->draft)
                             : it->parked;
-        if (!it->draft) {
+        if (!it->draft && !it->tool.frontend.isEmpty()) {
+            snapshot = it->panel ? it->panel->snapshot(false) : QJsonObject{{"receipts",snapshot.value("receipts")}};
+        } else if (!it->draft) {
             const auto params = snapshot.value("params");
             snapshot = {{"params", params}};
         } else {
@@ -1187,6 +1250,17 @@ void Workbench::closeEvent(QCloseEvent *event) {
         }
         return;
     }
+    if (!frontendsFlushed) {
+        bool hasWeb=false;for(const auto &s:sessions)hasWeb|=s.panel&&s.panel->opaqueState();
+        if(hasWeb){
+            event->ignore();if(flushingFrontends)return;flushingFrontends=true;
+            flushFrontendState([this](bool ok){
+                flushingFrontends=false;
+                if(!ok&&QMessageBox::question(this,QStringLiteral("界面状态未响应"),QStringLiteral("部分工具未能保存最新界面状态。使用上次有效检查点退出？"))!=QMessageBox::Yes)return;
+                frontendsFlushed=true;close();
+            });return;
+        }
+    }
     bool unsaved = false;
     for (const auto &session : sessions)
         if (!session.draft)
@@ -1198,6 +1272,7 @@ void Workbench::closeEvent(QCloseEvent *event) {
             this, QStringLiteral("退出 ModynToolbox"),
             QStringLiteral("部分输入未保存为会话草稿。参数与窗口布局会保存，确认退出？")) !=
             QMessageBox::Yes) {
+        frontendsFlushed=false;
         event->ignore();
         return;
     }
@@ -1233,6 +1308,13 @@ void Workbench::rebuildNavigation() {
     syncNavigation(activeId);
 }
 void Workbench::syncNavigation(int selected) {
+    if(versionUpdate) {
+        const auto current=sessions.constFind(selected);
+        const auto latest=current==sessions.cend()?definitions.cend():std::find_if(definitions.cbegin(),definitions.cend(),[&](const auto &t){return t.id==current->toolId;});
+        const bool available=current!=sessions.cend()&&latest!=definitions.cend()&&latest->version!=current->tool.version;
+        versionUpdate->setVisible(available);
+        if(available)versionUpdate->setToolTip(QStringLiteral("当前v%1，新版v%2。点击新建新版会话；原会话及输入保留，不自动迁移。").arg(current->tool.version,latest->version));
+    }
     const QSignalBlocker blocker(navigation);
     const int scroll = navigation->verticalScrollBar()->value();
     navigation->clear();
@@ -1333,7 +1415,7 @@ void Workbench::updatePairVisibility() {
     if (!secondary || !navigationSplit)
         return;
     const int sidebar = navigationSplit->sizes().value(0, Theme::sidebarWidth);
-    const bool visible = pairedId > 0 && width() - sidebar - 2 * Theme::pageInset >= 840;
+    const bool visible = pairedId > 0 && width() - sidebar >= 840;
     secondary->setVisible(visible);
 }
 void Workbench::renameSession(int id) {
@@ -1359,16 +1441,25 @@ void Workbench::renameSession(int id) {
     saveState();
 }
 void Workbench::applyPreferences() {
+    if(auto *host=findChild<QWidget *>("toolWorkspaceHost")){
+        const bool inset=preferences.value("workspace_inset").toBool(true);const int gap=inset?10:0;
+        host->layout()->setContentsMargins(gap,gap,gap,gap);
+        workspace->setProperty("insetSurface",inset);workspace->style()->unpolish(workspace);workspace->style()->polish(workspace);
+    }
     Theme::setPreferences(preferences.value("font_size").toInt(14),
                           preferences.value("compact").toBool());
     qApp->setProperty("modynRevealResults", preferences.value("reveal_results").toBool(true));
+    if(preferences.contains("web_cache_limit"))config.webCacheLimit=qBound(0,preferences.value("web_cache_limit").toInt(2),5);
+    if(preferences.contains("web_cache_minutes"))config.webCacheIdleMs=qBound(1,preferences.value("web_cache_minutes").toInt(5),10)*60000;
     if (scheduler)
         scheduler->setBatchLimit(preferences.value("batch_limit").toInt(1));
+    for(auto &session:sessions)if(session.panel)session.panel->notifyTheme({{"accent",Theme::accent.name()},{"fontSize",preferences.value("font_size").toInt(14)},{"compact",preferences.value("compact").toBool()}});
 }
 void Workbench::showPreferences() {
     QDialog dialog(this);
     dialog.setWindowTitle(QStringLiteral("设置"));
-    dialog.resize(480, 350);
+    dialog.resize(520, 460);
+    dialog.setObjectName("preferencesDialog");
     auto *layout = new QVBoxLayout(&dialog);
     auto *form = new QFormLayout;
     auto *density = new UiComboBox;
@@ -1383,9 +1474,15 @@ void Workbench::showPreferences() {
     batch->setObjectName("preferenceBatch");
     batch->setRange(1, 2);
     batch->setValue(preferences.value("batch_limit").toInt(1));
+    auto *appearance=new UiComboBox;appearance->setObjectName("preferenceWorkspace");appearance->addItems({QStringLiteral("轻留白"),QStringLiteral("贴边")});appearance->setCurrentIndex(preferences.value("workspace_inset").toBool(true)?0:1);
+    form->addRow(QStringLiteral("工作区外观"),appearance);
     form->addRow(QStringLiteral("界面密度"), density);
     form->addRow(QStringLiteral("基础字号"), font);
     form->addRow(QStringLiteral("批处理并发"), batch);
+    auto *cache=new UiSpinBox;cache->setObjectName("preferenceWebCache");cache->setRange(0,5);cache->setValue(config.webCacheLimit);cache->setSuffix(QStringLiteral(" 页"));
+    auto *idle=new UiSpinBox;idle->setObjectName("preferenceWebIdle");idle->setRange(1,10);idle->setValue(qMax(1,config.webCacheIdleMs/60000));idle->setSuffix(QStringLiteral(" 分钟"));
+    form->addRow(QStringLiteral("保留闲置工具页"),cache);form->addRow(QStringLiteral("闲置回收时间"),idle);
+    auto *cacheHint=new QLabel(QStringLiteral("默认保留最近2页。频繁使用多个工具可提高页数，减少重新加载，但会占用更多内存；0表示不保留。"));cacheHint->setWordWrap(true);cacheHint->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);form->addRow(cacheHint);
     layout->addLayout(form);
     auto *draft = new QCheckBox(QStringLiteral("新会话默认保存输入草稿"));
     draft->setObjectName("preferenceDraft");
@@ -1394,22 +1491,52 @@ void Workbench::showPreferences() {
     reveal->setChecked(preferences.value("reveal_results").toBool(true));
     layout->addWidget(draft);
     layout->addWidget(reveal);
+    auto *startup = new QCheckBox(QStringLiteral("开机自启动（登录 Windows 后）"));
+    startup->setObjectName("preferenceStartup");
+    const auto startupState=config.startup?config.startup->status():StartupStatus{};
+    const bool startupInitiallyEnabled=startupState.exists&&startupState.owned;
+    startup->setChecked(startupInitiallyEnabled);
+    startup->setEnabled(config.startup&&startupState.error.isEmpty());
+    layout->addWidget(startup);
+    auto *startupHint=new QLabel;
+    startupHint->setObjectName("startupHint");startupHint->setWordWrap(true);
+    startupHint->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
+    startupHint->setText(!config.startup?QStringLiteral("此开发/验证窗口不修改系统自启动。"):
+        !startupState.error.isEmpty()?startupState.error:
+        startupInitiallyEnabled&&!startupState.current?QStringLiteral("启动项当前指向另一位置：%1").arg(startupState.program):
+        QStringLiteral("打开当前程序和工作区；不会重新执行上次作业。移动程序后请重新设置，Windows 的启动应用设置优先。"));
+    layout->addWidget(startupHint);
+    auto *rebind=new QPushButton(QStringLiteral("改用当前程序"));
+    rebind->setObjectName("startupRebind");
+    rebind->setVisible(config.startup&&startupState.error.isEmpty()&&startupInitiallyEnabled&&!startupState.current);
+    layout->addWidget(rebind);
+    bool startupRebind=false;
+    connect(rebind,&QPushButton::clicked,&dialog,[&]{startupRebind=true;startup->setChecked(true);startupHint->setText(QStringLiteral("点击应用后，将启动项更新为当前程序和工作区。"));});
     auto *hint = new QLabel(QStringLiteral("系统 DPI "
                                            "缩放自动应用。默认一个批处理名额，调度设置影响后续作业"
                                            "。草稿包含文本和文件清单，保存在本工作区。"));
     hint->setWordWrap(true);
+    hint->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Maximum);
     layout->addWidget(hint);
+    layout->addStretch(1);
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     layout->addWidget(buttons);
     buttons->button(QDialogButtonBox::Ok)->setText(QStringLiteral("应用"));
     buttons->button(QDialogButtonBox::Cancel)->setText(QStringLiteral("取消"));
-    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, [&]{
+        if(config.startup&&(startupRebind||startup->isChecked()!=startupInitiallyEnabled)){
+            const auto error=config.startup->setEnabled(startup->isChecked());
+            if(!error.isEmpty()){QMessageBox::warning(&dialog,QStringLiteral("自启动设置未保存"),error);return;}
+        }
+        dialog.accept();
+    });
     connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     if (dialog.exec() != QDialog::Accepted)
         return;
-    preferences = {{"font_size", font->value()},
+    preferences = {{"workspace_inset",appearance->currentIndex()==0},{"font_size", font->value()},
                    {"compact", density->currentIndex() == 1},
                    {"batch_limit", batch->value()},
+                   {"web_cache_limit",cache->value()}, {"web_cache_minutes",idle->value()},
                    {"default_draft", draft->isChecked()},
                    {"reveal_results", reveal->isChecked()}};
     applyPreferences();
@@ -1604,4 +1731,15 @@ void Workbench::showHistory() {
     unreadErrors = 0;
     updateActivity();
     saveState();
+}
+
+void Workbench::flushFrontendState(std::function<void(bool)> done){
+    QVector<ToolSurface*> views;for(const auto &s:sessions)if(s.panel&&s.panel->opaqueState())views.append(s.panel);
+    if(views.isEmpty()){done(true);return;}
+    auto remaining=std::make_shared<int>(views.size());auto success=std::make_shared<bool>(true);QPointer<Workbench> self(this);
+    QTimer::singleShot(6000,this,[self,remaining,done]{if(self&&*remaining>0){*remaining=0;done(false);}});
+    for(auto *view:views)view->flush([self,remaining,success,done](bool ok){
+        if(*remaining<=0)return;
+        *success &= ok;if(--*remaining==0&&self)QTimer::singleShot(0,self,[self,success,done]{if(self)done(*success);});
+    });
 }

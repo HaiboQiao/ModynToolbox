@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "samples": [
+    {
+      "input": "Hello world!",
+      "translated_text": "你好，世界！",
+      "source": "en",
+      "target": "zh",
+      "provider": "mymemory",
+      "partial": false,
+      "message": "翻译完成"
+    },
+    {
+      "input": "你好，世界！",
+      "translated_text": "Hello world!",
+      "source": "zh",
+      "target": "en",
+      "provider": "mymemory",
+      "partial": false,
+      "message": "翻译完成"
+    }
+  ]
+}

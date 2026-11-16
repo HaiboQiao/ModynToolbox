@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "removed_tool_ids": [
+    "file-hash",
+    "json",
+    "rename"
+  ],
+  "removed_active_sessions": 3,
+  "remaining_session_tools": [
+    "video-clip",
+    "image"
+  ],
+  "installed_tool_ids": [
+    "image",
+    "translate",
+    "video-clip"
+  ],
+  "database_backup": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\data\\host\\backups\\uir9-ddac6697\\state.sqlite",
+  "package_archive": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\disabled-tools\\uir9-ddac6697",
+  "tool_data_preserved": {
+    "file-hash": true,
+    "rename": true,
+    "json": true
+  },
+  "source_preserved": true
+}

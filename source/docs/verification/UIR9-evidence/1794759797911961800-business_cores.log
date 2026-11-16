@@ -1,0 +1,43 @@
+Test project D:/Workspace/01_Projects/ModynToolbox/source/.local/build/windows-release
+      Start  1: workbench
+ 1/19 Test  #1: workbench ........................   Passed    5.67 sec
+      Start  2: worker_transport
+ 2/19 Test  #2: worker_transport .................   Passed    0.13 sec
+      Start  3: package_catalog
+ 3/19 Test  #3: package_catalog ..................   Passed    0.14 sec
+      Start  4: view_spec
+ 4/19 Test  #4: view_spec ........................   Passed    1.69 sec
+      Start  5: window_native
+ 5/19 Test  #5: window_native ....................   Passed    0.47 sec
+      Start  6: host_start
+ 6/19 Test  #6: host_start .......................   Passed    0.91 sec
+      Start  7: jobs
+ 7/19 Test  #7: jobs .............................   Passed    1.53 sec
+      Start  8: full_system
+ 8/19 Test  #8: full_system ......................   Passed    7.29 sec
+      Start  9: business_cores
+ 9/19 Test  #9: business_cores ...................   Passed    3.51 sec
+      Start 10: worker_faults
+10/19 Test #10: worker_faults ....................   Passed    6.05 sec
+      Start 11: host_crash_tree
+11/19 Test #11: host_crash_tree ..................   Passed    1.19 sec
+      Start 12: video_core
+12/19 Test #12: video_core .......................   Passed    5.03 sec
+      Start 13: video_editor
+13/19 Test #13: video_editor .....................   Passed    4.63 sec
+      Start 14: video_host
+14/19 Test #14: video_host .......................   Passed   18.12 sec
+      Start 15: web_frontend
+15/19 Test #15: web_frontend .....................   Passed   59.08 sec
+      Start 16: desktop_startup
+16/19 Test #16: desktop_startup ..................   Passed    5.52 sec
+      Start 17: change_guard
+17/19 Test #17: change_guard .....................   Passed    1.83 sec
+      Start 18: translation_core
+18/19 Test #18: translation_core .................   Passed    0.67 sec
+      Start 19: translation_host
+19/19 Test #19: translation_host .................   Passed    3.24 sec
+
+100% tests passed, 0 tests failed out of 19
+
+Total Test time (real) = 126.74 sec

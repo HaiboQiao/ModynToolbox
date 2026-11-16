@@ -47,7 +47,7 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
     tool.icon = object.value("icon").toString("files");
     tool.viewFile = object.value("view_file").toString();
     tool.packageRoot = QDir(root).absolutePath();
-    if (object.value("manifest_version") != QJsonValue(1) ||
+    if ((object.value("manifest_version") != QJsonValue(1) && object.value("manifest_version") != QJsonValue(2)) ||
         !identifier.match(tool.id).hasMatch() || tool.version.size() > 40 ||
         !version.match(tool.version).hasMatch() || tool.name.isEmpty() || tool.name.size() > 80 ||
         tool.description.size() > 512 ||
@@ -61,10 +61,32 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
         return invalid(QStringLiteral("工具需要较新版本的宿主"));
     if (QRegularExpression("^(con|prn|aux|nul|com[1-9]|lpt[1-9])$").match(tool.id).hasMatch())
         return invalid(QStringLiteral("工具标识为 Windows 保留名称"));
+    if (object.contains("frontend")) {
+        const auto front=object.value("frontend").toObject();
+        tool.frontend=front.value("entry").toString();
+        tool.frontendStateVersion=front.value("state_version").toInt();
+        if (front.value("type") != QJsonValue("web") || front.value("bridge_version") != QJsonValue(1) ||
+            tool.frontendStateVersion < 1 || front.value("state_version").toDouble()!=tool.frontendStateVersion || !tool.frontend.startsWith("frontend/") ||
+            Files::child(root+"/frontend",tool.frontend.mid(9),true).isEmpty() || !QFileInfo(root+"/"+tool.frontend).isFile())
+            return invalid(QStringLiteral("完整前端入口或桥版本无效"));
+    }
+    if(object.value("manifest_version")==QJsonValue(2) && tool.frontend.isEmpty())
+        return invalid(QStringLiteral("v2清单需要完整前端声明"));
+    if(!tool.frontend.isEmpty()){
+        const auto capValue=object.value("frontend").toObject().value("capabilities");
+        if(!capValue.isUndefined()&&!capValue.isArray())return invalid(QStringLiteral("前端能力声明必须为数组"));
+        const auto caps=capValue.toArray();
+        if(caps.size()>6)return invalid(QStringLiteral("前端能力声明过多"));
+        for(const auto &cap:caps){
+            if(!cap.isString()||!QStringList{"jobs","files","clipboard","export","window","state"}.contains(cap.toString())||tool.frontendCapabilities.contains(cap.toString()))
+                return invalid(QStringLiteral("未知或重复的前端能力"));
+            tool.frontendCapabilities.append(cap.toString());
+        }
+    }
     if (!object.contains("protocol_version"))
         return tool;
     if (object.value("protocol_version") != QJsonValue(1) ||
-        (object.value("ui_schema_version") != QJsonValue(1) && object.value("ui_schema_version") != QJsonValue(2) && object.value("ui_schema_version") != QJsonValue(3)) || tool.viewFile != "ui.json")
+        (tool.frontend.isEmpty() && ((object.value("ui_schema_version") != QJsonValue(1) && object.value("ui_schema_version") != QJsonValue(2) && object.value("ui_schema_version") != QJsonValue(3)) || tool.viewFile != "ui.json")))
         return invalid(QStringLiteral("不兼容的执行或界面规范"));
     tool.uiSchemaVersion = object.value("ui_schema_version").toInt(1);
     tool.entryProgram = object.value("entry_program").toString();
@@ -119,7 +141,7 @@ ToolDefinition definitionFromManifest(const QString &root, const QJsonObject &ob
         if (!identifier.match(item.id).hasMatch() || identifiers.contains(item.id) ||
             item.label.isEmpty() || item.label.size() > 80 || item.confirmation.size() > 1024 ||
             item.requiredContext.size() > 80 || item.timeoutSeconds < 1 ||
-            item.timeoutSeconds > (object.value("ui_schema_version").toInt() >= 2 ? 86400 : 3600))
+            item.timeoutSeconds > (!tool.frontend.isEmpty() || object.value("ui_schema_version").toInt() >= 2 ? 86400 : 3600))
             return invalid(QStringLiteral("动作标识或执行策略无效"));
         identifiers.insert(item.id);
         tool.actions.append(item);

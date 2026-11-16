@@ -1,3 +1,4 @@
+from tool_selection import recipes
 """Build changed independent tools and install them through the actual application."""
 import argparse
 import hashlib
@@ -17,12 +18,14 @@ def fingerprint(source):
             if path.is_file() and not any(p in (".local","__pycache__") for p in path.relative_to(base).parts):
                 digest.update(path.relative_to(base).as_posix().encode())
                 digest.update(path.read_bytes())
+    if (source/"frontend").is_dir():
+        digest.update((ROOT/"shared/frontend-sdk/modyn.js").read_bytes())
     return digest.hexdigest()
 def prepare(binary, packages):
     spec=importlib.util.spec_from_file_location("builder",ROOT/"scripts/build-tool.py")
     builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
     operations=[]
-    for recipe in sorted((ROOT/"tools").glob("*/tool.build.json")):
+    for recipe in recipes():
         source=recipe.parent
         latest=ROOT/".local/tools"/source.name/"latest.json"
         record=json.loads(latest.read_text(encoding="utf-8")) if latest.exists() else {}

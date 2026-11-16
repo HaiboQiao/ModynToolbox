@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "cache_limit": 5,
+  "note": "First five cold, next five warm; configured explicitly for frequent multi-tool use",
+  "load_wait_ms": [
+    708,
+    574,
+    711,
+    1054,
+    1390,
+    53,
+    50,
+    53,
+    50,
+    52,
+    50
+  ],
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r8-multi-after",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r8-multi-after\\report.json"
+}

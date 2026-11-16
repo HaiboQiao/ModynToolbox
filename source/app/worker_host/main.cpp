@@ -24,6 +24,9 @@ QString quote(const QString &argument) {
 }
 } // namespace
 int main(int argc, char **argv) {
+    // A supervised background worker reports failures through its exit status, not a desktop dialog.
+    // This is process-local, inherited by children; Windows Error Reporting remains enabled.
+    SetErrorMode(GetErrorMode() | SEM_FAILCRITICALERRORS);
     QCoreApplication application(argc, argv);
     QByteArray control;
     char byte = 0;

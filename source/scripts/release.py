@@ -114,8 +114,15 @@ def prepare():
         archive = output / ("ModynToolbox-tool-" + tool["tool_id"] + "-" + tool["package_version"] + "-windows-x64.zip")
         archive_folder(manifest_path.parent, archive, tool["tool_id"] + "/" + tool["package_version"])
         assets.append(asset(archive, "tool", tool_id=tool["tool_id"], version=tool["package_version"],
-                            protocol=tool["protocol_version"], ui_schema=tool["ui_schema_version"],
+                            protocol=tool.get("protocol_version"), ui_schema=tool.get("ui_schema_version"),
+                            frontend_bridge=tool.get("frontend",{}).get("bridge_version"),
+                            frontend_state=tool.get("frontend",{}).get("state_version"),
                             min_host_version=tool.get("min_host_version", "1.0.0")))
+    sdk_root = output / "integration-sdk"
+    subprocess.run([os.sys.executable, str(ROOT / "scripts/export-tool-sdk.py"), str(sdk_root)], cwd=ROOT, check=True)
+    sdk_zip = output / ("ModynToolbox-" + version + "-tool-sdk.zip")
+    archive_folder(sdk_root, sdk_zip, "ModynToolbox-tool-sdk-" + version)
+    assets.append(asset(sdk_zip, "integration_sdk"))
     # Media binaries and exact corresponding sources are published with the application.
     media_sources = read(ROOT / "licenses/media-sources.lock.json")
     third_party = output / ("ModynToolbox-" + version + "-third-party-source.zip")
@@ -190,43 +197,54 @@ def video_test(package):
 
 
 def directory_drop_test(package, tool_zip, base):
+    """Unzip one of this release's actual tools into a running clean host, then execute it."""
     host = base / "drop-test"
     host.mkdir()
     shutil.copytree(package / "app", host / "app")
     shutil.copy2(package / "ModynToolbox.exe", host / "ModynToolbox.exe")
+    if (package / "runtime").exists():
+        shutil.copytree(package / "runtime", host / "runtime")
     (host / "tools").mkdir()
-    sample = host / "sample.txt"
-    sample.write_bytes(b"drop-in extension")
-    expected = sha(sample)
     marker, report, script = host / "ready.json", host / "report.json", host / "steps.json"
-    steps = [{"op": "mark", "path": str(marker), "delay_ms": 5000},
-             {"op": "refresh"}, {"op": "open", "tool": "file-hash"},
-             {"op": "input", "value": {"files": [str(sample)], "params": {"algorithm": "SHA-256"}}},
-             {"op": "run", "action": "hash"}, {"op": "wait", "state": "succeeded"},
-             {"op": "expect", "result_contains": expected}]
-    write(script, {"report": str(report), "steps": steps})
-    temporary = host / "temp"
-    temporary.mkdir()
-    env = {name: os.environ[name] for name in ("SystemRoot", "WINDIR", "SystemDrive", "COMSPEC") if name in os.environ}
-    env.update(QT_QPA_PLATFORM="offscreen", PATH=os.environ["SystemRoot"] + "/System32",
-               TEMP=str(temporary), TMP=str(temporary))
-    process = subprocess.Popen([str(host / "app/ModynToolbox.App.exe"), "--data-root", str(host / "data"),
-                                "--packages-root", str(host / "tools"), "--automation", str(script)],
-                               cwd=host, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                               creationflags=subprocess.CREATE_NO_WINDOW)
-    try:
-        deadline = time.monotonic() + 15
-        while not marker.exists() and process.poll() is None and time.monotonic() < deadline:
-            time.sleep(0.05)
-        if not marker.exists():
-            raise RuntimeError("Drop test host failed to start")
-        extract(tool_zip, host / "tools")
-        if process.wait(timeout=30) or not read(report)["success"]:
-            raise RuntimeError("Directory drop/refresh/execution failed")
-    finally:
-        if process.poll() is None:
-            process.terminate()
-            process.wait(timeout=5)
+    with zipfile.ZipFile(tool_zip) as zipped:
+        name=next(n for n in zipped.namelist() if n.count("/")==2 and n.endswith("/manifest.json"))
+        tool=json.loads(zipped.read(name))
+    steps=[{"op":"mark","path":str(marker),"delay_ms":5000},{"op":"refresh"},{"op":"open","tool":tool["tool_id"]}]
+    web=bool(tool.get("frontend"))
+    if tool["tool_id"]=="translate" and web:
+        value={"text":"drop-in extension","source":"en","target":"en","provider":"mymemory"}
+        steps += [{"op":"web_wait","script":"Boolean(window.translationTool)"},
+                  {"op":"input","value":{"ui_state":value,"input":value}},
+                  {"op":"web_wait","script":"document.querySelector('#source').value==='en'"},
+                  {"op":"web_eval","script":"window.translationTool.run()"},
+                  {"op":"web_wait","script":"document.querySelector('#output').value==='drop-in extension'"}]
+    elif tool["tool_id"]=="file-hash":
+        sample=host/"sample.txt";sample.write_bytes(b"drop-in extension")
+        steps += [{"op":"input","value":{"files":[str(sample)],"params":{"algorithm":"SHA-256"}}},
+                  {"op":"run","action":"hash"},{"op":"wait","state":"succeeded"},
+                  {"op":"expect","result_contains":sha(sample)}]
+    else:
+        raise RuntimeError("No directory execution acceptance for selected tool")
+    write(script,{"report":str(report),"steps":steps})
+    temporary=host/"temp";temporary.mkdir()
+    env={name:os.environ[name] for name in ("SystemRoot","WINDIR","SystemDrive","COMSPEC","USERPROFILE","USERNAME","LOCALAPPDATA","APPDATA") if name in os.environ}
+    env.update(QT_QPA_PLATFORM="windows" if web else "offscreen",MODYN_BACKGROUND_VALIDATION="1",
+               PATH=os.environ["SystemRoot"]+"/System32",TEMP=str(temporary),TMP=str(temporary))
+    digest=sha(host/"app/ModynToolbox.App.exe")
+    with (host/"host.log").open("wb") as log:
+        process=subprocess.Popen([str(host/"app/ModynToolbox.App.exe"),"--data-root",str(host/"data"),
+            "--packages-root",str(host/"tools"),"--automation",str(script)],cwd=host,env=env,
+            stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW)
+        try:
+            deadline=time.monotonic()+20
+            while not marker.exists() and process.poll() is None and time.monotonic()<deadline:time.sleep(.05)
+            if not marker.exists():raise RuntimeError("Drop test host failed to start: "+str(host))
+            extract(tool_zip,host/"tools")
+            if process.wait(timeout=60) or not read(report)["success"]:raise RuntimeError("Directory drop/refresh/execution failed: "+str(report))
+            if sha(host/"app/ModynToolbox.App.exe")!=digest:raise RuntimeError("Directory drop modified the host")
+        finally:
+            if process.poll() is None:process.terminate();process.wait(timeout=5)
+    return {"tool":tool["tool_id"],"steps":len(steps),"host_unchanged":True,"external_network_used":False}
 
 
 def verify_assets(folder, manifest):
@@ -272,12 +290,17 @@ def validate():
         raise RuntimeError("Compiled application version differs from release manifest")
     portable_test(package)
     video_test(package)
-    tool = next(entry for entry in manifest["assets"] if entry.get("tool_id") == "file-hash")
-    directory_drop_test(package, folder / tool["name"], base)
-    manifest["validation"] = {"complete": True, "portable_steps": 33, "directory_drop_refresh_execute": True,
+    tool = next(entry for entry in manifest["assets"] if entry.get("tool_id") == ("translate" if "translate" in manifest["tools"] else "file-hash"))
+    drop=directory_drop_test(package, folder / tool["name"], base)
+    sdk_entry=next(entry for entry in manifest["assets"] if entry["kind"]=="integration_sdk")
+    sdk=base/"integration_sdk"/sdk_entry["name"]/("ModynToolbox-tool-sdk-"+manifest["version"])
+    for name in ("README.md","scripts/build-tool.py","scripts/runtime.lock.json","shared/frontend-sdk/modyn.js","docs/independent-frontend.md"):
+        if not (sdk/name).is_file():raise RuntimeError("SDK archive incomplete: "+name)
+    if (sdk/"app").exists():raise RuntimeError("Integration SDK contains host application source")
+    manifest["validation"] = {"complete": True, "portable_steps": read(ROOT/".local/logs/portable-verification.json")["steps"], "directory_drop_refresh_execute": True, "directory_drop":drop, "integration_sdk_complete":True,
                               "video_host_and_crash_recovery": True, "video_live_directory": True,
                               "video_encoding_cancel": True, "media_corresponding_sources": True,
-                              "platform": "Windows x64, isolated PATH and Qt offscreen",
+                              "platform": "Windows x64, isolated PATH, native WebView2 background and Qt offscreen legacy/backend tests",
                               "manual_pending": ["physical multi-DPI/Snap", "another clean computer"],
                               "validated_at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
     write(folder / "release-manifest.json", manifest)

@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QTemporaryDir>
 #include <QtTest>
 class CatalogTests : public QObject {
@@ -72,6 +73,18 @@ private slots:
         manifest["min_host_version"]="99.0.0";
         definitionFromManifest(root.path(),manifest,&error);
         QVERIFY(!error.isEmpty());
+    }
+    void completeFrontendContract() {
+        QTemporaryDir root;QVERIFY(root.isValid());QVERIFY(QDir().mkpath(root.path()+"/frontend"));
+        QFile page(root.path()+"/frontend/index.html");QVERIFY(page.open(QIODevice::WriteOnly));page.write("<html></html>");page.close();
+        QJsonObject front{{"type","web"},{"entry","frontend/index.html"},{"bridge_version",1},{"state_version",1},{"capabilities",QJsonArray{"state"}}};
+        QJsonObject manifest{{"manifest_version",2},{"tool_id","pure-page"},{"package_version","1.0.0"},{"name","Pure"},{"frontend",front}};
+        auto read=[&](const QJsonObject &f){manifest["frontend"]=f;QString error;auto tool=definitionFromManifest(root.path(),manifest,&error);return qMakePair(tool,error);};
+        const auto valid=read(front);QVERIFY(valid.second.isEmpty());QVERIFY(valid.first.entryProgram.isEmpty());QCOMPARE(valid.first.frontendCapabilities,QStringList{"state"});
+        for(const QJsonValue &caps:QJsonArray{QJsonArray{"jobs","jobs"},QJsonArray{"unknown"},QJsonValue("jobs")}){auto bad=front;bad["capabilities"]=caps;QVERIFY(!read(bad).second.isEmpty());}
+        for(const auto &path:QStringList{"../index.html","frontend/../manifest.json","frontend/missing.html","frontend/"}){auto bad=front;bad["entry"]=path;QVERIFY(!read(bad).second.isEmpty());}
+        auto bad=front;bad["bridge_version"]=99;QVERIFY(!read(bad).second.isEmpty());bad=front;bad["state_version"]=1.5;QVERIFY(!read(bad).second.isEmpty());
+        manifest.remove("frontend");QString error;definitionFromManifest(root.path(),manifest,&error);QVERIFY(!error.isEmpty());
     }
     void invalidMetadata() {
         QTemporaryDir root;

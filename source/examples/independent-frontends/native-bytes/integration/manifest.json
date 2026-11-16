@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "tool_id": "example-bytes",
+  "name": "字节分析示例",
+  "package_version": "1.0.0",
+  "min_host_version": "1.4.0",
+  "protocol_version": 1,
+  "frontend": {
+    "type": "web",
+    "entry": "frontend/index.html",
+    "bridge_version": 1,
+    "state_version": 1,
+    "capabilities": [
+      "jobs",
+      "state",
+      "window"
+    ]
+  },
+  "actions": [
+    {
+      "id": "analyze",
+      "label": "分析",
+      "timeout_seconds": 60
+    }
+  ],
+  "limits": {
+    "max_files": 0,
+    "max_input_bytes": 5242880,
+    "memory_mb": 512
+  },
+  "icon": "code"
+}

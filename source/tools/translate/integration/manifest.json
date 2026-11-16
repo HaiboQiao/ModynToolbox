@@ -1,0 +1,45 @@
+{
+  "manifest_version": 2,
+  "protocol_version": 1,
+  "tool_id": "translate",
+  "package_version": "1.0.3",
+  "name": "文本翻译",
+  "description": "中英互译，支持公共在线与自建 LibreTranslate 服务。",
+  "icon": "code",
+  "category": "文字",
+  "keywords": [
+    "翻译",
+    "中文",
+    "英文",
+    "translate"
+  ],
+  "min_host_version": "1.4.0",
+  "actions": [
+    {
+      "id": "translate",
+      "label": "翻译",
+      "batch": false,
+      "write_sources": false,
+      "cancellable": true,
+      "timeout_seconds": 180
+    }
+  ],
+  "limits": {
+    "max_files": 0,
+    "max_input_bytes": 65536,
+    "memory_mb": 256
+  },
+  "frontend": {
+    "type": "web",
+    "entry": "frontend/index.html",
+    "bridge_version": 1,
+    "state_version": 1,
+    "capabilities": [
+      "jobs",
+      "clipboard",
+      "export",
+      "window",
+      "state"
+    ]
+  }
+}

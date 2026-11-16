@@ -1,0 +1,264 @@
+{
+  "task": "ui-r9-translation",
+  "priority": "P1",
+  "risk": "high",
+  "evidence": "current",
+  "changes": [
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "app/jobs/job_runner.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/webview_surface.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/webview_surface.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/platform/windows/window_chrome.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/fixtures/backend.py",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_faults.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/theme/theme.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/window/chrome_window.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/worker_host/main.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "docs/development.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/evidence/checks.json",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/evidence/ctest.txt",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/evidence/fault-tests.txt",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/report.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/python-startup-dialog/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r9-translation/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r9-translation/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r9-translation/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r9-translation/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/guardrails.json",
+      "action": "modified"
+    },
+    {
+      "path": "docs/ui-design-system.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/user-guide.md",
+      "action": "modified"
+    },
+    {
+      "path": "scripts/package.py",
+      "action": "modified"
+    },
+    {
+      "path": "scripts/prepare-tools.py",
+      "action": "modified"
+    },
+    {
+      "path": "scripts/tool_selection.py",
+      "action": "added"
+    },
+    {
+      "path": "scripts/verify-web-portable.py",
+      "action": "modified"
+    },
+    {
+      "path": "tools/toolset.json",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/LICENSE.txt",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/README.md",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/core/translation.py",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/frontend/index.html",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/frontend/style.css",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/frontend/tool.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/integration/adapter.py",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/integration/manifest.json",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/tests/test_translation.py",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/tests/verify_host.py",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/tool.build.json",
+      "action": "added"
+    }
+  ],
+  "out_of_scope": [],
+  "unsafe_links": [],
+  "review_required": [
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/fixtures/backend.py",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_faults.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "docs/guardrails.json",
+      "action": "modified"
+    },
+    {
+      "path": "tools/translate/tests/test_translation.py",
+      "action": "added"
+    },
+    {
+      "path": "tools/translate/tests/verify_host.py",
+      "action": "added"
+    }
+  ],
+  "unknown_paths": [
+    "app/tests/fixtures/backend.py",
+    "app/tests/integration/test_faults.cpp",
+    "app/tests/integration/test_web_frontend.cpp",
+    "app/tests/unit/test_workbench.cpp",
+    "scripts/tool_selection.py"
+  ],
+  "areas": [
+    "build",
+    "distribution",
+    "frontend-runtime",
+    "guardrails",
+    "jobs",
+    "sessions",
+    "tools",
+    "window"
+  ],
+  "retired_checks_for_review": [],
+  "required_checks": [
+    "business_cores",
+    "change_guard",
+    "desktop_startup",
+    "frozen_frontends",
+    "full_system",
+    "host_crash_tree",
+    "host_start",
+    "jobs",
+    "package_catalog",
+    "translation_core",
+    "translation_host",
+    "video_core",
+    "video_editor",
+    "video_host",
+    "view_spec",
+    "web_frontend",
+    "window_native",
+    "workbench",
+    "worker_faults",
+    "worker_transport"
+  ]
+}

@@ -17,6 +17,12 @@ def png(path):
     rows=b"".join(b"\0"+bytes((130,100,220))*40 for _ in range(20))
     path.write_bytes(b"\x89PNG\r\n\x1a\n"+chunk(b"IHDR",struct.pack(">2I5B",40,20,8,2,0,0,0))+chunk(b"IDAT",zlib.compress(rows))+chunk(b"IEND",b""))
 def verify(source):
+    manifests=list((Path(source)/"tools").glob("*/*/manifest.json"))
+    if any(json.loads(p.read_text(encoding="utf-8")).get("frontend") for p in manifests):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location("web_portable",ROOT/"scripts/verify-web-portable.py")
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        return module.verify(source)
     base=ROOT/".local/portable-tests"/("中文 空格 "+str(uuid.uuid4())[:8]);base.mkdir(parents=True)
     portable=base/"ModynToolbox";shutil.copytree(source,portable)
     input_file=base/"sample.txt";input_file.write_text("original",encoding="utf-8")

@@ -6,6 +6,10 @@ parser=argparse.ArgumentParser();parser.add_argument("--binary",type=Path,requir
 BINARY=args.binary.resolve()
 BASE=ROOT/".local/video-host-tests"/str(uuid.uuid4());BASE.mkdir(parents=True)
 PACKAGE=args.tool_package.resolve() if args.tool_package else Path(json.loads((ROOT/".local/tools/video-clip/latest.json").read_text(encoding="utf-8"))["package"])
+# This suite intentionally retains the old native media component coverage.
+import importlib.util
+spec=importlib.util.spec_from_file_location('legacy_fixture',ROOT/'scripts/legacy-test-package.py');legacy=importlib.util.module_from_spec(spec);spec.loader.exec_module(legacy)
+PACKAGE=legacy.legacy_package(PACKAGE,BASE/'legacy-package',ROOT)
 SAMPLE=Path(json.loads((ROOT/".local/video-tests/latest.json").read_text(encoding="utf-8"))["sample"])
 ENV=os.environ.copy();ENV["QT_QPA_PLATFORM"]="offscreen"
 ENV["PATH"]=str(Path(ENV.get("SystemRoot","C:/Windows"))/"System32")

@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "page_recreated_on_every_return": true,
+  "load_wait_ms": [
+    505,
+    51,
+    6692,
+    366,
+    6380,
+    359,
+    6383
+  ],
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r7-baseline\\1411615e",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\ui-r7-baseline\\1411615e\\report.json"
+}

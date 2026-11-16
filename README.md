@@ -1,6 +1,10 @@
+<!-- project-status: current -->
+
+开发/其他AI接手先读[当前项目背景](source/docs/project-baseline.md)、[行为契约](source/docs/behavior-contracts.md)和[协作入口](source/AGENTS.md)。历史记录不产生新发布授权。
+
 # ModynToolbox
 
-轻量的 Windows 本地工具箱，支持独立工具、多会话、独立窗口、工具包刷新和离线使用。
+轻量的 Windows 本地工具箱，支持独立工具、多会话、独立窗口、工具包自动发现；图片与视频在本地处理，翻译可连接在线或自建服务。
 
 ## 两个入口
 
@@ -11,9 +15,9 @@
 
 ## 直接使用
 
-下载 [ModynToolbox 1.3.0 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.3.0/ModynToolbox-1.3.0-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
+下载 [ModynToolbox 1.4.0 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.4.0/ModynToolbox-1.4.0-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
 
-保留同级 app、tools、data 和 licenses。包内已有图片压缩、JSON、批量重命名、文件校验和视频裁剪五个工具，携带所需运行时。目标用户无需安装 Python、Qt 或编译器。
+保留同级 app、runtime、tools、data 和 licenses。包内含图片压缩、视频裁剪、文本翻译三个工具及所需运行时。目标用户无需安装 Python、Qt 或编译器。
 
 全部版本和独立工具包见 [GitHub Releases](https://github.com/HaiboQiao/ModynToolbox/releases)。发布版本目录维护下载入口、版本说明和校验记录。
 
@@ -35,6 +39,8 @@ ModynToolbox/
 └── releases/                  版本入口、发布说明、校验和分发说明
 ```
 
-每个工具自身的核心、独立入口、界面描述、适配器和依赖集中在 source/tools/<id>。工具包可独立发布，解压到程序 tools/<id>/<version> 后通过“工作区管理 → 工具包 → 刷新目录”发现。具体接入要求见 [工具开发指南](source/docs/tool-development.md)。
+每个工具自身的核心、独立入口、完整前端、适配器和依赖集中在 source/tools/<id>。工具包可独立发布，解压到程序 tools/<id>/<version> 后通过“工作区管理 → 工具包 → 刷新目录”发现。具体接入要求见 [工具开发指南](source/docs/tool-development.md)。
 
 UI v3动态字段、用户环境与工具进程预算的接入方式见[独立工具开发增量](source/docs/features/host-extensibility/design.md)。
+
+工具作者可以单独下载 [1.4.0 接入 SDK](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.4.0/ModynToolbox-1.4.0-tool-sdk.zip)，按[完整前端指南](source/docs/independent-frontend.md)实现自己的整个页面与独立后端，使用既有桥能力无需修改宿主。新工具包要求宿主 1.4.0 及以上。升级、签名状态与设备验证范围见[本版说明](releases/1.4.0/README.md)。

@@ -1,0 +1,879 @@
+{
+  "schema_version": 1,
+  "task": "gp1-background-protection",
+  "request": "用户本轮要求设计完整优化并落实长期背景、功能保护和优先级；仅规则/文档/开发检查，不发布，不修改app运行代码或工具内容。",
+  "priority": "P1",
+  "created_at": "2026-11-15T03:05:03.794863+00:00",
+  "status": "complete",
+  "allowed": [
+    "AGENTS.md",
+    "README.md",
+    "docs/**",
+    "CMakeLists.txt",
+    "scripts/change-guard.py",
+    "scripts/dev.ps1",
+    "scripts/verify-frozen-frontends.py",
+    "app/tests/integration/test_change_guard.py",
+    "@repo/AGENTS.md",
+    "@repo/README.md"
+  ],
+  "before": {
+    "@repo/.gitignore": "bc425338c9fdebfac3e70d365a38eaeb40a602f65a418b6b8455d6ef660769a5",
+    "@repo/AGENTS.md": "40f2da79dadfd3f97b0d46ff7ba10badc201ecbf1f986980f7e2fa498cd2c61b",
+    "@repo/Open-ModynToolbox.cmd": "151a704a9d34ade90cdafe3d4103a1f014bdad6e3f17d6635280f0daf0c7111b",
+    "@repo/README.md": "04dda9ca4d2519d0c3e192058fc209061f256020d3c6550541b895cbd796bc19",
+    "@repo/Run-Dev.cmd": "8310daf5b19bc0341efb7cb9b322e054135935d38f3caa5644d0f4b52e5b3b02",
+    "@repo/releases/1.0.2/README.md": "ef25567c26762827c83f2b4c5770ce37f913a698215f19e084478b9af44419d8",
+    "@repo/releases/1.0.2/SHA256SUMS.txt": "a2f74d27bee7d47ed4a1af2b4977ff6fe4784ac2e5fc76217238f446d754847a",
+    "@repo/releases/1.0.2/publication.json": "aedc1e7768ea784394306ff8c2f3e502898c3b3fbe23896091405e6e4eaa7f61",
+    "@repo/releases/1.0.2/release-manifest.json": "23cde337ea097e6360fe92de25fbe8167a9325a8225ba5c3911c78e36dac4c4a",
+    "@repo/releases/1.1.0/README.md": "35cc2d8a0f289155538979926ab483d3d10524d90d96e594fb9be0d9a4ff0afb",
+    "@repo/releases/1.1.0/SHA256SUMS.txt": "cad3294e478f7710d1977ce74a2170020db47775cf83ea9f35e66cf07f442ce5",
+    "@repo/releases/1.1.0/publication.json": "8a87b2b186cbb3226e75d8ff36b35a9a692af02975aec63a6806c3ab915328d4",
+    "@repo/releases/1.1.0/release-manifest.json": "e14e7c8ae6e5d45f4599c15f179b36c5d52bf52744ad30c7799900946c0d3f75",
+    "@repo/releases/1.2.0/README.md": "1dcc377b1c50c4fec6898e8cccccf3777a9d0a64d7c1995c636cf1e4e64c92e8",
+    "@repo/releases/1.2.0/SHA256SUMS.txt": "3d352ca279ede8d0800f0ba0f2546afc011ecb1763f22bdb1209ce4ce1eb7d4e",
+    "@repo/releases/1.2.0/publication.json": "b6c728542487ead796438aef17a283d537b862e71006b9a639678f8074e0d763",
+    "@repo/releases/1.2.0/release-manifest.json": "614ea68feff95ca649a081f5f889a46794af42efbbef68ab42391946b3139610",
+    "@repo/releases/1.3.0/README.md": "f37da9973e5713316b0804b91aedee9adfacb317da8f92ee6894224f8d2c0796",
+    "@repo/releases/1.3.0/SHA256SUMS.txt": "da3c68490fa57ef01e3e21b8bf3108ea64e4d32b2370e4fe881c70310704c5d0",
+    "@repo/releases/1.3.0/publication.json": "4d02d8f3eab43bcd3e88ebfe1506fa8058f4b346af32437c695dbd97a0ccd12c",
+    "@repo/releases/1.3.0/release-manifest.json": "9dc8d82f7465f2d86ce7839f5effa8f9de145fcd72b2f6ef081223cd902d09d3",
+    "@repo/releases/README.md": "3a992c504470fb0a8beedfb54d643a618f2ac9fec782d7c1ddf1622ee385d11b",
+    ".gitignore": "554f01f56e1c03373b2f05fb9ffd739535d329e216565b09e6da9da20a49fdc6",
+    ".local/README.md": "d217c34b2595246263dc09e6ae856cfee4f36a017e1c07e75acb649a69d1966c",
+    ".vscode/extensions.json": "4fff4e87cf75e019f555ac5b7cd303dd5250fc9280a733249bf0c7d555f47ed3",
+    ".vscode/launch.json": "d20a07e335b1e2057c43fb81d36b06fb9e7ed0ccadb5d4194031506df7b28922",
+    ".vscode/tasks.json": "f74fdde853ee25f4182c3c9f835c92dc01d0f6a847f48b3d65fceec28e2c2d94",
+    "AGENTS.md": "cba21d6742ead1bca03439afa1281960efcb5f7db7c3709648c7d83d1e733a0d",
+    "CMakeLists.txt": "3939c9c610a135487579f11c9081e6f393b8481c5a1f5436931f74f28489728b",
+    "CMakePresets.json": "e9104e059895a46cbeea33c6e4bebf9fa172c36a30029a9d09efad2552ca9aa4",
+    "ModynToolbox.code-workspace": "a29be34e2141bd2a0da226d94c0350283630411447b6c81c9170ffc93b065392",
+    "Open-ModynToolbox.cmd": "d9e59212a034d259019e9bcd0b87bcf17221dc1a174a87f8b01b5b8bb5cff627",
+    "README.md": "227ecbf5ecc24dd25b17914815da2bf50a2d117a43673a46c52e621efe1e8a08",
+    "Run-Dev.cmd": "0baa082a25631fba62760123c64535318184d47e3b46551f8c0b90d3c3720d6f",
+    "app/README.md": "e98adca5b59ba8068ef35e14f013c6ddda5a993a60f5e3671cb59ce0511b7634",
+    "app/automation.cpp": "4837419abaea6c65245fba9f69097311f7af063cd6161fe52c22e5cd2efee32c",
+    "app/automation.h": "262785428fa7f7dab78e95927fb9732f3a2a2277f3c30846333128feea2c42a2",
+    "app/catalog/package_catalog.cpp": "b115341730ea8270f531589011dfd68d1b0cadd093e3b32b6bdbd6cf46c3fa50",
+    "app/catalog/package_catalog.h": "b9c296ae2bd91fe792596f779e3338f23fc5907702b2e5750a6f7308878207f0",
+    "app/catalog/package_manager.cpp": "391e02981f2b5f695da409907891ebac7b4b3608f42f9f565b6a6ad55c6be425",
+    "app/catalog/package_manager.h": "f6463eade4cf836ab27327712437ab332fd7564536ac710b7e3313e6fd54109d",
+    "app/core/files.cpp": "b4a66c6239592a385580f5620d90ca4b1706618540ca9c653ebe05c9da15ea64",
+    "app/core/files.h": "5296c322cb2ee106df19235a101fc92d8ea4cc0d29f28b764207a0b8d9ed2695",
+    "app/jobs/job_runner.cpp": "669b08e26e706cfbf791566a43a2ad44e273c3ae0ee422947044f095e4fb5c32",
+    "app/jobs/job_runner.h": "2c414a09e240d27ebd6d2f07e3ac7abf0e45ed91432d1b67da57979250863cda",
+    "app/jobs/scheduler.cpp": "6dbf75a24f8f8772f0b62702b97efa4095c2decb53e08851e0d5b4b141d5e9f5",
+    "app/jobs/scheduler.h": "8c3c0dd32a57ba2de39b8f0b5fa1dff906fc4134337f585ff6166731a839751c",
+    "app/launcher.cpp": "b35555f7fcc2043f4ac04856142d2828807a2b4789d990a2954b998abe438c3a",
+    "app/main.cpp": "1232d39cff28bae25c1db88ddc2767485cc6c368d97b47225c0b3d2c013f921c",
+    "app/platform/windows/single_instance.cpp": "043b38c5fc4e19ae2ace871d62b81fd36f1c53f95483c532954d5a411b9d0141",
+    "app/platform/windows/single_instance.h": "f452a0f94566ec50af8636c7f12df85707c7d592cbf323978587ebee0e90db56",
+    "app/platform/windows/startup_registration.cpp": "9c28d40a994905943b16399cf63463a333de1b814d46604f665f84ea352bbdaa",
+    "app/platform/windows/startup_registration.h": "01e4aa0fa350d2475d4ae13bd7aa69f59f8c22c4fb259d878e3e950de630dbe3",
+    "app/platform/windows/webview_surface.cpp": "48fa3164e99d39c5ff319470b24bb4753cc52c9171bcbe3d3c1ec0f7dd0156e3",
+    "app/platform/windows/webview_surface.h": "0f4f2ff20a0fb565425c397abe90c297565adb43393798d92a51e85bd171cc60",
+    "app/platform/windows/window_chrome.cpp": "7738c5b78c438b54d30f5cee274a90223a272e747a90c5c3f07c53e3999ab73a",
+    "app/platform/windows/window_chrome.h": "0f71707150d1492d2d9dadcd8145225fc49941f43af26460fb2b80e5fc74defa",
+    "app/resources/assets.qrc": "3aadf9e8fbac4a2f18600ace89afdc28f03fd01ad3fa3e60395ce094bc3518bb",
+    "app/resources/logo.png": "17d1baadc4a116088af51d2d900b438191863079296c5c3df5d19418d8e73657",
+    "app/resources/modyn.ico": "f6f82a72847840df6fe1c8bcac3f5d05775c49c3b478a33a817b69c72ab4b8a4",
+    "app/resources/windows.rc": "1c205bd7a468d5c3971224bd44545f0b557a68a21b300a89dac27c382d0f62c2",
+    "app/storage/data_transfer.cpp": "bee6128a32031b8fcc92f4923470274d037427f249b64257de199b5b7cd10682",
+    "app/storage/data_transfer.h": "4e518e9c8dd380d59d21da4c6adf3edc58267491c1a70e83e363ee906be9232d",
+    "app/storage/state_repository.cpp": "161279503de61902985ed4533aa6464933cda1b31f18951cd59d485ac87e241b",
+    "app/storage/state_repository.h": "627c244f676161045167e1d4b4448244dbe3bc8636b17471fde1bd47164e1414",
+    "app/tests/fixtures/backend.py": "8f42dbdcda8c9c816ef48e9a7f3193c39c52b5f19459d0dc286ee44616fe445a",
+    "app/tests/fixtures/sdk_compile.cpp": "db120e60278401775566625592c5e10c31f392c75f11613e8a59c3c011c64b86",
+    "app/tests/fixtures/worker.cpp": "e563b4bda139cdd63615f4ee511600ad129a4f982386b04b6d84b8a95c194d9e",
+    "app/tests/fixtures/worker.py": "7d33a949eb1335194c2156b7dd1fa543ae7d8ac0146ed0b4ec4a62df0f2159f4",
+    "app/tests/integration/test_desktop_startup.cpp": "4f9c60de6d67dfc3cd925bc2015aebf5973034a2eae988412fcc0d1087e30e51",
+    "app/tests/integration/test_faults.cpp": "c66def4a8ba1f57690a2587e0da71a55cfb484be5e6df54714ebc933c7c7e179",
+    "app/tests/integration/test_host_crash.py": "d53458f3f3ebf3fca38ead15f1abf22ce64d7a8b5a53d73152312e5adda74dc0",
+    "app/tests/integration/test_host_start.py": "bcb7c916c48237f2659eeab3d9b6a554784e60f1c4c3b666607bec31c69a8405",
+    "app/tests/integration/test_jobs.cpp": "fb62e1443027e8cc1309e8dd06b956861719275d1f8fc6883fdcd696739b0394",
+    "app/tests/integration/test_launchers.py": "2a614e75aa43966a2859a1f66764720ed1980ec5b840be8beff84ed665501bd6",
+    "app/tests/integration/test_system.cpp": "0b60d5a82fd470beb8247496526828caad1e629465a236c5c333d21e2c14a3fa",
+    "app/tests/integration/test_transport.py": "86b2c72957a02eb61f605de892e04b0a614142b0a77b9a0ed6cfa1df0f583e55",
+    "app/tests/integration/test_web_frontend.cpp": "e19e197320f09a4f70610dff0c5de71f2f28c5dc9fcc43390b92a3e6c685a29d",
+    "app/tests/unit/test_package_catalog.cpp": "7d03a564139ac4f6c52f42b498ab86761169829ece308dede6e5fb106184cea2",
+    "app/tests/unit/test_video_editor.cpp": "0bba76cb94ff5d7fd9d4a2e2c4c180bac5704d00f04d433ac75a2499110f396b",
+    "app/tests/unit/test_view_spec.cpp": "33069f5e06adb1330f5a74eaed94cc5f32dd5a3d45c69e5827c62b57ed23f45a",
+    "app/tests/unit/test_window_native.cpp": "46db2530557062c9c364d9309f923a07d1a09b55341efe7d5f3e706ddab2c02d",
+    "app/tests/unit/test_workbench.cpp": "49925bb6cdeb491dd4ff73af882cb6cad5b8aaeb16fdc79b740ddbe9a24cce03",
+    "app/ui/components/combo_box.cpp": "298bad299a5e6fb1a73afaab32a7091bb275d01ff3c2954229f82343278833da",
+    "app/ui/components/combo_box.h": "57fefb6691fdafaa3f184e3173953b9cfe834c6bda7501bed5626460ba8402cb",
+    "app/ui/components/icons.cpp": "d7215800ada5f4d243100db6619b8eb7b6c4703f82c9ac8b3eaedc6d9ae93ad3",
+    "app/ui/components/icons.h": "7cbde8ec9363c6e734703e0445d5f318d6ddd0eb5a7a5816a5f160a682894216",
+    "app/ui/components/spin_box.cpp": "eb0f9ac148b73f5fb714fd6f7bfbba26a15a4bff7d0fe026db5fe21f2139de4d",
+    "app/ui/components/spin_box.h": "f8558b5242ab372d26f91d0155ca819239d43a1e3bc72b281408e701e40ba243",
+    "app/ui/components/tool_navigation.cpp": "af47042a96533129afad9ecc077b4b2d3e54a701fd3816010dbf92c5a5145696",
+    "app/ui/components/tool_navigation.h": "cdd6b2a0ae09efd7e43d668dee963a3c5e7789e77736f9ed47ca68c2cb46bf78",
+    "app/ui/components/tool_panel.cpp": "629ca7be1a8b9311239275dd4a60c6f9d99d444022a60253fed62d4f89863e5a",
+    "app/ui/components/tool_panel.h": "eab27f29dcb22f00afd2774f9c7aa8f720f4e23beb5a3ad798afad32d6385170",
+    "app/ui/components/tool_view.cpp": "4d04ca1ed01201c07c00d96f1a5a12c095329f922182a39332693e5457c94498",
+    "app/ui/components/tool_view.h": "a507754b6d10695a4e19cf625746cdf99e761046fbc3e177106356decdf50fa3",
+    "app/ui/components/video_editor.cpp": "bd0c11fe2b5cc6927b7ccd94e873616734ebcea8acb25c30e55b73fe65a385b2",
+    "app/ui/components/video_editor.h": "8dfb5db19c84bbfeeeb3e962129f2100220bc7422cc064d828214aa859df633c",
+    "app/ui/components/video_surface.cpp": "cafcce4fb0cb20c16a306fdcd3ce5f7f3b653edf81e6634ef8e5cab902421d79",
+    "app/ui/components/video_surface.h": "6a53aedca1406f3b52fc3e53e5d841295fee28af55717146b3ed1ea25e1fd487",
+    "app/ui/theme/theme.cpp": "58abde2139e244919d2eb600780d6d8023afca61aa0b1c482a567d622b1886d1",
+    "app/ui/theme/theme.h": "7a43ce1973c3cd3ea586952d4c6001eb160f283327345aacc314769e741c6801",
+    "app/ui/tool_runtime/tool_surface.h": "bb4d4c34e139f111e4d70c38a061f27a3217d0f01b28e388a256598f950c18b2",
+    "app/ui/tool_runtime/web_tool_view.cpp": "45afe26ea170d64a37eec01a2f90abaa06eed23efd93e73e1fc670a583d0d2bd",
+    "app/ui/tool_runtime/web_tool_view.h": "48a8c8c16a3d9dc123f19a69503b5e920a25f9e2f60b01d747c240bc173e7109",
+    "app/ui/view_spec.cpp": "9cb35167ab10581329dabb12eb98e027a6594152eddbbabe3404de628d834308",
+    "app/ui/view_spec.h": "b56fdcb9157bb766a8698c34caa8d9512ab22586c0068a1afc4e709ecb861326",
+    "app/ui/window/chrome_window.cpp": "098f5615fc3bc010ae272a49307df1737ef51627cfa4a4bed38019c1c60003e8",
+    "app/ui/window/chrome_window.h": "504c6030305cd2950a5d38434d15f0ca5e972ef76e603e5d18e717f1617aac3d",
+    "app/ui/workbench.cpp": "21e3bc25d30ed7af7feb588bb5f5c70f16c45c2a176d9babceba7d68af3b606e",
+    "app/ui/workbench.h": "86b1d7d1b9a985302b6f4cabb483b46ed47df26b12af6d684fec2c9259e40add",
+    "app/worker_host/main.cpp": "da59fb0f8c9f649ac4290fd081c502f7a2fca8537bd477c9a30d034519ea0291",
+    "data/README.md": "3b90ae51dc9ecfda573b49b333a87ad94b387cfada808565538b9bb80cf83dd8",
+    "docs/STATUS.md": "3172ac3a359408e5cd05b796c049e2e2b4d7f957e117f49582ec998ce1027c55",
+    "docs/checklist.md": "1f850a006092d14d5b76d4b0b83eb32a70a3d274f66a416d7d33fb0ab8a24842",
+    "docs/decisions.md": "ecf8610875ef139c74776827eacd510639767bb990efd6d1917c22420eb3a94c",
+    "docs/development.md": "7558a8f1aa6ba16246b1aa0e692c2f0dd5d3e6ab7282e657d6973cff286a8d75",
+    "docs/features/desktop-startup/checklist.md": "eac46e258361e9dd2313680796ef4d09f04c6b47a83af6ba87061775803abe60",
+    "docs/features/desktop-startup/plan.md": "bbba74291e914def63dfdcc49e42232c9855ac7fac9ee273abd809028c304416",
+    "docs/features/desktop-startup/spec.md": "38017b81ce06fa9f35f6a3249d38a775c30145862e1a88c29555fb16e6f9c622",
+    "docs/features/desktop-startup/task.md": "d2d726b6c5aa359f6aec0ba4b129340801c47faa72a6a6f24b7f238e0693e20c",
+    "docs/features/host-extensibility/checklist.md": "ed619596e25419e2010f9d5ef9b589d312a19f6b6ba5b16098e43d7cd9ae3518",
+    "docs/features/host-extensibility/design.md": "0b47d4c86614977b05fe379fd927ca91bb4da3399af87676edef96d8d76b464e",
+    "docs/features/host-extensibility/plan.md": "2ac11507bda751300e14c844a01b711dbcadd78d9776fe90277d0d5dd04bc741",
+    "docs/features/host-extensibility/spec.md": "2881328a39511efedf69650e6a97e450132978c0e7ffc6572d3ab09e7521cc59",
+    "docs/features/host-extensibility/task.md": "510bf852dada93219f6417d937f4f5cb0f9f0fc57e37f7b0182514c6318cc17b",
+    "docs/features/independent-tool-frontend/checklist.md": "66be968c8f0bd8d5578ba4b66bd6404dee0adf40f17f093618580eeb3ef940a0",
+    "docs/features/independent-tool-frontend/plan.md": "591e1fdc0009ec710765dd070af949f91b2fb25d26e9752feec17b8811cad12d",
+    "docs/features/independent-tool-frontend/spec.md": "73eee4c515edc2741a2af6a657fab5fe6f62baf189eeb73808d7eb3d0af518e3",
+    "docs/features/independent-tool-frontend/task.md": "c74e4fe92cacb9423f172eb425390d5489312f2e7deb4f6002aab7043f184238",
+    "docs/features/tool-layout-audit/checklist.md": "c1199bb52765bb09b8e5d5294588a25cf344ff07a7ad244b34ff882e3c34d69b",
+    "docs/features/tool-layout-audit/design.md": "965ad23b3331c583526886f0e2e4026f4f2bfa6a43aba8b165bbdb8179ba1847",
+    "docs/features/tool-layout-audit/plan.md": "114bd65eb51436bb1cca418476013ec603a021ca448503b4449c36bcb9918624",
+    "docs/features/tool-layout-audit/spec.md": "4e30baa17f9d520911c2a2ee1d86212f6b9c50511be06dbd7e7635a1c62ff945",
+    "docs/features/tool-layout-audit/task.md": "70d49c4fdd21f0b56ff12d4c019a25caeaa2b3795a33ece9c6b330ab865d8cb2",
+    "docs/features/video-clip/checklist.md": "65a05f44ecde8ed2630cbd2d8dec9c5f32f96f836d6b3adbf5d59ad303c4d5b4",
+    "docs/features/video-clip/plan.md": "f8932ccb3f89e317db02d4beb899bdd9d6341d2b3c2a9a54a3f1ecd456129869",
+    "docs/features/video-clip/spec.md": "9e39f1fdaa35416d757994f43c400827610b3775f5512fbad8e889e6a5efa81c",
+    "docs/features/video-clip/task.md": "942e3fd1e9789fe9bb1ed1df3c08be0ab0cafaaf090b03a8d4ad398c0f04f09e",
+    "docs/handoff.md": "80a049e3c6e5379e26c0f135b0afa5d1d8913f73944202fff3e4ea6256bfbf5b",
+    "docs/independent-frontend.md": "cd7a80386d538f88be435f6bf73917d6d7a5c2a2cbc0507b5f3a60738883d71a",
+    "docs/plan.md": "2b5f242ea1a5bc85cc7c39a33dd66501c0f56b8a77c2b330caeb9112d94dabc7",
+    "docs/reference/concept-snapshot.html": "d9e2cbde5806b18577eed50744a73f20ce6c51af5d83880a4b4c2e7f253c9b38",
+    "docs/reference/modyn-selected.png": "a59165101e2a95715ffb8c324ba6152aced14bdd5237fa3f5ae58d55cc3b4333",
+    "docs/release-policy.md": "ede13546fd604c510e1e48ad9655e068d2d663c4056f64d7713a0d6e24706c4a",
+    "docs/spec.md": "aa0d7f4373e91180c137a80329bd01f13af81c694b5b4ea52f8524ed74bf4bd7",
+    "docs/task.md": "5a4d72ee964e2975eb5f87515f85534d1b5a8865da610cfb748d4810dbf1ef63",
+    "docs/tool-development.md": "f594896435e171d81885252210a9e1027a0f194bcd800fb841853c290d754ce6",
+    "docs/ui-design-system.md": "2d1f6109570621d8dfd2a61ae489f2a1c8de56f0b95fbb25f174315aaa23e359",
+    "docs/user-guide.md": "9a2586750b310408adee6a6d828a6815bffeb69dc1e6e918d3cb2a6dd575884a",
+    "docs/validation.md": "6be8b60a325a705917b3c39e728a9ce91cca83a0af4a904cf2f6f7e89b570851",
+    "docs/verification/DS-1-desktop-startup.md": "3a841683939b7725bd72841f7f7140035f334bef231cf62295627c4338483bc5",
+    "docs/verification/DS-1-evidence/DS1-debug-final-targeted.log": "b04156d911de6c034efeb6e22e83c7ac79af283fa295dc6f6ee5045a7f409f9d",
+    "docs/verification/DS-1-evidence/DS1-debug.log": "5170416804103694671e01cf58804cb828b4f4e9717a0b0714ae241e92bf0693",
+    "docs/verification/DS-1-evidence/DS1-entry-final.log": "4bb25a36ebb0fc8162353ea6af48c0a3083ac92fad90cbaf6c6166c1cb925648",
+    "docs/verification/DS-1-evidence/DS1-portable.log": "e32071be616dba58cebe639f335da06b679db51fbee0558d4f2aff73ab7b4c08",
+    "docs/verification/DS-1-evidence/DS1-release-final.log": "84df0d8e86127bb3fa5c60c6f114a8a4d1e017ddff5865328d817b7a84a5dd45",
+    "docs/verification/DS-1-evidence/DS1-targeted.log": "722b0be362cdc7a32a8a35839f03bd13e9e844d938798878cafeeaf2eede93e9",
+    "docs/verification/DS-1-evidence/close-states.png": "c8945edb4909471a5bf5e65916afe2940d72acf3464d426dee0b9692002c877f",
+    "docs/verification/DS-1-evidence/debug-desktop-results.txt": "332626320675bfd57dcb6663ee213eae9713af64d5a8b09283db9e82985be425",
+    "docs/verification/DS-1-evidence/receipt.json": "a28fae9e95d33001f51210ada5d78e9d9b88587f0f68db99247df87a2d08f2aa",
+    "docs/verification/DS-1-evidence/release-desktop-results.txt": "38e969942863745cbb59b15550b1032e699932eee6e524dfabc5bd8d7355cc51",
+    "docs/verification/DS-1-evidence/settings.png": "6550a6b032532105a685f88e2a0a2bab273967f889f6a8d40d4c26943b4563bc",
+    "docs/verification/EXT-1-host-extensibility.md": "79f721f4259cdcb52d961939ccb4c9a4f20d76980a8e6a9b0b02c1fb7f3e965e",
+    "docs/verification/IF-1-evidence/IF1-debug-verified.log": "1d154780bbb0195c9fe1523d32b1d41c815137a658ceb531718cb82544d609ef",
+    "docs/verification/IF-1-evidence/IF1-failure-isolation.json": "1813e1b20951e367e5b00d459a849c1783fee4e511bca9416d2b09d587d2ce10",
+    "docs/verification/IF-1-evidence/IF1-frozen-integration.json": "fec7cc8ccd4609c35591c8a73122b2a97ae878a0744375f8348c7e45da5608c5",
+    "docs/verification/IF-1-evidence/IF1-hash-page.png": "5b02a0d98067806ea2dae3691fc8f359a12d1dec13a5f713288c8945ff879ba1",
+    "docs/verification/IF-1-evidence/IF1-image-page.png": "a4fc702f0b340ef8e9e5a841a4d185369bc88de2659514f653346f796c1fc80c",
+    "docs/verification/IF-1-evidence/IF1-release-final-verified.log": "7cf43c405976c1e2757eda3002596eccf2b7a6d8de9bcf72ff292d4bb3caa6b6",
+    "docs/verification/IF-1-evidence/IF1-rename-page.png": "903e9942cb8d7865111f56c59ef92a4ed69c2e73088122096d2f45678c877a64",
+    "docs/verification/IF-1-evidence/IF1-resource-cold.txt": "a63d520d75f20610078e69c841c96b51ae0711029f9c670fad539d86b042469c",
+    "docs/verification/IF-1-evidence/IF1-resource-profile-cold.json": "bd43cf4805defc0ca4940745ef9047b807c20d97acdd99c2ccb8f2401b4ae820",
+    "docs/verification/IF-1-evidence/IF1-web-portable.json": "7f953b80fdba14d2d44d9defb966290c24fa499d9b5756b2bb67b8f7e3eb0ddf",
+    "docs/verification/IF-1-evidence/IF1-web-test.txt": "0b7d5d663dc1cfd2be52719ea4216b167fa3c29e365154b7ad4e8c9adaac30d4",
+    "docs/verification/IF-1-evidence/bytes.png": "c4d182b328e6856308275ab2155c7b8a8e8bfe49725a1447708da18e60138660",
+    "docs/verification/IF-1-evidence/delivery.json": "498c7950ae229fc2c797e0838fe5c1a9a7d17721dd8ec039149150fb79b0afb4",
+    "docs/verification/IF-1-evidence/freeze.json": "12807d1248e58396cae7c07cb80a9b9a9cf67f4f2aa73d61f6abddac96355ff1",
+    "docs/verification/IF-1-evidence/frozen-receipt.json": "fec7cc8ccd4609c35591c8a73122b2a97ae878a0744375f8348c7e45da5608c5",
+    "docs/verification/IF-1-evidence/json.png": "fe6f93ce6d99f6ee3721ef7b8fe0d151759f0ceb777f45f42db23c607c32d2d5",
+    "docs/verification/IF-1-evidence/statistics.png": "51ac4a7a43dd2c9f9f7396c397f6a9e15b4057218d16a01fcc7306989a367232",
+    "docs/verification/IF-1-evidence/video.png": "3d520a459c49884a9bdb971ce9ef11d07b1e8be4f005760e412d4bfb69560902",
+    "docs/verification/IF-1-independent-frontend.md": "78170e879304d310bce4f2ad869d01d214d8fcfb2450369c7496f2abc073df55",
+    "docs/verification/M0-architecture.md": "162e7d6be12717c0c0c505667e5a8b8f7a4739aff1f0a8758ceb1c0dc5116986",
+    "docs/verification/R2-complete.md": "ef39bd0c859221e949349ba1a1b9d5c4b022a2d9d5af806aecd0d72e85941f99",
+    "docs/verification/R2-evidence/core-regression.json": "7f611cb5131d3857d329c82a720ca9e65fdba3339b181f7afd8a608c205b968a",
+    "docs/verification/R2-evidence/debug-ctest.txt": "eef68bd67fb5e5e17f861995a7fa469d68a3549b41953348a90266b105c58707",
+    "docs/verification/R2-evidence/delivery.json": "1fd724b7adc1448c4395418765e23d32a54e0dddfceae73a462632ebd21022bc",
+    "docs/verification/R2-evidence/environment-isolation.json": "6ddf32fe1d617a041c5932e273d72f6968ad7e11ecdb6e578281cabfb26dc9ec",
+    "docs/verification/R2-evidence/extension.json": "9527d30d5837afd26662276c621ee4b01433fdfdfbaba2283f397608a450db25",
+    "docs/verification/R2-evidence/first-extension.json": "01b5766f7fdc482ea9a93b3217dc6232ad9427ca67f3710494cd332c58c5e0e6",
+    "docs/verification/R2-evidence/first-host-check.json": "be5025110ddf64f9ddfadaad0ebd20598c6b2488198fa89db41f5fd6777090cd",
+    "docs/verification/R2-evidence/frozen-host.json": "db1ecb530e2e48b25ecf90ec976382900bcf5cee4521bb1b131c7203d2892b91",
+    "docs/verification/R2-evidence/host-hash-check.json": "164414e6684cbd2d4e0d84e1bec9952c70a8877964382ebc859b8d024f2687db",
+    "docs/verification/R2-evidence/manual-removal.json": "e609dc64646a3cd6ce30d769924e1338d9e0167a7e7afd51fee4086457198e96",
+    "docs/verification/R2-evidence/performance.json": "31ce4746b2d9580489a037c23364112a7dc8e40c5c57d740132ec2984afc2ec6",
+    "docs/verification/R2-evidence/portable-verification.json": "f2607d45b3dcb7acff97a6d97aee1703ab4d82816839a7786a081ba7e7afeed0",
+    "docs/verification/R2-evidence/release-ctest.txt": "2feaec2baee1015d06e5d0a03ba1c3072bada1e404cf97254be0c4b3f1c4cfd1",
+    "docs/verification/R2-evidence/standalone-source.json": "d1f278133e90781a66954994b1c894ffbc96b8a3fdd01a99876fba79a2c50a60",
+    "docs/verification/REL-1-evidence/REL-1-debug-tests.log": "f6e9277e6422e0376d3aeac83036f02afffa7fe15b5d0891c2d9f258e4702d6f",
+    "docs/verification/REL-1-evidence/REL-1-preflight.json": "1fbec87f89ac80b533652b399a9e51f8f15e179659864a278f91009c0c3e7b9e",
+    "docs/verification/REL-1-evidence/REL-1-release-tests.log": "7e6a471afac89f7ba285cd0804e7ddde8d5040cad7f1b12977e9b240ddd9c77e",
+    "docs/verification/REL-1-evidence/distribution-validation.json": "77f5644abfa6c14c99f574e0fdc0926afec2603a05e89a8de1637fb3f412ea32",
+    "docs/verification/REL-1-evidence/draft-recovery-checkpoint.json": "6199c38f36e0156f3626e3c7931f863f8ea39cb74aa0521905696a1dfc409b98",
+    "docs/verification/REL-1-evidence/msvc-runtime-audit.json": "37e09eef9505f75dd8363fc709a473ded2f1bf069462f399230dfca717939c39",
+    "docs/verification/REL-1-evidence/public-download-portable.json": "10c2f47cd265d2dae85e8339ff2d9c090b3c6682c4652d98c6a3e581d499f4f6",
+    "docs/verification/REL-1-evidence/streaming-upload.json": "d84a5ddea72c13100987fc234193065d728bd260a5a8560e6dd33f190cd4f867",
+    "docs/verification/REL-1-preflight.md": "16ee8c53ed62bc1816d322f840d8a6a6b40fda760831d9653ae347d1809d842f",
+    "docs/verification/REL-1-publication.md": "999db3863369e173c83f80822cf21b560bc9ac1371d2c0e1cd49ee57ac0d7b80",
+    "docs/verification/REL-2-publication.md": "b269865defbd1febe933dca5301f22d96a3aaba9b8b392af75ad65755b989ef8",
+    "docs/verification/REL-3-publication.md": "a492425e3faf849524dcb8ee3db5511fc35da135c5b3880c297ebbd40027b15f",
+    "docs/verification/REL-4-publication.md": "fdd7d2508dc422bfbe64c1918e63ece303794c1b5210c43ba529fd6091d0958e",
+    "docs/verification/UI-R1-ModynToolbox.md": "4d7b996958aa39cfa3569e12037eee29403ba5ac8b0c598ecc4d0896e5953983",
+    "docs/verification/UI-R3-evidence/UI-R3-debug-tests.log": "df0b14cf9fdad0db591a628e74d7dc33544c961f278224e7cab2e342e258baea",
+    "docs/verification/UI-R3-evidence/UI-R3-host.json": "08860d520d72c7671e3020a5b8b2f1df8f9b17f251fef210421d8c45bbe6bb71",
+    "docs/verification/UI-R3-evidence/UI-R3-release-tests.log": "3fe9cda03af9f65598c809e7b836f45c8e2afc5327570521f8f37c7ff1530e75",
+    "docs/verification/UI-R3-evidence/delivery.json": "35e5601b4fb121e2d73bcd522f0c563b316476d445739b252d5526999bd6ebd7",
+    "docs/verification/UI-R3-evidence/host-hash-check.json": "011b495bb759d2845c8858333d6e9748d52c47effc28c84af251fb96e0ae0fe3",
+    "docs/verification/UI-R3-evidence/integration-result.json": "be3fbef421da513fb7c29b1247751fb8d153cb9ee77bb597ae55a0f8d4b5c5a1",
+    "docs/verification/UI-R3-evidence/portable-verification.json": "99a09aaa51ac583db9b2dd0acd6ebf5066dbf4223f83dba9448a7d04ad80d41e",
+    "docs/verification/UI-R3-navigation.md": "94cba1d60d73ff77361827212bae43bda36247e673253b4bbd26947833d6de39",
+    "docs/verification/UI-R4-brand.md": "45e90f5fd23b1ee319f8c67a4e22f5cce4d577b0f387a20fa8a6e49a7c09d6a9",
+    "docs/verification/UI-R5-unified-interface.md": "251cf4a1fca3dd99e4c0b9d0865ea8be74582afe3e39673068ce4c32df6a97a7",
+    "docs/verification/UI-catalog-preview.md": "d7eaef1fb20bc3150b66dcd1c63366123b8c3dca9d6a2e2a60dd8a06be1aab4f",
+    "docs/verification/VID-1-video-tool.md": "881c6b240cc39d3672f75e24110872ef91e24c097850d3fa1cef38bd508cd354",
+    "docs/verification/screenshots/R2-file-hash.png": "44be73977910999c94c5256df1e6299bc9b3c1af98a88e29b3c6d58738f059c9",
+    "docs/verification/screenshots/R2-image.png": "b161e2d15bb8ba297df587e52f13e9c9187bce51733adca64d789c55674669ac",
+    "docs/verification/screenshots/R2-main.png": "dd28ec6f941df2ee18984c5cd73f77a1ad11f906b7cfb48e523065151e6d3f17",
+    "docs/verification/screenshots/REL-1-published-image.png": "3ff03afe056dd741c08fc1d96c6b6c8248b30dc848bb458bf9ed5ced7bac8352",
+    "docs/verification/screenshots/REL-1-published-main.png": "ca763dcb51971cf7c462721fddbf3d1aa3639197e027429c5b67eb51bcf304f0",
+    "docs/verification/screenshots/UI-R1-floating.png": "74d6ce9e4415c3a111b54c5bba6d4add5015a70cbe85bca29e5f8e1c1f0e9f1e",
+    "docs/verification/screenshots/UI-R1-main.png": "90fb2cbec4e28093b85d1be2d10dacbcc7f58ec3f9bca58266c7d9c1092d0cfd",
+    "docs/verification/screenshots/UI-R3-all-tools.png": "0cf1607cd6ac460aec15a49f9aff7aac5fed8a40130dfa418a8400dac9dc7c10",
+    "docs/verification/screenshots/UI-R3-compact.png": "8c0ad396242f7d58d4c994a99bd7c9e3cb33006ab5d63229aeb9913dc3554589",
+    "docs/verification/screenshots/UI-R3-floating.png": "3a63b78e54f81707375af9ac4aceca0cce20d0a58362e68669006851fa37cca9",
+    "docs/verification/screenshots/UI-R3-main.png": "29716bc902329765aba8fafe85a9744eaeada8174f12069e6ba83c34908cdcc7",
+    "docs/worklog.md": "369bddd00be2d832116eb50ab0c16d9c7abc9acbe2dbf8915245ddc6fb75f5dc",
+    "examples/independent-frontends/README.md": "02f3eb63f4507aef077275bf6a06fe49aad13f8ae6f847c251d70089f2112383",
+    "examples/independent-frontends/native-bytes/CMakeLists.txt": "a2984fb3b876df98e376fa7897d969678dca9cf6fb31db308629daa31dbb363f",
+    "examples/independent-frontends/native-bytes/LICENSE.txt": "d945b5496cd7a52d2f8d7fd8e2ce12ecfc86ece57f7d80bcb389770f7e3c4519",
+    "examples/independent-frontends/native-bytes/build.py": "1daf49e1f64678a83ea9ceb6477f63adff79442ef010f49add8379fbd8a876fa",
+    "examples/independent-frontends/native-bytes/core/main.cpp": "46e0685c19833647d47d0dd6b0c0c87fe37c95ed43968252d117e7966c4746dc",
+    "examples/independent-frontends/native-bytes/frontend/app.js": "1061a9d3c96c2d4071896acf8f48e4539f1bc92007519ac13e1bcc4cf035fd0d",
+    "examples/independent-frontends/native-bytes/frontend/index.html": "5e8d3e570aad0bbbb6d12338e1ad29ce7ee25e66277122455f7cc155c5a78f4e",
+    "examples/independent-frontends/native-bytes/frontend/vendor/VUE-LICENSE.txt": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+    "examples/independent-frontends/native-bytes/frontend/vendor/dependencies.lock.json": "7571d17dfbc4026b6b4b860dae13ffc1773791cc9d1a5c656f6263d7bdcabbe4",
+    "examples/independent-frontends/native-bytes/frontend/vendor/vue.global.prod.js": "0287592e25a077b6190b721db9903d253d936778dab50cbde0d6010c1f51d262",
+    "examples/independent-frontends/native-bytes/integration/manifest.json": "b374ad0cae20fbab4718942553597c2abd80fab984398c0b0c86750d2ef1bac7",
+    "examples/independent-frontends/python-statistics/LICENSE.txt": "d945b5496cd7a52d2f8d7fd8e2ce12ecfc86ece57f7d80bcb389770f7e3c4519",
+    "examples/independent-frontends/python-statistics/core/statistics_core.py": "c01c7fc4095db91d4c1afc50db2a5bd4179eb150f5cae6f344e0564882fa0196",
+    "examples/independent-frontends/python-statistics/frontend/app.js": "c68d3bdc3b9cc313fd0d1e1b32cefe088e5b2f973dc891a88fe5a6921306e9cd",
+    "examples/independent-frontends/python-statistics/frontend/index.html": "e77184479d96947e48397672538d8ade9a2c8c82bbced2a8525d052cf4bbb04e",
+    "examples/independent-frontends/python-statistics/integration/adapter.py": "b71ae725270eb63e32aba2b0bc657066130cb81dd28c960991cd868049df004c",
+    "examples/independent-frontends/python-statistics/integration/manifest.json": "0c14ad6b5f84755618db9239bb22963c9bc1a4de0e5583082cee3a87e813dbbf",
+    "examples/independent-frontends/python-statistics/tool.build.json": "37875b7fc155d71a713c9618c74c8c9c4ecc69106f2212bd4c01f059c9cd7c05",
+    "licenses/GPL-3.0-only.txt": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+    "licenses/LGPL-2.1-FFmpeg.txt": "b634ab5640e258563c536e658cad87080553df6f34f62269a21d554844e58bfe",
+    "licenses/LGPL-3.0-only.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "licenses/MEDIA-SOURCES.md": "49c8a0a5f3816fb27bda6de4238963effede31e5f2d8882b4f33c136e53c888a",
+    "licenses/MinGW-runtime-notices.txt": "9809dd8b8237c8fbd9b398b58d7052817be5af8bb7e35af6aa0435920355ee13",
+    "licenses/NOTICE.md": "34e03db614448d09342cd0c59f9d060c1b68db3f340bca49ba0cc8865ba86de9",
+    "licenses/Qt-GPL-exception-1.0.txt": "40678d338ce53cd93f8b22b281a2ecbcaa3ee65ce60b25ffb0c462b0530846b2",
+    "licenses/WebView2-Fixed-Runtime-EULA.html": "1971e8d3cb92a4696d3f0b3eb9b7e78a29f83caf1b8545b76f206737168b6d58",
+    "licenses/WebView2-Fixed-Runtime-source.json": "babaec36814e849f4ac72f73a4ddf0886a9aceb857a484eb1aed0aa9741d29ac",
+    "licenses/WebView2-SDK-LICENSE.txt": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55",
+    "licenses/WebView2-SDK-NOTICE.txt": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90",
+    "licenses/media-sources.lock.json": "4ca3c2015da5f460dd4850e2e5948e1665c69550b8f95d4fae8901cf9884dfb9",
+    "licenses/qtbase-6.8.3.source.spdx": "7e1c12136a67ee81dd22cda6bd557e22f5e9391414377170d56ad946afc60294",
+    "licenses/qtmultimedia-6.8.3.source.spdx": "353d16e08f0cec2bd90aa981162eb76b57144f230b0dd83afb9b21ed88fb302b",
+    "licenses/qtshadertools-6.8.3.source.spdx": "2acbed87da67087a317bdda693b665a30240f2c9b10501a1720a897ef8bdd7aa",
+    "scripts/README.md": "9aa8c27254ce4442315740d32616540263e1156c81f123274e8dd159263ac0b7",
+    "scripts/bootstrap.lock.txt": "773521d3a56f5bd9c88d3a2503ae8a98c2fd39456dac5e5b60ed64f589479cec",
+    "scripts/bootstrap.ps1": "84eba225f164675a87f62a202b4aedb14ffa0b66557aaf4194f780427bc6d2a3",
+    "scripts/build-tool.py": "93c6620b5cf725d3be3581a90e0d4b38c157376a1c3efadfb6fabbfdec5414b3",
+    "scripts/dev.ps1": "0d300f996a22911e7887f1c83ce207978bf4cff814341872350e0456342157bb",
+    "scripts/export-tool-sdk.py": "3d8f0391414acfbc88eea85251859016d8c29a6d3b9ff8cdafccecaf0841aade",
+    "scripts/freeze-host.py": "ecc7c862d6e54d877f7d035e44fe46dfdf84da38ecd8625b950aa41b3305886d",
+    "scripts/legacy-test-package.py": "cdb48d634f5a87f4c55dbe722a5c11031177f8a5e2dba31c5e5685ba3d7887bc",
+    "scripts/measure-resources.py": "f7909d36c18635e71faadae04eecd6e78dfe5cea3fe63cd3011472b1e7264b6b",
+    "scripts/open-release.ps1": "6f78fcd08330b1743704b3561209b8d16dcf64408b680b7597fc8bd93f4852b7",
+    "scripts/package.py": "ae2f1c443e96966e2c43bff6604a953f53a0e57b3a6c23397dde243a2a8d838a",
+    "scripts/prepare-preview.ps1": "d9ce1426a3d49730bd68ae65fda3c4f3e7b20dae045073c6265e95859ec91924",
+    "scripts/prepare-tools.py": "4c425f9714be8f6d9c0ae2f676bcbd2729aeb5515ca31097ec24185b625877af",
+    "scripts/release.py": "e46c5c890c7ccb63625f459ffbd2f2edb05bdd684125e62f1a4dc842b4851cbd",
+    "scripts/runtime.lock.json": "c9a6c8ec558a52e8bd1274753dd64d711a4d98eecf6c429b330808105a3aa5df",
+    "scripts/runtime.py": "8c7548338b10a37deaa1edcaa17496dc4c752a1c31ad20c1e9010b11512ec962",
+    "scripts/setup-webview2.py": "4656f6619028d81f9ef2b1b203e3b5997e118a8aed33e71c6af2880d87c56db1",
+    "scripts/verify-environments.py": "09e9ee9e3090fbee88d73a3cdcf12fb6e4fe69875da3123e99f5a5efbd41a3d5",
+    "scripts/verify-frozen-frontends.py": "fa19b7a19bffd30fa164a7ccfacf40449033118cee75900d4aa4abc3d96df2af",
+    "scripts/verify-portable.py": "ea9ecceeb5856d7ea7013ba50092d58af4bb57e449bcc51d3d50a66fa3e2d76e",
+    "scripts/verify-web-portable.py": "ce30a4c8d2e939b0aeff36a3eb53a13ecf5b999e612d7602f18b6cc74b96ee39",
+    "shared/README.md": "723abfe13538310c8a542f3bd11557ca1793af416cb2d585ef63f1ee9e445ebf",
+    "shared/frontend-sdk/dependencies.lock.json": "097e16ad995b31b7b1f2268dd2d4806861eae20e670e995ff37fd500a3af2b91",
+    "shared/frontend-sdk/mock.js": "e8f17d9a31e3ecc171e6b7fcb72a4723a83ccdcf7443b8c6df95361de5a65c3c",
+    "shared/frontend-sdk/modyn.js": "59085c26dd440f959f4b35856e149878b5d08818466cdae48120a9264be25d39",
+    "shared/protocol/frontend-v1/frontend.schema.json": "e986c771d266ed93a41a943e87fc5101292ec2f3a923f71dfabf6ba3604a55d3",
+    "shared/protocol/frontend-v1/request.schema.json": "0cda936f7ad05298e5e65d6f71904c0a7f7d303d1cfa1ca4dae77743ca49139c",
+    "shared/protocol/manifest-preview.schema.json": "420ba3c05423d46b2e968840a7be96a5637dec39b34007bb4207bb9f50d053a4",
+    "shared/protocol/manifest-v1.schema.json": "fa9fae8aa62168e1c5516fb0b0bf05bfe0892c8b1b2fb5895e83e53e14e39288",
+    "shared/protocol/manifest-v2-web.schema.json": "78e06c0fa7e9a91e5684fecab988b893d10964a90a6d535333722bf35d44c65d",
+    "shared/protocol/manifest-v2.schema.json": "803d5a2c28b16b2e325de970f27308a045bd4aa581f4a2a843cb4111a602b4d6",
+    "shared/protocol/manifest-v3.schema.json": "019e742d4029deae1593d937abc74f7bed850beb0d11b4bb4f9d0a16c4c6439d",
+    "shared/protocol/media-v2.md": "b7ff968212d4779fa0e97b3d14203318eeb27e57ded017cc02e2c12ab70f7cb5",
+    "shared/protocol/messages-v1.schema.json": "87173495b068f34afed058eb0c092f11dac31943d35ee0b70b70bd4d98a6e040",
+    "shared/protocol/ui-preview.schema.json": "eec889b0a6019e60fe7d36047c214ecaa1fb54fc0f584cf9ae6729bb7f22569f",
+    "shared/protocol/view-v1.schema.json": "47d617c9137746b8067db475b7a1f6eacf65a55c236c917bb65468f567c165ea",
+    "shared/protocol/view-v2.schema.json": "c5486d1bbb022b6524769ee91aa251eb9d27e612d4254dfe7be92c68ebe8058f",
+    "shared/protocol/view-v3.schema.json": "a202be34b85f5d566ce9887792d8d1c6b7abceb30bcd2faf7bbbd6348ce50497",
+    "shared/sdk/cpp/modyn_sdk.h": "6208c86043bdb31dcc6d8e39b3706a85b0a8b06c5748111fa00f26bb73b1753d",
+    "shared/sdk/python/modyn_sdk.py": "1465f9b393b485d5db197e4e7da285a98dd3e9c8dcda833a99a75d4e91623003",
+    "tools/README.md": "776f1385b4d248711567b48337f5842cd0afdf7982db2954c79331d87901da3d",
+    "tools/file-hash/CMakeLists.txt": "f51a21803fc0f826bf4daf50f19afa26c35bfe4f8dbf5189862745a19ce7a9b0",
+    "tools/file-hash/LICENSE.txt": "f5c36fc914da827b2392c6dcb143b2aa35cd24503814506c19022f48b3d64f4c",
+    "tools/file-hash/README.md": "75268bc81b55f1109be94bf5e9d2c8e1a0388deda7570123d8a0467d6ec0d8c3",
+    "tools/file-hash/build.py": "a89ecb7a42e930ee591a65ae2ab1685b8168c176dd58bb30a8cbd899c70fe65c",
+    "tools/file-hash/core/hash_core.cpp": "206f722ed3c9bdbca3e90e7695bc61fd698acbb3ee2d7a908e6075d28d430f00",
+    "tools/file-hash/core/hash_core.h": "d56f89fb02c28cc8d7bf2da9ef854c777f1d2f1c521640a17be691c6799c59e8",
+    "tools/file-hash/dependencies.lock": "4ad28e30ca5d55e5e5d95107d086b642bc66f2d2c77af664b780975cec805771",
+    "tools/file-hash/frontend/base.css": "c40322f13accafada1e472c463c20f2108d96d719f6fbce6a9b051ae69ebf216",
+    "tools/file-hash/frontend/helpers.js": "43dafba0f8cca66433bd2f68c475f269bcf898cf4001f7461e59ca1525180b65",
+    "tools/file-hash/frontend/index.html": "3d40a983cce84b9a688412834fa95a38e7773f162467a026275b76248b420b48",
+    "tools/file-hash/frontend/tool.js": "e90d575b4e0cf979f9cc3bec45ce1cb4d87c6656d33122b8ab21d2d22bc4ff01",
+    "tools/file-hash/integration/adapter.cpp": "ef18636dd7aac013e49a986a022f16236c75f003e40e5ebfc264731cff081c7b",
+    "tools/file-hash/integration/manifest.json": "1a5b44525cfbb1fe49be8e21a9324c9eed39b450d5cb74c9980bb1cc25adcb25",
+    "tools/file-hash/integration/ui.json": "9baecfd9f37e037de92388d7089dc6ac80f6f89d2e1cec277a5201f65e25d3e4",
+    "tools/file-hash/standalone/README.md": "e661de66dee9075d4b4f6efb0e91190fd882f0d90ae91a45e0534e4fc2868da5",
+    "tools/file-hash/standalone/main.cpp": "bbc9748d495a543740d9f9e5f11516aed7a69b9a8f6485049c4cba2f55ca836e",
+    "tools/file-hash/tests/verify_integration.py": "91cc00ced08928b0f741b4ab86ce51f973f3291ff675064e30ef79e666957686",
+    "tools/file-hash/tests/verify_manual_removal.py": "8e1fa7baae64ca95740ef488940053e601047a85f17b772638aefa9dff9d6c68",
+    "tools/file-hash/tool.build.json": "b356d114678f450ca48d91d49a262c13b6b569efe73e605b868e26868dc28e4e",
+    "tools/image/LICENSE.txt": "4717e3fc02998e2b730747478c6b6743e865688dd5a5df882b5c9256ba2bb1c5",
+    "tools/image/README.md": "9fcba42b792855e6a6bbad0e30e4f753dceb655eea21fb0e3b00f1bad435e8ae",
+    "tools/image/core/image_tool.py": "36bfff611adf986e424eb7f3a4e6fa2ffbe72598f496d9622f2566c0c212b228",
+    "tools/image/dependencies.lock": "03630e95f88605623046468b4179ef19c835695eb2b5473c09066c0d513b4ae1",
+    "tools/image/frontend/base.css": "20c3dcb4ff3b64162e1f519037900cfab141259e3f11c9902ccbd672b69c1b3d",
+    "tools/image/frontend/helpers.js": "43dafba0f8cca66433bd2f68c475f269bcf898cf4001f7461e59ca1525180b65",
+    "tools/image/frontend/index.html": "ba610afcbf646af66349b87d6abb9bef78b25929393b6ea34ec70ef1c9a500c5",
+    "tools/image/frontend/tool.js": "a464397085665fd7b1c8cf0107c899be678344372468d06228f45e6af911b223",
+    "tools/image/integration/adapter.py": "b8d2ab55d5e5f02abc291ea16dc4a7f77600fa1dd1e32cdab097d9b645081fa4",
+    "tools/image/integration/manifest.json": "5b96dd13c93b0c1f45c45a719447c9d316f3a6a0a304b6169785a2d25c22c9c8",
+    "tools/image/integration/ui.json": "b3dc4b540a8b738bb6bb2244f921e6e6aaa8eb2d3330f127ba1756d29e27f90d",
+    "tools/image/standalone/run.py": "3a1884664adc58b880ce2652f3382b5d2aca45ab8dcf16b2bf2fa21b6393b1ec",
+    "tools/image/tests/verify_core.py": "54e98e0e4dba6b6d588b58840a211f4683ad7dd33d7aef612e4ebe44d7095d8f",
+    "tools/image/tool.build.json": "2c52dbf8d30a21736429993e560952906ffe37236412d3ccf04f464e532cb03c",
+    "tools/json/LICENSE.txt": "4717e3fc02998e2b730747478c6b6743e865688dd5a5df882b5c9256ba2bb1c5",
+    "tools/json/README.md": "bd90efdaca63b9425ec3131a1ba409ed12cbc7edc0bbaeeb999e74d9dbd39d51",
+    "tools/json/core/json_tool.py": "f5bb005f9d3b2b57e80e4e1c7905e64607b456ede93298aff95786f24d6a7696",
+    "tools/json/dependencies.lock": "02250c2e98a262041383a9a9ef9bd31fe0ea0b5d5cd89d586ec4be50ac6152cb",
+    "tools/json/frontend/base.css": "b36b2589da40b736100bb0c27c1e6f5a9433dc1af51e699ee0d31e0c8eeb7b05",
+    "tools/json/frontend/helpers.js": "d505040726af62e2437901e8ae65bccb8d9453d227d154809bdca0c44cf9e4ad",
+    "tools/json/frontend/index.html": "52355f8b2268278b90dee4e7f34de4ba54f9c36e8318b8396552441de4224946",
+    "tools/json/frontend/tool.js": "7f1ff549e9423aeb2072cd52e0ee963648aa2ddc6366c715b871065bafd6530e",
+    "tools/json/frontend/vendor/VUE-LICENSE.txt": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+    "tools/json/frontend/vendor/dependencies.lock.json": "7571d17dfbc4026b6b4b860dae13ffc1773791cc9d1a5c656f6263d7bdcabbe4",
+    "tools/json/frontend/vendor/vue.global.prod.js": "0287592e25a077b6190b721db9903d253d936778dab50cbde0d6010c1f51d262",
+    "tools/json/integration/adapter.py": "efb4d8dbd7fc5fd9e12f29133bae9f848524620631726a8d439ce7a9c0ddd8ec",
+    "tools/json/integration/manifest.json": "ddbe02130bbcb64bb9cb372e6c6f66b72ee40a5476dc2e71656750845b8ec819",
+    "tools/json/integration/ui.json": "af8159b3f9203611fcc60ccfc6d2a37326beaaa13e73b62b72151bc512bbdff8",
+    "tools/json/standalone/run.py": "6e24f80483d6805c4674c44ec7c9a6b1a84617406f5272ba055a10c8ee121e1e",
+    "tools/json/tests/verify_core.py": "23df35408f73d53cb67e353d6cea1942c7d197f0b964934947e2263812ecb043",
+    "tools/json/tool.build.json": "ecd3bc31420d267a8bbc199de4b6446fca5057d5d340ffbdd7f94695529f8c90",
+    "tools/rename/LICENSE.txt": "4717e3fc02998e2b730747478c6b6743e865688dd5a5df882b5c9256ba2bb1c5",
+    "tools/rename/README.md": "1e9aad20cb2cc7ff84f8aa41c60042d76e5f3974ea5d693c7464a00251120dc6",
+    "tools/rename/core/rename_tool.py": "1920856c980bfc826a9371f3341710ac1f08a05352dc0560995fa4f99a9a1f4a",
+    "tools/rename/dependencies.lock": "02250c2e98a262041383a9a9ef9bd31fe0ea0b5d5cd89d586ec4be50ac6152cb",
+    "tools/rename/frontend/base.css": "796f364a59733fc9eaa7ad42a454d7a2717cb6b5f5effed38ffe223276801629",
+    "tools/rename/frontend/helpers.js": "43dafba0f8cca66433bd2f68c475f269bcf898cf4001f7461e59ca1525180b65",
+    "tools/rename/frontend/index.html": "ac6716c5d065113a9f845d258c8829514c2f2dd5a61a09b57e823051919d66bc",
+    "tools/rename/frontend/tool.js": "8674b470b874377358bdde776865a029a6e399945fe66eb428a92df981c6e52f",
+    "tools/rename/integration/adapter.py": "8b7141fd7513246aa5cf9158ca9825d4b601558c7c1153edbb36ace0ce4d6a77",
+    "tools/rename/integration/manifest.json": "1ed5acdc571acbb0afacee3fb23954cd4ed136aa0bdac9ddfc33244bb0ec1326",
+    "tools/rename/integration/ui.json": "eb0e1b4d4185fe308b17e78233c552e947b77cf31915a7cf28034846a234564b",
+    "tools/rename/standalone/run.py": "8e8b470d7817520becb7f6322191bc23a8ac11cbf851e6b637f132ecb28bdc54",
+    "tools/rename/tests/verify_core.py": "969d3d70c0203ce8644861f417dcc04824ea65d9a266c8523d83e16f060ca6bd",
+    "tools/rename/tool.build.json": "ecd3bc31420d267a8bbc199de4b6446fca5057d5d340ffbdd7f94695529f8c90",
+    "tools/tests/verify_cores.py": "b3af7b3aa7295e27de7e665cc9a9d3f55fece92d94c86d1eba10f17bb0bee367",
+    "tools/video-clip/CMakeLists.txt": "e45dc34b79e3e9e12a183a4784500bd044bee3aff9bb89ed56312e4ddcdaca3c",
+    "tools/video-clip/LICENSE.txt": "dab0ab2a35578b6e5bf47caaf9ca97c4ebd6ce90b00c9fcd4b42860c03a454a3",
+    "tools/video-clip/README.md": "47f1d6be4ba6adbe7a0397d294cf019904aaa3d22d98391999f63592a78f392d",
+    "tools/video-clip/build.py": "b032681befb1162f9d1cfffb485d6d5278507af5b435f9b6685dfbad00b0935d",
+    "tools/video-clip/core/video.cpp": "2c388f34964d838207d2786131919c1faff181fd32853f33311f5a3ca56e5589",
+    "tools/video-clip/core/video.h": "303f5fc689e4b1f8aca5f11017f3ab6dc56cb4af5d6e4864fd5f9b5f82c935b2",
+    "tools/video-clip/dependencies.lock.json": "589c785abf8f661f26dcc6089eb003d86d84ca813ac461b45395e731b1188c0d",
+    "tools/video-clip/engine/README.md": "0d4c4704c7e766a165c0edb6d3d13a6d03e425ff4e869f077906892b5005cdb7",
+    "tools/video-clip/engine/build-msys2.sh": "36f5d4ba3e11e649bf8e0c26b11578a6ca698e2f3c4af6219ad1a32e32cc70f1",
+    "tools/video-clip/engine/inputs.lock.json": "661d214428dfa88041123fd74964e589fd100dd7c1b3203bbc222abc8861593b",
+    "tools/video-clip/engine/pack.py": "4fea6e676ee194051657f547abf3e302214234111345a4c6ab9110a91eb9c1c1",
+    "tools/video-clip/engine/prepare.py": "d89a2134cf38da3a61a28898824433a64431aef2bb6d65073db42650b0e483c2",
+    "tools/video-clip/frontend/base.css": "a665cbd960af0c21f044b390e4cf9382ffe6c9ec682674b53ff7dbe8ebb4d26a",
+    "tools/video-clip/frontend/helpers.js": "43dafba0f8cca66433bd2f68c475f269bcf898cf4001f7461e59ca1525180b65",
+    "tools/video-clip/frontend/index.html": "1c866c9c687f7e85cc1bb5185a1a586027d4ab520a42249f42828d39a5f765c6",
+    "tools/video-clip/frontend/tool.js": "a0d77323f6bc143c5b36ac91d77e10b902f58fb8112d88465978ca13d253f925",
+    "tools/video-clip/integration/adapter.cpp": "dec62f84ce7a417f1ec2e200bfc926a285ab51a4ab81304562e7f18ac7c34754",
+    "tools/video-clip/integration/manifest.json": "e4c5930962ab63906d846c2ebbef7f9c980846b696339978f9daa9364fd08396",
+    "tools/video-clip/integration/ui.json": "a55766d5d0d7b084c605d1902f17d483c75178b1c18553c6e654188cacc046ba",
+    "tools/video-clip/licenses/README.md": "d8c4e181c110f6aead85e197a565d71eb99d419da507b2d8ef3b83fbd7702f9a",
+    "tools/video-clip/standalone/main.cpp": "2eb026e0e2506cec5d9748e6184df09135efd4da3c78fc840cc619998cf8eb6a",
+    "tools/video-clip/tests/measure_video.py": "52501024380fc7616d8cdd0e373c72d36ae0e3b77d05817f2f229204e765e265",
+    "tools/video-clip/tests/verify_cancel.py": "11aa7d0ad46b0d24be8787f79d37046b6895f67aab8a572b648a33db0a01f8c1",
+    "tools/video-clip/tests/verify_directory.py": "b8c1e35f96afc2208722c39423b55c2db8c0edd72b5ca0cf1aa81841752dba5f",
+    "tools/video-clip/tests/verify_host.py": "10737c124692e0bb8a69fdd4b9759900c27242679573096cb9702e62402869f9",
+    "tools/video-clip/tests/verify_video.py": "d9dce37f21afb8b3618c89d04a0ed2d2056b7115cc8077bd657b93b04ace5972",
+    "tools/video-clip/tool.build.json": "98a07af327f36e995140edb7cbb27503fd06748866b7c29ce0329cd7bad01937"
+  },
+  "validations": [
+    {
+      "at": "2026-11-15T03:26:14.545504+00:00",
+      "digest": "0350857bf73bf17c7115221d1f166fad487042c10015c601f0377661f716d6c9",
+      "preset": "windows-release",
+      "artifacts": "c525c0fbfd54e642810fb00802edec8cd579414da072da649e1f65a18cf467b4",
+      "results": [
+        {
+          "checks": [
+            "change_guard"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Apps\\anaconda3\\python.exe",
+            "-B",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\app\\tests\\integration\\test_change_guard.py"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713029034785800-change_guard.log",
+          "seconds": 1.744
+        },
+        {
+          "checks": [
+            "build"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "--build",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release",
+            "--config",
+            "Release"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713030779938300-build.log",
+          "seconds": 3.185
+        },
+        {
+          "checks": [
+            "business_cores",
+            "change_guard",
+            "desktop_startup",
+            "full_system",
+            "host_crash_tree",
+            "host_start",
+            "jobs",
+            "package_catalog",
+            "video_core",
+            "video_editor",
+            "video_host",
+            "view_spec",
+            "web_frontend",
+            "window_native",
+            "workbench",
+            "worker_faults",
+            "worker_transport"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+            "--test-dir",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release",
+            "-C",
+            "Release",
+            "--output-on-failure",
+            "-R",
+            "^(business_cores|change_guard|desktop_startup|full_system|host_crash_tree|host_start|jobs|package_catalog|video_core|video_editor|video_host|view_spec|web_frontend|window_native|workbench|worker_faults|worker_transport)$"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713034138615700-business_cores.log",
+          "seconds": 113.756
+        },
+        {
+          "checks": [
+            "frozen_frontends"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Apps\\anaconda3\\python.exe",
+            "-B",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\scripts\\verify-frozen-frontends.py",
+            "--freeze"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713147969753600-frozen_frontends.log",
+          "seconds": 26.576
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-11-15T03:34:36.484868+00:00",
+      "digest": "eb9cdf8c39818186ae2860b344186968042175d494c410c07a282f767b7e6147",
+      "preset": "windows-release",
+      "artifacts": "c525c0fbfd54e642810fb00802edec8cd579414da072da649e1f65a18cf467b4",
+      "results": [
+        {
+          "checks": [
+            "change_guard"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Apps\\anaconda3\\python.exe",
+            "-B",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\app\\tests\\integration\\test_change_guard.py"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713532237563500-change_guard.log",
+          "seconds": 2.005
+        },
+        {
+          "checks": [
+            "build"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\cmake.exe",
+            "--build",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release",
+            "--config",
+            "Release"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713534274788900-build.log",
+          "seconds": 3.334
+        },
+        {
+          "checks": [
+            "business_cores",
+            "change_guard",
+            "desktop_startup",
+            "full_system",
+            "host_crash_tree",
+            "host_start",
+            "jobs",
+            "package_catalog",
+            "video_core",
+            "video_editor",
+            "video_host",
+            "view_spec",
+            "web_frontend",
+            "window_native",
+            "workbench",
+            "worker_faults",
+            "worker_transport"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin\\ctest.exe",
+            "--test-dir",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\build\\windows-release",
+            "-C",
+            "Release",
+            "--output-on-failure",
+            "-R",
+            "^(business_cores|change_guard|desktop_startup|full_system|host_crash_tree|host_start|jobs|package_catalog|video_core|video_editor|video_host|view_spec|web_frontend|window_native|workbench|worker_faults|worker_transport)$"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713537781591500-business_cores.log",
+          "seconds": 112.418
+        },
+        {
+          "checks": [
+            "frozen_frontends"
+          ],
+          "returncode": 0,
+          "command": [
+            "C:\\Program Apps\\anaconda3\\python.exe",
+            "-B",
+            "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\scripts\\verify-frozen-frontends.py",
+            "--freeze"
+          ],
+          "log": ".local\\change-guard\\gp1-background-protection\\1794713650268829200-frozen_frontends.log",
+          "seconds": 26.216
+        }
+      ],
+      "error": null
+    }
+  ],
+  "bootstrap": {
+    "captured_at": "2026-11-15T02:52:50.866653+00:00",
+    "note": "Read-only bootstrap snapshot before GP-1 edits; previous uncommitted IF-1 and DS-1 work retained.",
+    "source": ".local/change-guard-bootstrap/gp1-before.json"
+  },
+  "completed_at": "2026-11-15T03:45:00.852696+00:00",
+  "review_note": "本轮用户明确要求完整解决长期背景与误改担忧。保留PB/BC原产品含义，当前文档替换歧义并完整归档旧原文；新增保护测试/路由和开发入口，不删除旧测试或改弱标准。原app运行源码、工具/协议内容哈希不变；自举使用修改前内容基线，17组真实回归/冻结接入及负向用例验证。",
+  "final_review": {
+    "task": "gp1-background-protection",
+    "priority": "P1",
+    "risk": "high",
+    "evidence": "current",
+    "changes": [
+      {
+        "path": "@repo/AGENTS.md",
+        "action": "modified"
+      },
+      {
+        "path": "@repo/README.md",
+        "action": "modified"
+      },
+      {
+        "path": "AGENTS.md",
+        "action": "modified"
+      },
+      {
+        "path": "CMakeLists.txt",
+        "action": "modified"
+      },
+      {
+        "path": "README.md",
+        "action": "modified"
+      },
+      {
+        "path": "app/tests/integration/test_change_guard.py",
+        "action": "added"
+      },
+      {
+        "path": "docs/STATUS.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/behavior-contracts.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/change-policy.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/checklist.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/features/project-guardrails/checklist.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/features/project-guardrails/plan.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/features/project-guardrails/spec.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/features/project-guardrails/task.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/guardrails.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/handoff.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/history/gp1-before/README.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/STATUS.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/checklist.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/handoff.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/plan.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/spec.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/task.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/tool-development.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/history/gp1-before/ui-design-system.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/independent-frontend.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/plan.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/project-baseline.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/spec.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/task.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/tool-development.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/ui-design-system.md",
+        "action": "modified"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/GP1-cold-check.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/GP1-final-review.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/GP1-unit-protection.log",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/build.log",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/business_cores.log",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/change_guard.log",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/frozen-frontends.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/frozen-host.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/frozen_frontends.log",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-evidence/receipt.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/verification/GP-1-project-guardrails.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/worklog.md",
+        "action": "modified"
+      },
+      {
+        "path": "scripts/change-guard.py",
+        "action": "added"
+      },
+      {
+        "path": "scripts/dev.ps1",
+        "action": "modified"
+      },
+      {
+        "path": "scripts/verify-frozen-frontends.py",
+        "action": "modified"
+      }
+    ],
+    "out_of_scope": [],
+    "unsafe_links": [],
+    "review_required": [
+      {
+        "path": "@repo/AGENTS.md",
+        "action": "modified"
+      },
+      {
+        "path": "@repo/README.md",
+        "action": "modified"
+      },
+      {
+        "path": "AGENTS.md",
+        "action": "modified"
+      },
+      {
+        "path": "CMakeLists.txt",
+        "action": "modified"
+      },
+      {
+        "path": "README.md",
+        "action": "modified"
+      },
+      {
+        "path": "app/tests/integration/test_change_guard.py",
+        "action": "added"
+      },
+      {
+        "path": "docs/behavior-contracts.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/change-policy.md",
+        "action": "added"
+      },
+      {
+        "path": "docs/guardrails.json",
+        "action": "added"
+      },
+      {
+        "path": "docs/project-baseline.md",
+        "action": "added"
+      },
+      {
+        "path": "scripts/change-guard.py",
+        "action": "added"
+      },
+      {
+        "path": "scripts/dev.ps1",
+        "action": "modified"
+      }
+    ],
+    "unknown_paths": [],
+    "areas": [
+      "build",
+      "distribution",
+      "guardrails"
+    ],
+    "retired_checks_for_review": [],
+    "required_checks": [
+      "business_cores",
+      "change_guard",
+      "desktop_startup",
+      "frozen_frontends",
+      "full_system",
+      "host_crash_tree",
+      "host_start",
+      "jobs",
+      "package_catalog",
+      "video_core",
+      "video_editor",
+      "video_host",
+      "view_spec",
+      "web_frontend",
+      "window_native",
+      "workbench",
+      "worker_faults",
+      "worker_transport"
+    ]
+  },
+  "final_digest": "eb9cdf8c39818186ae2860b344186968042175d494c410c07a282f767b7e6147"
+}

@@ -1,10 +1,8 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "protocol_version": 1,
-  "ui_schema_version": 1,
   "tool_id": "rename",
-  "package_version": "1.0.1",
-  "view_file": "ui.json",
+  "package_version": "1.2.3",
   "name": "批量重命名",
   "description": "先检查预览，再执行可恢复的文件改名。",
   "icon": "files",
@@ -59,5 +57,20 @@
     "批量",
     "改名",
     "撤销"
-  ]
+  ],
+  "min_host_version": "1.4.0",
+  "frontend": {
+    "type": "web",
+    "entry": "frontend/index.html",
+    "bridge_version": 1,
+    "state_version": 1,
+    "capabilities": [
+      "jobs",
+      "files",
+      "clipboard",
+      "export",
+      "window",
+      "state"
+    ]
+  }
 }

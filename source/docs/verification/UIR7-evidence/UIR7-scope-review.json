@@ -1,0 +1,223 @@
+{
+  "task": "ui-r7-interaction",
+  "priority": "P1",
+  "risk": "high",
+  "evidence": "current",
+  "changes": [
+    {
+      "path": "app/platform/windows/window_chrome.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_view_spec.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_window_native.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/components/combo_box.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/components/combo_box.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/components/spin_box.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/components/spin_box.h",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/tool_runtime/web_tool_view.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/window/chrome_window.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/workbench.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/ui/workbench.h",
+      "action": "modified"
+    },
+    {
+      "path": "docs/development.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/features/ui-r7-interaction/checklist.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r7-interaction/plan.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r7-interaction/spec.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/features/ui-r7-interaction/task.md",
+      "action": "added"
+    },
+    {
+      "path": "docs/independent-frontend.md",
+      "action": "modified"
+    },
+    {
+      "path": "docs/ui-design-system.md",
+      "action": "modified"
+    },
+    {
+      "path": "tools/file-hash/frontend/base.css",
+      "action": "modified"
+    },
+    {
+      "path": "tools/file-hash/frontend/interactions.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/file-hash/frontend/tool.js",
+      "action": "modified"
+    },
+    {
+      "path": "tools/file-hash/integration/manifest.json",
+      "action": "modified"
+    },
+    {
+      "path": "tools/image/frontend/base.css",
+      "action": "modified"
+    },
+    {
+      "path": "tools/image/frontend/interactions.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/image/frontend/tool.js",
+      "action": "modified"
+    },
+    {
+      "path": "tools/image/integration/manifest.json",
+      "action": "modified"
+    },
+    {
+      "path": "tools/json/frontend/base.css",
+      "action": "modified"
+    },
+    {
+      "path": "tools/json/frontend/interactions.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/json/frontend/tool.js",
+      "action": "modified"
+    },
+    {
+      "path": "tools/json/integration/manifest.json",
+      "action": "modified"
+    },
+    {
+      "path": "tools/rename/frontend/base.css",
+      "action": "modified"
+    },
+    {
+      "path": "tools/rename/frontend/interactions.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/rename/frontend/tool.js",
+      "action": "modified"
+    },
+    {
+      "path": "tools/rename/integration/manifest.json",
+      "action": "modified"
+    },
+    {
+      "path": "tools/video-clip/frontend/base.css",
+      "action": "modified"
+    },
+    {
+      "path": "tools/video-clip/frontend/interactions.js",
+      "action": "added"
+    },
+    {
+      "path": "tools/video-clip/frontend/tool.js",
+      "action": "modified"
+    },
+    {
+      "path": "tools/video-clip/integration/manifest.json",
+      "action": "modified"
+    }
+  ],
+  "out_of_scope": [],
+  "unsafe_links": [],
+  "review_required": [
+    {
+      "path": "app/tests/integration/test_web_frontend.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_view_spec.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_window_native.cpp",
+      "action": "modified"
+    },
+    {
+      "path": "app/tests/unit/test_workbench.cpp",
+      "action": "modified"
+    }
+  ],
+  "unknown_paths": [
+    "app/tests/integration/test_web_frontend.cpp",
+    "app/tests/unit/test_view_spec.cpp",
+    "app/tests/unit/test_window_native.cpp",
+    "app/tests/unit/test_workbench.cpp"
+  ],
+  "areas": [
+    "frontend-runtime",
+    "guardrails",
+    "legacy-ui",
+    "sessions",
+    "tools",
+    "window"
+  ],
+  "retired_checks_for_review": [],
+  "required_checks": [
+    "business_cores",
+    "change_guard",
+    "desktop_startup",
+    "frozen_frontends",
+    "full_system",
+    "host_crash_tree",
+    "host_start",
+    "jobs",
+    "package_catalog",
+    "video_core",
+    "video_editor",
+    "video_host",
+    "view_spec",
+    "web_frontend",
+    "window_native",
+    "workbench",
+    "worker_faults",
+    "worker_transport"
+  ]
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include <QMainWindow>
+#include <QVector>
 class QToolButton;
 class ChromeWindow : public QMainWindow {
     Q_OBJECT
@@ -12,10 +13,13 @@ public:
 protected:
     bool nativeEvent(const QByteArray &type, void *message, qintptr *result) override;
     void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
     void changeEvent(QEvent *event) override;
 private:
     QWidget *bar = nullptr;
     QToolButton *maximize = nullptr;
     QWidget *frame = nullptr;
     bool nativeFrameReady = false;
+    QVector<QWidget *> resizeHandles;
+    void syncResizeHandles();
 };

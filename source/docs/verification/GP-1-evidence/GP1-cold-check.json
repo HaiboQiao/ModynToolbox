@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "source_copy_files": 398,
+  "no_git_root": true,
+  "no_sdk_or_build": true,
+  "steps": [
+    {
+      "step": "validate",
+      "exit_code": 0,
+      "expected": 0
+    },
+    {
+      "step": "start",
+      "exit_code": 0,
+      "expected": 0
+    },
+    {
+      "step": "review",
+      "exit_code": 0,
+      "expected": 0
+    },
+    {
+      "step": "verify",
+      "exit_code": 0,
+      "expected": 0
+    },
+    {
+      "step": "finish",
+      "exit_code": 0,
+      "expected": 0
+    },
+    {
+      "step": "reject-unrelated",
+      "exit_code": 2,
+      "expected": 2
+    },
+    {
+      "step": "reject-missing-baseline",
+      "exit_code": 2,
+      "expected": 2
+    }
+  ],
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\guard-cold-check\\ac2682db",
+  "note": "Local source-export cold check, not another AI/computer acceptance. Private copy mutations do not modify the real project."
+}
