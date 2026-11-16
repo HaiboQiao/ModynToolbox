@@ -1,0 +1,22 @@
+{"success": true, "steps": 30, "business_steps": 26, "restore_steps": 4, "seconds": 10.412, "path": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\eface726\\ModynToolbox", "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\eface726\\business-report.json", "restore_report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\eface726\\restore-report.json", "isolated_path": "C:\\WINDOWS\\System32", "system_python_used_by_app": false, "bundled_fixed_runtime_observed": true, "runtime_version": "157.0.4341.60", "tools_tested": ["image", "translate", "video-clip"], "screenshots": ["D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\eface726\\video.png", "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\eface726\\translate.png"]}
+install-export-sessions PASS 20
+draft-restart PASS 5
+cancel-real-job PASS 6
+recover-owned-temporary PASS 3
+SUMMARY D:\Workspace\01_Projects\ModynToolbox\source\.local\video-host-tests\9bf2e3bb-f264-4a4c-a3f1-b85383afb638\summary.json
+{
+  "success": true,
+  "steps": 11,
+  "copy_seconds": 0.035,
+  "host_unchanged": true,
+  "tool_data_retained": true,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\video-directory-tests\\612f6243-3b4d-479d-b97b-c75693238c3a"
+}
+{
+  "success": true,
+  "cancel_after_actual_encoding": true,
+  "cancel_seconds": 0.039,
+  "temporary_removed": true,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\video-cancel-tests\\6e087ce7-be2d-4042-97fd-dbfccc2335b4"
+}
+{"validated": true, "directory_drop": true, "assets": 8}

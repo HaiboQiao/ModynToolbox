@@ -1,0 +1,107 @@
+{
+  "product": "ModynToolbox",
+  "version": "1.4.0",
+  "tag": "v1.4.0",
+  "platform": "windows-x64",
+  "source_commit": "b99ef16fbf529c2e9aad351b566499a7a8a61a5c",
+  "repository": "https://github.com/HaiboQiao/ModynToolbox",
+  "prepared_at": "2026-11-16T00:49:09.750564+00:00",
+  "tools": {
+    "image": "1.2.3",
+    "translate": "1.0.3",
+    "video-clip": "1.2.3"
+  },
+  "validation": {
+    "complete": true,
+    "portable_steps": 30,
+    "directory_drop_refresh_execute": true,
+    "directory_drop": {
+      "tool": "translate",
+      "steps": 8,
+      "host_unchanged": true,
+      "external_network_used": false
+    },
+    "integration_sdk_complete": true,
+    "video_host_and_crash_recovery": true,
+    "video_live_directory": true,
+    "video_encoding_cancel": true,
+    "media_corresponding_sources": true,
+    "platform": "Windows x64, isolated PATH, native WebView2 background and Qt offscreen legacy/backend tests",
+    "manual_pending": [
+      "physical multi-DPI/Snap",
+      "another clean computer"
+    ],
+    "validated_at": "2026-11-16T00:50:32.317391+00:00"
+  },
+  "assets": [
+    {
+      "name": "ModynToolbox-1.4.0-windows-x64.zip",
+      "kind": "portable",
+      "bytes": 398391994,
+      "sha256": "9f4b1882010f33dd9511f6cee03c8cce1bff9cb7dab6a8850dbd0ae7d21861b6"
+    },
+    {
+      "name": "ModynToolbox-tool-image-1.2.3-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 19517588,
+      "sha256": "9c822add1bf5f34078eaf1b9a7a6998d7c24af682ee66e85450f745c97f63034",
+      "tool_id": "image",
+      "version": "1.2.3",
+      "protocol": 1,
+      "ui_schema": null,
+      "frontend_bridge": 1,
+      "frontend_state": 1,
+      "min_host_version": "1.4.0"
+    },
+    {
+      "name": "ModynToolbox-tool-translate-1.0.3-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 12363339,
+      "sha256": "bc1e57fde546de60e64789e166456aa7c688efc00814b5896d8cde87cb4d6788",
+      "tool_id": "translate",
+      "version": "1.0.3",
+      "protocol": 1,
+      "ui_schema": null,
+      "frontend_bridge": 1,
+      "frontend_state": 1,
+      "min_host_version": "1.4.0"
+    },
+    {
+      "name": "ModynToolbox-tool-video-clip-1.2.3-windows-x64.zip",
+      "kind": "tool",
+      "bytes": 29288295,
+      "sha256": "631e8b40a33c5e3c290095e51c4b59d32c4d28ad01ee68d7a8292148e2b99876",
+      "tool_id": "video-clip",
+      "version": "1.2.3",
+      "protocol": 1,
+      "ui_schema": null,
+      "frontend_bridge": 1,
+      "frontend_state": 1,
+      "min_host_version": "1.4.0"
+    },
+    {
+      "name": "ModynToolbox-1.4.0-tool-sdk.zip",
+      "kind": "integration_sdk",
+      "bytes": 2201427,
+      "sha256": "5cd302c4e13daaefeb603a4ae83f956bb226d363ed8672cbb0431994b5d780fd"
+    },
+    {
+      "name": "ModynToolbox-1.4.0-third-party-source.zip",
+      "kind": "third_party_source",
+      "bytes": 110968541,
+      "sha256": "a8992496485b6dda77959adc1792663340cdce8b8826e8f8b319914f28643814"
+    },
+    {
+      "name": "ModynToolbox-media-engine-9.0.2-modyn1-windows-x64.zip",
+      "kind": "media_engine",
+      "bytes": 25853262,
+      "sha256": "4ac59d4b688c62f329ecfc1ad47d94ec6f732f8b51f2e0672a5b35dd9f48e673"
+    },
+    {
+      "name": "ModynToolbox-1.4.0-source.zip",
+      "kind": "source",
+      "bytes": 7566908,
+      "sha256": "00c714652df3ddd2da79af67c430e38fb2a87b9ccb8fed4b13a775540e4e1e7f"
+    }
+  ]
+}

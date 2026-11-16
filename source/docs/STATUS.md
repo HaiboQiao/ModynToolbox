@@ -3,7 +3,7 @@
 
 先读[当前背景](project-baseline.md)、[行为契约](behavior-contracts.md)及[变更规则](change-policy.md)。本文件只记当前摘要，详细过程在worklog和verification。
 
-- 当前源码1.4.0；默认图片压缩/视频裁剪1.2.3、文本翻译1.0.3。文件校验/JSON/重命名默认停用，原数据/源码保留。用户本轮明确要求正式发布上传，正在按发布规程执行；公开完成以[REL-5](verification/REL-5-publication.md)及仓库releases/1.4.0回执为准。
+- 当前源码1.4.0；默认图片压缩/视频裁剪1.2.3、文本翻译1.0.3。文件校验/JSON/重命名默认停用，原数据/源码保留。已按用户本轮明确授权发布v1.4.0并上传GitHub，10项公开附件匿名下载校验与实际运行复验通过；固定来源/完整结果见[REL-5](verification/REL-5-publication.md)及仓库releases/1.4.0回执。
 - 工具拥有完整前端和独立后端，宿主只保留公共壳/服务；独立SDK及两后端/两前端冻结宿主接入20步通过，新增工具使用既有桥不改宿主。架构边界见[IF-1](verification/IF-1-independent-frontend.md)。
 - 公共窗口关闭颜色、设置自启动、单实例见[DS-1](verification/DS-1-desktop-startup.md)；背景/行为/变更保护见[GP-1](verification/GP-1-project-guardrails.md)。
 - 实际开发入口、旧会话版本提示、缩放命中、焦点/滚轮与缓存修复见[UIR-8](verification/UIR8-actual-entry.md)。缓存默认2页/5分钟，可在设置调整。

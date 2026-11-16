@@ -1,0 +1,42 @@
+Verified uploaded asset ModynToolbox-1.4.0-windows-x64.zip
+Verified uploaded asset ModynToolbox-tool-image-1.2.3-windows-x64.zip
+Verified uploaded asset ModynToolbox-tool-translate-1.0.3-windows-x64.zip
+Verified uploaded asset ModynToolbox-tool-video-clip-1.2.3-windows-x64.zip
+Verified uploaded asset ModynToolbox-1.4.0-tool-sdk.zip
+Verified uploaded asset ModynToolbox-1.4.0-third-party-source.zip
+Verified uploaded asset ModynToolbox-media-engine-9.0.2-modyn1-windows-x64.zip
+Verified uploaded asset ModynToolbox-1.4.0-source.zip
+Verified uploaded asset release-manifest.json
+Verified uploaded asset SHA256SUMS.txt
+Anonymous resumable download ModynToolbox-1.4.0-windows-x64.zip
+Anonymous resumable download ModynToolbox-tool-image-1.2.3-windows-x64.zip
+Anonymous resumable download ModynToolbox-tool-translate-1.0.3-windows-x64.zip
+Anonymous resumable download ModynToolbox-tool-video-clip-1.2.3-windows-x64.zip
+Anonymous resumable download ModynToolbox-1.4.0-tool-sdk.zip
+Anonymous resumable download ModynToolbox-1.4.0-third-party-source.zip
+Anonymous resumable download ModynToolbox-media-engine-9.0.2-modyn1-windows-x64.zip
+Anonymous resumable download ModynToolbox-1.4.0-source.zip
+Anonymous resumable download release-manifest.json
+Anonymous resumable download SHA256SUMS.txt
+{"success": true, "steps": 30, "business_steps": 26, "restore_steps": 4, "seconds": 17.055, "path": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\ModynToolbox", "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\business-report.json", "restore_report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\restore-report.json", "isolated_path": "C:\\WINDOWS\\System32", "system_python_used_by_app": false, "bundled_fixed_runtime_observed": true, "runtime_version": "157.0.4341.60", "tools_tested": ["image", "translate", "video-clip"], "screenshots": ["D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\video.png", "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\translate.png"]}
+install-export-sessions PASS 20
+draft-restart PASS 5
+cancel-real-job PASS 6
+recover-owned-temporary PASS 3
+SUMMARY D:\Workspace\01_Projects\ModynToolbox\source\.local\video-host-tests\52ec43e6-1245-4593-89b4-b7906243099a\summary.json
+{
+  "success": true,
+  "steps": 11,
+  "copy_seconds": 0.039,
+  "host_unchanged": true,
+  "tool_data_retained": true,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\video-directory-tests\\16b90c54-e928-489c-a306-23f0df887d4d"
+}
+{
+  "success": true,
+  "cancel_after_actual_encoding": true,
+  "cancel_seconds": 0.05,
+  "temporary_removed": true,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\video-cancel-tests\\6b291793-531d-4bdb-a2e9-0736db749ed3"
+}
+{"published": "https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.4.0", "verified_downloads": 10, "source_commit": "b99ef16fbf529c2e9aad351b566499a7a8a61a5c"}

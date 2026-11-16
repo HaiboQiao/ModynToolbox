@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "steps": 30,
+  "business_steps": 26,
+  "restore_steps": 4,
+  "seconds": 17.055,
+  "path": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\ModynToolbox",
+  "report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\business-report.json",
+  "restore_report": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\restore-report.json",
+  "isolated_path": "C:\\WINDOWS\\System32",
+  "system_python_used_by_app": false,
+  "bundled_fixed_runtime_observed": true,
+  "runtime_version": "157.0.4341.60",
+  "tools_tested": [
+    "image",
+    "translate",
+    "video-clip"
+  ],
+  "screenshots": [
+    "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\video.png",
+    "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\web-portable-tests\\ddc1021e\\translate.png"
+  ]
+}
