@@ -3,7 +3,7 @@
 
 开发先读[当前背景](docs/project-baseline.md)、[行为契约](docs/behavior-contracts.md)、[变更规则](docs/change-policy.md)与[交接提示](docs/handoff.md)。不依赖聊天或个人Skill。
 
-当前发行线1.5.0已进入完整工具前端架构：工具作者自行绘制全部业务页面，宿主保留导航/会话/窗口/作业服务。默认图片压缩、视频裁剪、文本翻译三工具；发行附件和公开复验状态见仓库 [1.5.0发布记录](../releases/1.5.0/README.md)。开发入口先读[独立前端指南](docs/independent-frontend.md)，架构实测见[IF-1报告](docs/verification/IF-1-independent-frontend.md)，当前界面/翻译见[UIR-9](docs/verification/UIR9-resize-toolset-translation.md)。
+当前发行线1.5.0已进入完整工具前端架构：工具作者自行绘制全部业务页面，宿主保留导航/会话/窗口/作业服务。默认图片压缩、视频裁剪、文本翻译三工具；发行附件和公开复验状态见仓库 [1.5.0发布记录](../releases/1.5.0/README.md)。开发入口先读[独立前端指南](docs/independent-frontend.md)，架构实测见[IF-1报告](docs/verification/IF-1-independent-frontend.md)，当前蓝色界面/本地翻译见[UIR-10](docs/verification/UIR10-blue-offline.md)。
 
 1.3.0引入的动态字段和接入兼容继续保留，见[EXT-1](docs/features/host-extensibility/design.md)。
 
