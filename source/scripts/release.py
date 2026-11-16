@@ -261,7 +261,8 @@ def validate():
     if manifest["source_commit"] != commit:
         raise RuntimeError("Distribution belongs to another source commit")
     verify_assets(folder, manifest)
-    base = ROOT / ".local/distribution-tests" / str(uuid.uuid4())[:8]
+    # Keep room for bundled third-party license paths on Windows without long-path policy.
+    base = ROOT / ".local/d" / str(uuid.uuid4())[:8]
     base.mkdir(parents=True)
     for entry in manifest["assets"]:
         extract(folder / entry["name"], base / entry["kind"] / entry["name"])

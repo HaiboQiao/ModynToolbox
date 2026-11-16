@@ -12,7 +12,7 @@
 
 ## 最终源码验证
 
-- `dev.ps1 test -Preset windows-release -GuardTask uir10-blue-offline`：真实CTest全部20/20通过，135.85秒；冻结宿主SDK接入另20步通过25.446秒（不是20个CTest重复计数）。
+- `dev.ps1 test -Preset windows-release -GuardTask uir10-blue-offline`：真实CTest全部20/20通过，138.22秒；冻结宿主SDK接入另20步通过25.630秒（不是20个CTest重复计数）。
 - `dev.ps1 test -Preset windows-complete`：最终Debug全部20/20通过，216.42秒。发布配置/Debug均包含新增translation_offline。
 - 原生WebView2验证1200×780、900×600、760×480主窗：核心导入/预览/起止与播放头/导出在窗口内，无水平或垂直页面溢出；使用真实CDP指针拖起点、终点、播放头验证同步，而非仅JS改值。下拉实际滚轮不改参数，键盘箭头仍可选。
 - 实际视频页面精确导出与快速准备/导出均经过真实后端；旧回归继续覆盖恢复、取消、崩溃树及多个会话/分离收回。
@@ -38,6 +38,8 @@ Windows PowerShell5签名模块在混合宿主环境自动导入产生重复Type
 
 OPUS模型原始README明确CC-BY-4.0，已保留作者归属、原始README与完整许可；不误用Argos应用MIT许可替代模型许可。私有wheel保留dist-info许可。下载URL/版本/SHA256在offline.lock.json，模型/wheel不进入源码Git历史，只进入完整运行包。
 
+补充禁网实测：1680字符英文长文确实跨分块推理，输出559字符中文；执行中第5次取消检查生效，缺模型分支明确报错（测试仅重定向模块资源基址，不改包文件）。结果见offline-extra.json，约1.968秒；不把此样例当一般质量基准。
+
 ## 图像与证据
 
 截图来自原生后台私有实例，不接管用户桌面。视频彩条是自动生成测试视频；没有拿设计参考图冒充运行效果。
@@ -53,5 +55,7 @@ OPUS模型原始README明确CC-BY-4.0，已保留作者归属、原始README与�
 本机Windows x64原生后台UI与受控测试不替代另一台干净PC、物理多屏DPI/Snap、IME、真正登录自启动、不同编解码/听感、超大媒体/真实空间ACL检查。旧会话仍锁原工具版本，不强迁未知状态；新包新建会话或点击打开新版，升级前备份data。尚未提供正式签名身份，因此不能承诺警告消失。
 
 ## 正式发行验收
+
+首次正式ZIP解压发现测试根重复长包名导致NumPy许可证路径达264字符，触及Windows传统路径上限。保留全部原始许可与完整包，将release.py的私有验证根由.local/distribution-tests缩短为.local/d，后续实际重跑验收。仅改变验证目录名，不影响产品路径/数据/前后端。
 
 待固定干净源提交、正式便携包/独立工具ZIP验收和GitHub匿名下载校验后记录；此处不提前宣称发布完成。
