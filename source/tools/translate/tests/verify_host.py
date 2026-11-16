@@ -26,14 +26,21 @@ def verify(binary):
       {'op':'web_wait','script':"document.querySelector('#output').value==='Hello, world!'&&!document.querySelector('#translate').disabled"},
       {'op':'draft','enabled':True},{'op':'web_flush'},{'op':'detach'},{'op':'attach'},
       {'op':'web_wait','script':"document.querySelector('#input').value.includes('你好')&&document.querySelector('#output').value==='Hello, world!'"},
-      {'op':'web_capture','path':str(base/'translation.png'),'full':True},{'op':'save'}]
+      {'op':'web_capture','path':str(base/'translation.png'),'full':True},
+      {'op':'input','value':{'ui_state':{'text':'Please save the file.','source':'en','target':'zh','provider':'local'},'input':{'text':'Please save the file.','source':'en','target':'zh','provider':'local'}}},
+      {'op':'web_wait','script':"document.querySelector('#provider').value==='local'"},
+      {'op':'web_eval','script':'window.translationTool.run()'},
+      {'op':'web_wait','script':"document.querySelector('#output').value.includes('保存')&&!document.querySelector('#translate').disabled"},
+      {'op':'web_eval','script':"document.querySelector('#input').value='请保存文件。';document.querySelector('#source').value='zh';document.querySelector('#target').value='en';document.querySelector('#input').dispatchEvent(new Event('input',{bubbles:true}));window.translationTool.run()"},
+      {'op':'web_wait','script':"document.querySelector('#output').value.toLowerCase().includes('save')&&!document.querySelector('#translate').disabled"},
+      {'op':'web_capture','path':str(base/'translation-local.png'),'full':True},{'op':'save'}]
     report=base/'report.json';script=base/'steps.json';script.write_text(json.dumps({'report':str(report),'steps':steps},ensure_ascii=False),encoding='utf-8')
     env=os.environ.copy();env.update(QT_QPA_PLATFORM='windows',MODYN_BACKGROUND_VALIDATION='1',MODYN_WEBVIEW2_RUNTIME=json.loads((ROOT/'.local/toolchains/WebView2Runtime/runtime.json').read_text())['root'],TEMP=str(base),TMP=str(base))
     try:
       with (base/'host.log').open('wb') as log:
         run=subprocess.run([str(binary),'--data-root',str(base/'data'),'--tool-package',package,'--automation',str(script)],cwd=ROOT,env=env,stdout=log,stderr=log,timeout=90,creationflags=subprocess.CREATE_NO_WINDOW)
       result=json.loads(report.read_text(encoding='utf-8'));assert run.returncode==0 and result['success'],result
-      receipt={'success':True,'steps':len(steps),'fixture':'loopback, not a quality benchmark','root':str(base),'report':str(report),'screenshot':str(base/'translation.png')}
+      receipt={'success':True,'steps':len(steps),'fixture':'loopback adapter plus actual packaged CPU local model; not a general quality benchmark','root':str(base),'report':str(report),'screenshot':str(base/'translation-local.png')}
       (ROOT/'.local/logs/UIR9-translation-host.json').write_text(json.dumps(receipt,indent=2),encoding='utf-8');print(json.dumps(receipt));return receipt
     finally:server.shutdown();server.server_close();thread.join()
 if __name__=='__main__':

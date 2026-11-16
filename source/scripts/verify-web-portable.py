@@ -82,6 +82,10 @@ def verify(source):
     steps=filtered
     if 'translate' in available:
         steps += [{'op':'open','tool':'translate'},{'op':'web_wait','script':'Boolean(window.translationTool)'},
+            {'op':'web_eval','script':"document.querySelector('#provider').value='local';document.querySelector('#source').value='en';document.querySelector('#target').value='zh';document.querySelector('#input').value='Please save the file.';document.querySelector('#input').dispatchEvent(new Event('input',{bubbles:true}));window.translationTool.run()"},
+            {'op':'web_wait','script':"document.querySelector('#output').value.includes('保存')&&!document.querySelector('#translate').disabled"},
+            {'op':'web_eval','script':"document.querySelector('#source').value='zh';document.querySelector('#target').value='en';document.querySelector('#input').value='请保存文件。';document.querySelector('#input').dispatchEvent(new Event('input',{bubbles:true}));window.translationTool.run()"},
+            {'op':'web_wait','script':"document.querySelector('#output').value.toLowerCase().includes('save')&&!document.querySelector('#translate').disabled"},
             {'op':'web_eval','script':"document.querySelector('#input').value='Portable draft';document.querySelector('#input').dispatchEvent(new Event('input',{bubbles:true}))"},
             {'op':'draft','enabled':True},{'op':'web_flush'},{'op':'detach'},{'op':'attach'},
             {'op':'web_wait','script':"document.querySelector('#input').value==='Portable draft'"},

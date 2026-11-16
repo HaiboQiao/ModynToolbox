@@ -1,0 +1,22 @@
+{
+  "certificate_configured": false,
+  "smartscreen_guaranteed": false,
+  "files": [
+    {
+      "publisher": null,
+      "status": "NotSigned",
+      "file": "ModynToolbox.exe"
+    },
+    {
+      "publisher": null,
+      "status": "NotSigned",
+      "file": "app/ModynToolbox.App.exe"
+    },
+    {
+      "publisher": null,
+      "status": "NotSigned",
+      "file": "app/ModynToolbox.WorkerHost.exe"
+    }
+  ],
+  "note": "Trusted signing verifies publisher identity; SmartScreen reputation is separate. No system protections or Mark-of-the-Web are changed."
+}

@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QRegularExpression>
 #include <QUuid>
+namespace { constexpr qint64 maximumPackageBytes=512LL*1024*1024; }
 PackageManager::PackageManager(QString root) : packagesRoot(QDir(root).absolutePath()) {
     QDir().mkpath(packagesRoot);
 }
@@ -39,7 +40,7 @@ QString PackageManager::verify(const ToolDefinition &tool) const {
         const auto relative = QDir(tool.packageRoot).relativeFilePath(info.absoluteFilePath());
         if (relative == "manifest.json" || relative == "checksums.json")
             continue;
-        if (++count > 4096 || (bytes += info.size()) > 256 * 1024 * 1024)
+        if (++count > 4096 || (bytes += info.size()) > maximumPackageBytes)
             return QStringLiteral("工具包超限");
         const auto digest = checksums.value(relative).toString();
         if (digest.size() != 64 || Files::sha256(info.absoluteFilePath()) != digest)
@@ -74,7 +75,7 @@ QString PackageManager::install(const QString &source) {
         return QStringLiteral("相同版本已安装，请提高工具版本或先移除闲置版本");
     const auto stage =
         packagesRoot + "/.staging-" + QUuid::createUuid().toString(QUuid::WithoutBraces);
-    if (!Files::copyTree(source, stage, &error)) {
+    if (!Files::copyTree(source, stage, &error, maximumPackageBytes)) {
         QDir(stage).removeRecursively();
         return error;
     }

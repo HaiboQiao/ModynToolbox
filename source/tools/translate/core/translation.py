@@ -72,12 +72,15 @@ def translate(data,context=None,transport=request_json):
     text=data.get('text','')
     if not isinstance(text,str) or not text.strip():raise ValueError('请输入需要翻译的文本')
     if len(text)>8000:raise ValueError('单次最多 8000 字符，请分批翻译')
-    source=data.get('source','auto');target=data.get('target','auto');provider=data.get('provider','mymemory')
+    source=data.get('source','auto');target=data.get('target','auto');provider=data.get('provider','local')
     if source not in ('auto','zh','en') or target not in ('auto','zh','en'):raise ValueError('第一版支持中文与英文')
     if source=='auto':source='zh' if re.search(r'[\u3400-\u9fff]',text) else 'en'
     if target=='auto':target='en' if source=='zh' else 'zh'
-    if provider not in ('mymemory','libretranslate'):raise ValueError('未知翻译服务')
+    if provider not in ('local','mymemory','libretranslate'):raise ValueError('未知翻译服务')
     if source==target:return {'translated_text':text,'source':source,'target':target,'provider':provider,'message':'源语言与目标语言相同，已保留原文'}
+    if provider=='local':
+        from offline import translate_local
+        return translate_local(text,source,target,context)
     base=endpoint(data.get('endpoint','http://127.0.0.1:5000')) if provider=='libretranslate' else ''
     parts=segments(text,500 if provider=='mymemory' else 4000)
     count=sum(send for _,send in parts)

@@ -1,13 +1,13 @@
-# 文本翻译
+# 文本翻译 1.1.3
 
-独立HTML/CSS/JS前端 + Python标准库后端，不改宿主即可接入。1.0.3支持中文/英文自动互译、手动指定/交换、段落保留、复制/导出、取消和部分结果。
+默认纯本地中英互译：输入/粘贴文本点击翻译，不需要网址、API Key、外部Python或首次下载。完整包包含Argos封装的OPUS中英1.9双向模型、CTranslate2 INT8 CPU、SentencePiece及私有Python。模型与依赖在工具自己的目录，宿主不加载推理库。需要宿主>=1.5.0（通用包上限512MiB）。构建产物约294MiB，压缩大小以发布清单为准；模型在执行时加载，CPU最多4线程，不要求GPU。
 
-默认MyMemory公共在线，无需APIKey即可试用，有服务配额与500-byte单段限制，工具自动分段、最多8000字符/40段。仅点击翻译发送，不能保证所有文本译质或服务持续可用。公开API并非开源引擎。
+支持自动判断中英/指定方向、交换原译文、复制/导出、8000字符、段落、取消及部分结果。离线失败不会暗中切在线。翻译结果可能有误，专有名词/专业文本请复核。长句按标点及240子词有界分段，采用与Argos接近的beam=4、length_penalty=0.2；分段会影响上下文，不宣称LLM级质量。
 
-LibreTranslate是开源服务方案（https://github.com/LibreTranslate/LibreTranslate，AGPL-3.0），在服务设置选择并填写地址，例如本机http://127.0.0.1:5000；需自行部署并安装zh/en模型，远程使用HTTPS。需要Key时设置Windows用户级环境变量MODYN_TRANSLATE_API_KEY（例如系统的“编辑账户的环境变量”界面），后端从环境变量读取，前端/草稿不接收密钥。可自建部署在本机实现模型安装后的离线使用；本工具不自带引擎和模型。
+可选“翻译方式”中仍保留MyMemory公共在线和LibreTranslate自建服务。只有主动选在线时才联网；旧会话的明确provider保持，服务可能有配额/Key需求。API Key只从用户变量MODYN_TRANSLATE_API_KEY读取，不进入页面、草稿或参数；本地模式不读取该密钥。
 
-协议参考：https://docs.libretranslate.com/api/operations/translate/；公共服务：https://mymemory.translated.net/doc/spec.php 。本项目自己实现适配和页面，不包含Pot或LibreTranslate应用源码。后续本地引擎只需在core/translation.py提供适配，不改变宿主。
+开发：python tools/translate/build.py，或scripts/prepare-tools.py统一调用。首次从offline.lock.json锁定的官方PyPI/Argos下载，SHA256不符即停止，缓存与产物在项目.local；用户收到完整包后无此下载步骤。依赖/模型许可见licenses和随包runtime的dist-info，模型是CC-BY-4.0，不误用Argos应用的MIT作为模型授权。
 
-构建：python scripts/build-tool.py tools/translate。测试：python tools/translate/tests/test_translation.py。用户数据位于data/tools/translate；草稿服从工作区开关，不自动建立翻译历史库。
+验证：tests/test_translation.py原在线协议回归；tests/verify_offline.py在私有解释器禁用网络、真实模型双向/段落/取消验证；tests/verify_host.py验证实际WebView2/WorkerHost的在线夹具与本地双向。数据在data/tools/translate，草稿按宿主开关，不自动创建翻译历史库。
 
-部分宿主工作进程会过滤自定义进程环境；本工具先读进程环境，再仅从HKCU/Environment读取同名用户设置，不读取其他凭据。没有个人Key时用公共试用或无需Key的自建服务。
+私有推理进程设置CT2_USE_MKL=0、CT2_PACKED_GEMM=0、MKL_DISABLE_FAST_MM=1，避免MKL缓存提交内存撞上Job预算；不改Windows用户环境。当前样本单方向峰值提交约140MiB（原MKL约926MiB），双方向同进程约231MiB，仅为本机短句样本，不代表宿主/浏览器/所有文本总内存。

@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "steps": 24,
+  "fixture": "loopback adapter plus actual packaged CPU local model; not a general quality benchmark",
+  "root": "<private verification workspace>/19608750",
+  "report": "<private verification workspace>/report.json",
+  "screenshot": "<private verification workspace>/translation-local.png"
+}

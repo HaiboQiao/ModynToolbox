@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "host_unchanged": true,
+  "host_sha256": "5d068d7e28cbadaaf8af8f4e96fd25c0b85e2b1244672318cb9953a42a5cd713",
+  "independent_sdk_has_no_app_source": true,
+  "frameworks": [
+    "Vanilla HTML/JS",
+    "Vue"
+  ],
+  "backends": [
+    "Python",
+    "C++"
+  ],
+  "build_seconds": {
+    "python-statistics": 0.396,
+    "native-bytes": 7.647
+  },
+  "directory_copy_seconds": {
+    "python-statistics": 0.032,
+    "native-bytes": 0.027
+  },
+  "automatic_discovery_without_refresh": true,
+  "host_acceptance_seconds": 17.213,
+  "steps": 20,
+  "root": "<private verification workspace>/a1a0e915",
+  "report": "<private verification workspace>/report.json"
+}

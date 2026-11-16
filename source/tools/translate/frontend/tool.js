@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);let busy=false,translatedInput='',partia
 const controls=['source','target','provider','endpoint'];
 function input(){return {text:$('input').value,...Object.fromEntries(controls.map(id=>[id,$(id).value]))};}
 function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
-function render(){$('engineLabel').textContent=$('provider').value==='mymemory'?'公共在线 · MyMemory · 中英互译':'自建服务 · LibreTranslate · 中英互译';const has=!!$('output').value;$('count').textContent=$('input').value.length+' / 8000';$('copy').disabled=!has;$('export').disabled=!has;$('translate').disabled=busy||!$('input').value.trim();$('endpointField').hidden=$('provider').value!=='libretranslate';$('outputHint').textContent=has&&translatedInput!==JSON.stringify(input())?'原文或设置已更新':partial?'部分结果':'';}
+function render(){$('privacy').textContent=$('provider').value==='local'?'纯本地推理 · 原文不离开电脑':'在线模式 · 点击翻译将原文发送至所选服务';$('engineLabel').textContent=$('provider').value==='local'?'纯本地 · 中英互译 · CPU 推理':$('provider').value==='mymemory'?'公共在线 · MyMemory · 中英互译':'自建服务 · LibreTranslate · 中英互译';const has=!!$('output').value;$('count').textContent=$('input').value.length+' / 8000';$('copy').disabled=!has;$('export').disabled=!has;$('translate').disabled=busy||!$('input').value.trim();$('endpointField').hidden=$('provider').value!=='libretranslate';$('outputHint').textContent=has&&translatedInput!==JSON.stringify(input())?'原文或设置已更新':partial?'部分结果':'';}
 function snapshot(){const v=input();return {state:v,input:v};}
 function save(){clearTimeout(saving);saving=setTimeout(()=>{const v=snapshot();modyn.checkpoint(v.state,v.input).catch(e=>status(e.message,true));},250);render();}
 modyn.setCheckpointProvider(snapshot);

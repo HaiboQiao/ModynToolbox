@@ -1,0 +1,56 @@
+{
+  "wheels": [
+    {
+      "name": "ctranslate2",
+      "version": "4.9.0",
+      "filename": "ctranslate2-4.9.0-cp314-cp314-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/d3/f8/b546a4eca219d089ee936a4e604ff83b96eea74b6e982d0864d6a1dead4b/ctranslate2-4.9.0-cp314-cp314-win_amd64.whl",
+      "sha256": "36ec6213ec7ff7609229db0a35f7b2403a66e1b5e1bd4c606f51e4e3ea56c330"
+    },
+    {
+      "name": "sentencepiece",
+      "version": "0.2.3",
+      "filename": "sentencepiece-0.2.3-cp314-cp314-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/10/5f/54ded99266afba048f53d7cd0f6383178172415005dff5f298cb13786145/sentencepiece-0.2.3-cp314-cp314-win_amd64.whl",
+      "sha256": "0d1235ccd36c3e8c2021355258b47866c694a55003a89f00701c513eac1aef06"
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.5",
+      "filename": "numpy-2.5.5-cp314-cp314-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/74/e2/494516771374b43060c1b778b371cba53d576abd3aee1275eecd73896e3b/numpy-2.5.5-cp314-cp314-win_amd64.whl",
+      "sha256": "20145b11776d2f7570cd61351b156a51d3a341822282095baa819d87272bc710"
+    },
+    {
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "filename": "pyyaml-6.0.3-cp314-cp314-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/23/20/bb6982b26a40bb43951265ba29d4c246ef0ff59c9fdcdf0ed04e0687de4d/pyyaml-6.0.3-cp314-cp314-win_amd64.whl",
+      "sha256": "4a2e8cebe2ff6ab7d1050ecd59c25d4c8bd7e6f400f5f82b96557ac0abafd0ac"
+    },
+    {
+      "name": "setuptools",
+      "version": "84.2.1",
+      "filename": "setuptools-84.2.1-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/ef/55/6dc6d6bb953bdfc52519a0059592c52b6e3b8ad51cf8256dffceb55b0610/setuptools-84.2.1-py3-none-any.whl",
+      "sha256": "ca140b45d5325a9478f880e351484f62fef15f336462e449ca0c03c873d589c2"
+    }
+  ],
+  "models": [
+    {
+      "direction": "en_zh",
+      "filename": "translate-en_zh-1_9.argosmodel",
+      "url": "https://data.argosopentech.com/argospm/v1/translate-en_zh-1_9.argosmodel",
+      "sha256": "433e7c4f034d87fbe2353161e05f18646d7999452f801a4e1f0378522b9850ab"
+    },
+    {
+      "direction": "zh_en",
+      "filename": "translate-zh_en-1_9.argosmodel",
+      "url": "https://data.argosopentech.com/argospm/v1/translate-zh_en-1_9.argosmodel",
+      "sha256": "62e7af5a3a48b530e47b7b3e5c78c2de79073ecd815750d2bf3ab35b4a67da2d"
+    }
+  ],
+  "model_license": "CC-BY-4.0 (derived OPUS models; attribution in each original README)",
+  "index": "https://github.com/argosopentech/argospm-index",
+  "inference": "CTranslate2 CPU int8, 4 threads maximum; no Argos GUI/server dependency"
+}

@@ -191,7 +191,8 @@
     "desktop_startup": "ctest",
     "frozen_frontends": "python_frozen",
     "translation_core": "ctest",
-    "translation_host": "ctest"
+    "translation_host": "ctest",
+    "translation_offline": "ctest"
   },
   "areas": [
     {
@@ -234,7 +235,8 @@
         "video_editor",
         "video_host",
         "web_frontend",
-        "desktop_startup"
+        "desktop_startup",
+        "translation_offline"
       ]
     },
     {

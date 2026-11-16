@@ -16,8 +16,8 @@ class TranslationTests(unittest.TestCase):
         def service(url,payload=None):
             pair=urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)['langpair'][0];calls.append(pair)
             return {'responseStatus':200,'responseData':{'translatedText':'你好' if pair.startswith('en|') else 'Hello'}}
-        self.assertEqual(translate({'text':'Hello'},transport=service)['translated_text'],'你好')
-        self.assertEqual(translate({'text':'你好'},transport=service)['translated_text'],'Hello')
+        self.assertEqual(translate({'text':'Hello','provider':'mymemory'},transport=service)['translated_text'],'你好')
+        self.assertEqual(translate({'text':'你好','provider':'mymemory'},transport=service)['translated_text'],'Hello')
         self.assertEqual(calls,['en|zh-CN','zh-CN|en'])
     def test_libre_key_only_from_environment(self):
         seen=[]
@@ -41,14 +41,14 @@ class TranslationTests(unittest.TestCase):
         for url in ['file:///x','http://example.com','https://user:secret@example.com','https://example.com/?key=a']:
             with self.assertRaises(ValueError):endpoint(url)
     def test_quota_and_invalid_responses(self):
-        with self.assertRaises(ValueError):translate({'text':'Hello'},transport=lambda *_:{'responseStatus':429})
-        with self.assertRaises(ValueError):translate({'text':'Hello'},transport=lambda *_:{'responseStatus':200})
+        with self.assertRaises(ValueError):translate({'text':'Hello','provider':'mymemory'},transport=lambda *_:{'responseStatus':429})
+        with self.assertRaises(ValueError):translate({'text':'Hello','provider':'mymemory'},transport=lambda *_:{'responseStatus':200})
         with self.assertRaises(ValueError):translate({'text':'Hello','provider':'libretranslate'},transport=lambda *_:{'error':'secret detail'})
     def test_cancel_before_any_request(self):
         class Cancelled(Exception):pass
         class Context:
             def check(self):raise Cancelled()
-        with self.assertRaises(Cancelled):translate({'text':'Hello'},Context(),lambda *_:self.fail('network called'))
+        with self.assertRaises(Cancelled):translate({'text':'Hello','provider':'mymemory'},Context(),lambda *_:self.fail('network called'))
     def test_local_http_and_redirect(self):
         class Handler(BaseHTTPRequestHandler):
             def log_message(self,*args):pass

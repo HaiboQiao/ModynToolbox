@@ -57,6 +57,7 @@ def package(binary_root, qt_root):
     (output/"data").mkdir()
     shutil.copy2(ROOT/"docs/user-guide.md",output/"使用说明.md")
     shutil.copytree(ROOT/"licenses",output/"licenses")
+    subprocess.run(["powershell.exe","-NoProfile","-ExecutionPolicy","Bypass","-File",str(ROOT/"scripts/sign-release.ps1"),"-PackageRoot",str(output)],check=True)
     files={p.relative_to(output).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(output.rglob("*")) if p.is_file()}
     (output/"release-checksums.json").write_text(json.dumps(files,indent=2),encoding="utf-8")
     (ROOT/".local/releases/latest.json").write_text(json.dumps({"root":str(output),"relative_root":output.relative_to(ROOT).as_posix(),"version":version},indent=2),encoding="utf-8")

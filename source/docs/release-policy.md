@@ -171,10 +171,18 @@ python scripts/release.py publish
 
 ## 完整工具前端分发（1.4.0起）
 
-完整便携包新增runtime/webview2，必须来自shared/frontend-sdk/dependencies.lock.json锁定官方Fixed Runtime，附SDK许可、官方Fixed EULA及来源。完整工具包携带frontend静态资源和自己的后端/运行时，不能只分发业务源码或要求用户运行开发服务器。当前默认图片压缩/视频裁剪1.2.3、文本翻译1.0.3；停用工具的源码/测试及用户数据保留，发行不自动删除用户旧包。同版本内容不覆盖。
+完整便携包新增runtime/webview2，必须来自shared/frontend-sdk/dependencies.lock.json锁定官方Fixed Runtime，附SDK许可、官方Fixed EULA及来源。完整工具包携带frontend静态资源和自己的后端/运行时，不能只分发业务源码或要求用户运行开发服务器。默认工具由tools/toolset.json选择，每次以实际manifest及release-metadata生成版本清单，不硬编码旧版本；停用工具的源码/测试及用户数据保留，发行不自动删除用户旧包。同版本内容不覆盖。
 
 verify-portable对新包走原生WebView2后台窗口验证：根EXE、真实工具UI/业务、媒体解码、分离/收回、草稿重启、随包引擎路径和受限PATH；旧包保留33步路径。视频旧Qt生命周期回归使用明确标记的私有Legacy适配包，新视频前端另在真实便携检查中验证。不能把Qt offscreen当成Web前端视觉证据。发布清单从实际验收报告读取步数。
 
 不同电脑/物理多屏DPI/IME/听感仍需各自证据；不能因为Fixed引擎在开发机加载成功就宣称所有Windows已完成验收。工具协议/state版本不自动迁移，升级前备份，降级使用独立旧工作区，避免旧宿主保存新工具的未知状态。只有用户明确发布才推送和创建Release。当前版本的公开状态以releases索引/回执为准，历史本地验收不自动产生发布授权。
 
 每次完整发布还提供独立Integration SDK ZIP，包含协议、通信桥、后端SDK、构建脚本/依赖锁、接入说明和可运行示例，不含宿主app代码或开发机数据。冻结宿主测试必须从导出SDK分别构建两种后端/前端并实际放目录运行。分发验证从本版实际工具清单选择可执行的独立ZIP，不硬编码已停用工具。当前选文本翻译的同语言确定性分支验证目录接入/后端调用，无外部网络依赖；双向在线翻译另记录联网实测。
+
+## 正式签名与SmartScreen（1.5.0起）
+
+package在生成发行SHA256清单之前执行scripts/sign-release.ps1，核对根启动器、App与WorkerHost的Authenticode状态并附signing-report.json。若用户已配置当前用户证书库中的正式代码签名身份，可通过进程环境MODYN_SIGN_CERT_SHA1指定其指纹；必须有私钥/代码签名用途且未过期，SignTool使用SHA256/RFC3161时间戳，任何签名失败或验证不通过即停止打包。工具作者需在自己生成完整性索引之前签名其自有原生后端；不改第三方依赖签名。
+
+没有正式身份时保留真实NotSigned状态，不自动挑选其他用途证书、不生成自签名冒充可信，不关闭SmartScreen、不自动去掉下载标记。签名可以显示已验证发布者，但新文件仍可能因信誉不足告警；EV也不保证免提示。Microsoft Store分发是另一条需账户/身份验证与上架流程的路径，不在普通源码优化中悄悄触发收费或注册。依据：https://learn.microsoft.com/windows/apps/package-and-deploy/smartscreen-reputation 。
+
+离线翻译完整包携带模型与私有CPU依赖，必须验证本地模式断网双向实际推理，并保留offline.lock.json及OPUS模型CC-BY-4.0作者归属、wheel原始许可；不把Argos应用的MIT许可误写成模型许可。用户第一次使用无需下载模型、系统Python或自建网址。可选在线模式只能由用户显式选择，不在本地失败时暗中回退。

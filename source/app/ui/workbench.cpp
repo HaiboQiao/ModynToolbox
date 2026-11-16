@@ -158,6 +158,8 @@ Workbench::Workbench(QVector<ToolDefinition> tools, WorkbenchConfig options, QWi
         auto *button = new QPushButton(label);
         button->setObjectName(name);
         button->setProperty("sidebarAction", true);
+        // Mouse activation is an action, not a persistent selection. Tab navigation stays visible.
+        button->setFocusPolicy(Qt::TabFocus);
         button->setAccessibleName(hint);
         button->setToolTip(hint);
         utilities->addWidget(button, 1);

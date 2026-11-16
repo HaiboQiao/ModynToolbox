@@ -1,4 +1,5 @@
 {
   "language": "python",
-  "runtime": "python"
+  "runtime": "python",
+  "build_script": "build.py"
 }

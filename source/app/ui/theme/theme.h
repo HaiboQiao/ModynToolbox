@@ -1,18 +1,18 @@
 #pragma once
 #include <QColor>
 namespace Theme {
-inline const QColor background("#f4f3fa");
-inline const QColor navigation("#f2effc");
+inline const QColor background("#f3f7fc");
+inline const QColor navigation("#eff5fd");
 inline const QColor panel("#ffffff");
-inline const QColor text("#292735");
-inline const QColor muted("#6c687c");
-inline const QColor border("#ddd7e9");
-inline const QColor accent("#7054d8");
-inline const QColor selection("#ece7fd");
+inline const QColor text("#142238");
+inline const QColor muted("#61718a");
+inline const QColor border("#d5e1f0");
+inline const QColor accent("#0866f5");
+inline const QColor selection("#dceaff");
 inline const QColor closeHover("#e81123");
 inline const QColor closePressed("#c42b1c");
-inline const QColor videoBackground("#211e2b");
-inline const QColor videoForeground("#ded8ee");
+inline const QColor videoBackground("#122034");
+inline const QColor videoForeground("#e1ebfa");
 inline constexpr int sidebarWidth = 190;
 inline constexpr int pageInset = 24;
 inline constexpr int panelInset = 20;

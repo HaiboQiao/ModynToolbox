@@ -3,6 +3,7 @@
 #include "ui/components/spin_box.h"
 #include <QHBoxLayout>
 #include <QDialog>
+#include <QMenu>
 #include <QDialogButtonBox>
 #include <QTimer>
 #include <QStyleOptionSpinBox>
@@ -486,6 +487,25 @@ class WorkbenchTests : public QObject {
         mouse(tree, QEvent::MouseButtonRelease, outside);
         QVERIFY(window.isDetached(2));
         QCOMPARE(window.sessionCount(), 2);
+    }
+    void utilityButtonsAreActionsWithKeyboardAccess() {
+        Theme::apply();
+        Workbench window(testTools());
+        window.ensurePolished();window.show();QTest::qWait(20);
+        for (const auto &name:{"sessionsShortcut","historyShortcut","settingsShortcut"}) {
+            auto *button=window.findChild<QPushButton *>(name);
+            QVERIFY(button);button->ensurePolished();
+            QCOMPARE(button->focusPolicy(),Qt::TabFocus);
+            QVERIFY(!button->isCheckable());
+            QSignalSpy clicked(button,&QPushButton::clicked);
+            auto dismiss=[] { for(auto *top:QApplication::topLevelWidgets()){if(auto *dialog=qobject_cast<QDialog *>(top))dialog->reject();if(auto *menu=qobject_cast<QMenu *>(top))menu->close();} };
+            QTimer timer;timer.setInterval(20);QObject::connect(&timer,&QTimer::timeout,dismiss);timer.start();
+            QTest::mouseClick(button,Qt::LeftButton);
+            QCOMPARE(clicked.count(),1);QVERIFY(!button->isDown());QVERIFY(!button->isChecked());QVERIFY(!button->hasFocus());
+            button->setFocus(Qt::TabFocusReason);
+            QTest::keyClick(button,Qt::Key_Space);
+            QCOMPARE(clicked.count(),2);QVERIFY(!button->isDown());
+        }
     }
     void repeatedMoves() {
         Workbench window(testTools());

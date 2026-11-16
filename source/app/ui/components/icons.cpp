@@ -26,9 +26,19 @@ QIcon uiIcon(UiIcon icon, const QColor &color) {
     return QIcon(image);
 }
 QIcon brandIcon() {
-    static const QIcon icon = [] {
-        Q_INIT_RESOURCE(assets);
-        return QIcon(":/modyn/modyn.ico");
+    static const QIcon icon=[] {
+        QIcon result;
+        for(int size:{16,20,24,32,40,48,64,128,256}) {
+            QPixmap image(size,size);image.fill(Qt::transparent);
+            QPainter p(&image);p.setRenderHint(QPainter::Antialiasing);p.scale(size/32.0,size/32.0);
+            p.setPen(Qt::NoPen);p.setBrush(QColor("#0866f5"));p.drawRoundedRect(QRectF(1,1,30,30),7,7);
+            p.setBrush(Qt::NoBrush);p.setPen(QPen(Qt::white,1.5,Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin));
+            p.drawPolyline(QPolygonF{{10,9},{12,6.5},{20,6.5},{22,9}});
+            p.drawRoundedRect(QRectF(7,11,18,14.5),2,2);p.drawLine(QPointF(8,16),QPointF(24,16));
+            p.drawPolyline(QPolygonF{{12,22},{12,18.5},{16,21.5},{20,18.5},{20,22}});
+            p.end();result.addPixmap(image);
+        }
+        return result;
     }();
     return icon;
 }

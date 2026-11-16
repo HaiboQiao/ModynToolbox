@@ -88,7 +88,7 @@ QString Files::sha256(const QString &path) {
         return {};
     return QString::fromLatin1(hash.result().toHex());
 }
-bool Files::copyTree(const QString &source, const QString &target, QString *error) {
+bool Files::copyTree(const QString &source, const QString &target, QString *error, qint64 maximumBytes) {
     if (reparse(source) || !QFileInfo(source).isDir() || !QDir().mkpath(target)) {
         if (error)
             *error = QStringLiteral("无效目录或链接");
@@ -104,7 +104,7 @@ bool Files::copyTree(const QString &source, const QString &target, QString *erro
         const auto relative = QDir(source).relativeFilePath(info.absoluteFilePath());
         const auto origin = child(source, relative, true);
         if (origin.isEmpty() || ++count > 4096 ||
-            (bytes += info.isFile() ? info.size() : 0) > 256 * 1024 * 1024) {
+            (bytes += info.isFile() ? info.size() : 0) > maximumBytes) {
             if (error)
                 *error = QStringLiteral("目录包含链接或超过包容量限制");
             return false;

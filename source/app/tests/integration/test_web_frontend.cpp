@@ -12,6 +12,8 @@
 #include <QTemporaryDir>
 #include <QPointer>
 #include <QImage>
+#include <QProcess>
+#include <QPainter>
 #define NOMINMAX
 #include <windows.h>
 #include <psapi.h>
@@ -205,18 +207,28 @@ private slots:
   video->restore({{"ui_state",QJsonObject{{"file",QJsonObject{{"path",sample}}},{"params",params}}},{"input",QJsonObject{{"files",QJsonArray{sample}}}}});QTest::qWait(200);
   QCOMPARE(execute(video,"document.querySelector('#export').click()"),QString("succeeded"));QVERIFY(waitExpression(video->browser(),"document.querySelector('#player').readyState>=1"));QVERIFY(capture(video,"video-page"));
   QVERIFY(waitExpression(video->browser(),"document.querySelector('#results').textContent.length>10"));
+  evaluate(video->browser(),"document.querySelector('#mode').value='快速截取';document.querySelector('#mode').dispatchEvent(new Event('change',{bubbles:true}))");
+  QVERIFY(waitExpression(video->browser(),"!document.querySelector('#prepare').hidden&&document.querySelector('#export').disabled"));
+  QCOMPARE(execute(video,"document.querySelector('#prepare').click()"),QString("succeeded"));
+  QVERIFY(waitExpression(video->browser(),"!document.querySelector('#export').disabled"));
+  QCOMPARE(execute(video,"document.querySelector('#export').click()"),QString("succeeded"));
+
   for(const auto &toolId:{"rename","image","file-hash","video-clip"}){
    auto id=window.open(toolId);auto *page=qobject_cast<WebToolView*>(window.panel(id));QVERIFY(page);
    QVERIFY(waitExpression(page->browser(),"Boolean(document.querySelector('main'))"));
    // Exercise each real tool's own focus/wheel module, not injected host styles.
    const auto interaction=evaluate(page->browser(),R"JS((()=>{
+    const panel=document.querySelector('#export-settings');
+    if(panel&&getComputedStyle(panel).display==='none')document.querySelector('#settings-toggle').click();
     const controls=[...document.querySelectorAll('input[type=number],select')].filter(n=>!n.disabled);
     if(!controls.length)return 'no parameter control';
     let spacer=document.createElement('div');spacer.style.height='2500px';document.body.append(spacer);
     let ok=true;
     for(const n of controls){n.focus();scrollTo(0,0);const value=n.value,style=getComputedStyle(n);
+     const nodes=new Set([document.scrollingElement]);for(let a=n.parentElement;a;a=a.parentElement)nodes.add(a);const before=new Map([...nodes].map(a=>[a,a.scrollTop]));
      const wheel=new WheelEvent('wheel',{deltaY:120,bubbles:true,cancelable:true});n.dispatchEvent(wheel);
-     ok=ok&&wheel.defaultPrevented&&n.value===value&&document.activeElement===n&&document.scrollingElement.scrollTop>0&&style.outlineStyle==='none'&&parseFloat(style.borderTopWidth)<=1.01;
+     const moved=[...nodes].some(a=>a.scrollTop>before.get(a));
+     ok=ok&&wheel.defaultPrevented&&n.value===value&&document.activeElement===n&&moved&&style.outlineStyle==='none'&&parseFloat(style.borderTopWidth)<=1.01;
     }
     spacer.remove();scrollTo(0,0);return ok;
    })())JS");
@@ -280,6 +292,50 @@ private slots:
   catalogTime.start();auto catalog=readCatalog(catalogRoot);QCOMPARE(catalog.tools.size(),100);const auto scanMs=catalogTime.elapsed();sample("scan_100_unopened_packages");
   beat.stop();std::sort(ticks.begin(),ticks.end());auto p95=ticks.isEmpty()?0:ticks[qMin(int(ticks.size()-1),int(ticks.size()*.95))];
   QVERIFY(Files::writeObject(qEnvironmentVariable("MODYN_RESOURCE_REPORT",source+"/.local/logs/IF1-resource-profile.json"),{{"samples",samples},{"scan_100_ms",double(scanMs)},{"heartbeat_10ms_p95_observed_ms",double(p95)},{"note","Background native windows; working sets include shared pages and must not be interpreted as unique physical memory. Full Workbench plus manually retained background tool surfaces. The separate cold process run avoids earlier-test caches. No hardware-wide memory guarantee."}}));
+ }
+
+ void blueVideoCompactTimeline() {
+  qputenv("MODYN_BACKGROUND_VALIDATION","1");Theme::apply();const auto source=qEnvironmentVariable("MODYN_SOURCE_ROOT");QTemporaryDir root;QVERIFY(root.isValid());
+  const auto package=Files::readObject(source+"/.local/tools/video-clip/latest.json",4096).value("package").toString();QString error;
+  const auto tool=definitionFromManifest(package,Files::readObject(package+"/manifest.json",65536),&error);QVERIFY2(error.isEmpty(),qPrintable(error));
+  Workbench window({tool},{root.path()+"/data",{}, {}});window.setAttribute(Qt::WA_ShowWithoutActivating);window.setWindowFlag(Qt::Tool);window.move(-20000,-20000);window.show();
+  auto *page=qobject_cast<WebToolView *>(window.panel(1));QVERIFY(page);auto *browser=page->browser();QVERIFY(waitExpression(browser,"Boolean(document.querySelector('#trim-track'))"));
+  const auto sample=root.path()+"/timeline.mp4";
+  QCOMPARE(QProcess::execute(package+"/backend/ffmpeg.exe",{"-v","error","-f","lavfi","-i","testsrc2=size=640x360:rate=10","-t","60","-c:v","libx264","-preset","ultrafast","-pix_fmt","yuv420p",sample}),0);
+  page->restore({{"frontend_state_version",1},{"ui_state",QJsonObject{{"file",QJsonObject{{"path",sample}}},{"params",QJsonObject{{"start_s","0"},{"end_s","60"}}}}},{"input",QJsonObject{{"files",QJsonArray{sample}}}}});
+  page->setResult({{"context",QJsonObject{{"media",QJsonObject{{"duration_ms",60000},{"audio_tracks",QJsonArray{}}}}}}});
+  QVERIFY(waitExpression(browser,"document.querySelector('#player').readyState>=2"));
+  QVERIFY(waitExpression(browser,"Number(document.querySelector('#out-range').max)===60"));
+  for(const auto &size:{QSize(1200,780),QSize(900,600),QSize(760,480)}) {
+   window.resize(size);QTest::qWait(150);
+   const auto check=QString(R"JS((()=>{const ids=['add','trim-track','start_s','end_s','export'];return ids.every(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.x>=-1&&r.right<=innerWidth+1&&r.y>=0&&r.bottom<=innerHeight+1})&&document.scrollingElement.scrollWidth<=innerWidth+1&&document.scrollingElement.scrollHeight<=innerHeight+1})())JS");
+   QVERIFY2(waitExpression(browser,check),qPrintable(evaluate(browser,"JSON.stringify({w:innerWidth,h:innerHeight,scroll:document.scrollingElement.scrollHeight,export:document.querySelector('#export').getBoundingClientRect().toJSON()})")));
+   bool captured=false;browser->capture(source+"/.local/logs/UIR10-video-"+QString::number(size.width())+".png",[&](bool ok){captured=ok;});QTRY_VERIFY_WITH_TIMEOUT(captured,10000);
+  }
+  QVERIFY(nativeInput(browser,"Emulation.setFocusEmulationEnabled",{{"enabled",true}}));
+  auto drag=[&](const QString &selector,qreal from,qreal to) {
+   const auto coords=QJsonDocument::fromJson(evaluate(browser,QString(R"JS((()=>{const r=document.querySelector('#trim-track').getBoundingClientRect();const el=document.querySelector('%1').getBoundingClientRect();return {left:r.left,width:r.width,y:el.top+el.height/2}})())JS").arg(selector)).toUtf8()).object();
+   const auto y=coords.value("y").toDouble();const auto a=coords.value("left").toDouble()+coords.value("width").toDouble()*from;const auto b=coords.value("left").toDouble()+coords.value("width").toDouble()*to;
+   return nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mousePressed"},{"x",a},{"y",y},{"button","left"},{"buttons",1},{"clickCount",1}})&&nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mouseMoved"},{"x",b},{"y",y},{"button","left"},{"buttons",1}})&&nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mouseReleased"},{"x",b},{"y",y},{"button","left"},{"buttons",0}});
+  };
+  QVERIFY(drag("#in-range",0,.2));QVERIFY2(waitExpression(browser,"Number(document.querySelector('#start_s').value)>5"),qPrintable(evaluate(browser,"document.querySelector('#start_s').value")));
+  QVERIFY(drag("#playhead",0,.4));QVERIFY(waitExpression(browser,"document.querySelector('#player').currentTime>20&&document.querySelector('#player').currentTime<30"));
+  QVERIFY(drag("#out-range",1,.7));QVERIFY(waitExpression(browser,"Number(document.querySelector('#end_s').value)<55&&Number(document.querySelector('#end_s').value)>25"));
+  evaluate(browser,"document.querySelector('#start_s').value='12.345';document.querySelector('#start_s').dispatchEvent(new Event('change',{bubbles:true}))");
+  QVERIFY(waitExpression(browser,"Math.abs(Number(document.querySelector('#in-range').value)-12.345)<0.01"));
+  evaluate(browser,"document.querySelector('#settings-toggle').click()");QVERIFY(waitExpression(browser,"document.querySelector('#export-settings').classList.contains('open')"));
+  bool captured=false;browser->capture(source+"/.local/logs/UIR10-video-settings.png",[&](bool ok){captured=ok;});QTRY_VERIFY_WITH_TIMEOUT(captured,10000);
+  window.resize(1200,780);QTest::qWait(400);bool fullCaptured=false;
+  browser->capture(source+"/.local/logs/UIR10-app-page.png",[&](bool ok){fullCaptured=ok;});QTRY_VERIFY_WITH_TIMEOUT(fullCaptured,10000);
+  auto image=window.grab().toImage();image.setDevicePixelRatio(1.0);QPainter painter(&image);const auto origin=browser->mapTo(&window,QPoint());const auto scale=window.devicePixelRatioF();
+  painter.drawImage(QRect(qRound(origin.x()*scale),qRound(origin.y()*scale),qRound(browser->width()*scale),qRound(browser->height()*scale)),QImage(source+"/.local/logs/UIR10-app-page.png"));painter.end();QVERIFY(image.save(source+"/.local/logs/UIR10-app-blue.png"));
+  auto field=QJsonDocument::fromJson(evaluate(browser,"(()=>{const n=document.querySelector('#quality');n.focus();window.qualityBefore=n.value;const r=n.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()").toUtf8()).object();
+  QVERIFY(nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mouseWheel"},{"x",field.value("x")},{"y",field.value("y")},{"deltaX",0},{"deltaY",120}}));
+  QVERIFY(waitExpression(browser,"document.activeElement.id==='quality'&&document.querySelector('#quality').value===window.qualityBefore"));
+  QVERIFY(nativeInput(browser,"Input.dispatchKeyEvent",{{"type","keyDown"},{"key","ArrowDown"},{"code","ArrowDown"},{"windowsVirtualKeyCode",40}}));
+  QVERIFY(nativeInput(browser,"Input.dispatchKeyEvent",{{"type","keyUp"},{"key","ArrowDown"},{"code","ArrowDown"},{"windowsVirtualKeyCode",40}}));
+  QVERIFY(waitExpression(browser,"document.querySelector('#quality').value!==window.qualityBefore"));
+
  }
 
 };

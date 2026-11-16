@@ -4,7 +4,7 @@
 
 # ModynToolbox
 
-轻量的 Windows 本地工具箱，支持独立工具、多会话、独立窗口、工具包自动发现；图片与视频在本地处理，翻译可连接在线或自建服务。
+工具按需加载的 Windows 本地工具箱，支持独立工具、多会话、独立窗口、工具包自动发现；图片与视频在本地处理，翻译默认纯本地推理，也可显式选择在线或自建服务。
 
 ## 两个入口
 
@@ -15,7 +15,7 @@
 
 ## 直接使用
 
-下载 [ModynToolbox 1.4.0 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.4.0/ModynToolbox-1.4.0-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
+下载 [ModynToolbox 1.5.0 Windows x64 便携包](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.5.0/ModynToolbox-1.5.0-windows-x64.zip)，完整解压后双击文件夹中的 **ModynToolbox.exe**。
 
 保留同级 app、runtime、tools、data 和 licenses。包内含图片压缩、视频裁剪、文本翻译三个工具及所需运行时。目标用户无需安装 Python、Qt 或编译器。
 
@@ -43,4 +43,4 @@ ModynToolbox/
 
 UI v3动态字段、用户环境与工具进程预算的接入方式见[独立工具开发增量](source/docs/features/host-extensibility/design.md)。
 
-工具作者可以单独下载 [1.4.0 接入 SDK](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.4.0/ModynToolbox-1.4.0-tool-sdk.zip)，按[完整前端指南](source/docs/independent-frontend.md)实现自己的整个页面与独立后端，使用既有桥能力无需修改宿主。新工具包要求宿主 1.4.0 及以上。升级、签名状态与设备验证范围见[本版说明](releases/1.4.0/README.md)。
+工具作者可以单独下载 [1.5.0 接入 SDK](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.5.0/ModynToolbox-1.5.0-tool-sdk.zip)，按[完整前端指南](source/docs/independent-frontend.md)实现自己的整个页面与独立后端，使用既有桥能力无需修改宿主。完整前端协议最低支持宿主1.4.0，本版本地翻译包需要1.5.0及以上；以各工具manifest为准。升级、签名状态与设备验证范围见[本版说明](releases/1.5.0/README.md)。

@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "network_disabled": true,
+  "results": [
+    {
+      "input": "Hello world. This is a local translation tool.",
+      "output": "哈罗世界。 这是一个本地翻译工具。",
+      "seconds": 0.29
+    },
+    {
+      "input": "你好，世界。这是一个本地翻译工具。",
+      "output": "Hello, world. This is a local translation tool.",
+      "seconds": 0.213
+    },
+    {
+      "input": "Please save the file.\n\nThank you.",
+      "output": "请保存文件。\n\n谢谢",
+      "seconds": 0.063
+    }
+  ]
+}
