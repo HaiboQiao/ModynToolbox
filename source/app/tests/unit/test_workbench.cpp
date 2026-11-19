@@ -100,6 +100,35 @@ class WorkbenchTests : public QObject {
         int oldVersions=0,newVersions=0;for(const auto &item:window.savedState().value("sessions").toArray()) {oldVersions+=item.toObject().value("version")==QJsonValue("1.0.0");newVersions+=item.toObject().value("version")==QJsonValue("2.0.0");}
         QCOMPARE(oldVersions,1);QCOMPARE(newVersions,1);
     }
+    void toolEntryUsesLatestWithoutChangingOldSessions() {
+        QTemporaryDir root; const auto packages=root.path()+"/tools",data=root.path()+"/data";
+        auto write=[&](const QString &version){auto path=packages+"/alpha/"+version;QDir().mkpath(path);QFile f(path+"/manifest.json");QVERIFY(f.open(QIODevice::WriteOnly));f.write(QJsonDocument(QJsonObject{{"manifest_version",1},{"tool_id","alpha"},{"name","Alpha"},{"package_version",version}}).toJson());};
+        write("1.0.0");
+        {
+            Workbench window(readCatalog(packages).tools,{data,packages,{}});window.show();
+            const int old=window.open("alpha");window.setDraft(old,true);window.editor(old)->setPlainText("original draft");
+            write("2.0.0");QVERIFY(window.refreshTools());
+            auto *tree=window.findChild<ToolNavigation *>();auto *item=tree->topLevelItem(0);
+            tree->setCurrentItem(item);QTest::keyClick(tree,Qt::Key_Return);
+            QCOMPARE(window.sessionCount(),2); // Root Enter itself opens the new version.
+            const int latest=window.open("alpha");QVERIFY(latest!=old);QCOMPARE(window.sessionCount(),2);
+            QCOMPARE(window.editor(old)->toPlainText(),QString("original draft"));
+            // Explicit branches remain exact-version operations, including subsequent root clicks.
+            tree->openRequested("alpha",old);
+            item=tree->topLevelItem(0);const auto rect=tree->visualItemRect(item);
+            QTest::mouseClick(tree->viewport(),Qt::LeftButton,Qt::NoModifier,QPoint(rect.left()+60,rect.center().y()));
+            const auto clicked=window.savedState();
+            for(const auto &v:clicked.value("sessions").toArray())if(v.toObject().value("uuid")==clicked.value("active"))QCOMPARE(v.toObject().value("version").toString(),QString("2.0.0"));
+            QCOMPARE(window.open("alpha"),latest);QCOMPARE(window.sessionCount(),2);
+            tree->openRequested("alpha",old);window.saveState();
+        }
+        {
+            Workbench restored(readCatalog(packages).tools,{data,packages,{}});restored.show();
+            const auto state=restored.savedState();int current=0;bool oldDraft=false;
+            for(const auto &v:state.value("sessions").toArray()) {auto r=v.toObject();if(r.value("uuid")==state.value("active")){QCOMPARE(r.value("version").toString(),QString("2.0.0"));++current;}if(r.value("version")==QJsonValue("1.0.0"))oldDraft=r.value("snapshot").toObject().value("text")==QJsonValue("original draft");}
+            QCOMPARE(current,1);QVERIFY(oldDraft);QCOMPARE(restored.sessionCount(),2);
+        }
+    }
     void workspaceUsesEntireHost() {
         Workbench window(testTools()); window.resize(1200,780); window.show();
         QCoreApplication::processEvents();

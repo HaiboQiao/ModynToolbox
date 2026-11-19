@@ -8,7 +8,9 @@ struct Hooks {
     std::function<void(int, const QString &)> progress = [](int, const QString &) {};
     std::function<void(const QStringList &)> reserve = [](const QStringList &) {};
     std::function<void()> commit = [] {};
+    std::function<void()> resume = [] {};
 };
+QJsonObject executeBatch(const QString &, const QJsonObject &, const QString &, const QString &, const Hooks &);
 QJsonObject execute(const QString &action, const QJsonObject &input, const QString &binaryRoot,
                     const QString &dataRoot, const Hooks &hooks = {});
 } // namespace Video

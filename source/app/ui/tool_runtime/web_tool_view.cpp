@@ -52,7 +52,7 @@ QJsonObject WebToolView::input() const{return backendInput;}
 bool WebToolView::restore(const QJsonObject &s){
  if(s.contains("frontend_state_version")&&s.value("frontend_state_version").toInt()!=tool.frontendStateVersion)return false;
  state=s.value("ui_state").toObject();backendInput=s.value("input").toObject();
- for(const auto &v:backendInput.value("files").toArray())grant(v.toString());result=s.value("result").toObject();receipts=s.value("receipts").toObject();job=s.value("last_job").toObject();currentJob=job.value("id").toString();
+ for(const auto &v:backendInput.value("files").toArray())grant(v.toString());result=s.value("result").toObject();grantArtifacts(result);receipts=s.value("receipts").toObject();job=s.value("last_job").toObject();currentJob=job.value("id").toString();
  if(QStringList{"preparing","queued","running","cancelling"}.contains(job.value("state").toString())){job["state"]="interrupted";job["message"]=QStringLiteral("上次作业已中断，请确认后重新执行");}
  // Developer automation can supply backend snapshots without imposing a UI model.
  if(!s.contains("ui_state")&&!s.contains("input")&&!s.contains("frontend_state_version"))backendInput=s;
@@ -64,7 +64,11 @@ void WebToolView::bootstrap(){
 }
 void WebToolView::notifyTheme(const QJsonObject &theme){send("theme",theme);}
 void WebToolView::setDraftEnabled(bool on){draft=on;send("draft",{{"enabled",on}});}
-void WebToolView::setResult(const QJsonObject &r){result=r;send("result",r);}
+void WebToolView::grantArtifacts(const QJsonObject &r){
+ // Only explicit backend output files; never infer access to their parent directory.
+ for(const auto &value:r.value("artifacts").toArray())if(value.isString()&&QDir::isAbsolutePath(value.toString())&&!allowed(value.toString()))grant(value.toString());
+}
+void WebToolView::setResult(const QJsonObject &r){result=r;grantArtifacts(r);send("result",r);}
 void WebToolView::setJobState(const QString &s,const QString &m,int done,int total,bool cancellable){
  busy=QStringList{"preparing","queued","running","cancelling"}.contains(s);
  job={{"id",currentJob},{"state",s},{"message",m},{"done",done},{"total",total},{"cancellable",cancellable}};send("job",job);

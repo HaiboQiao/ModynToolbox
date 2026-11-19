@@ -2,7 +2,9 @@
 
 先核对[背景约束](project-baseline.md)和[BC验收映射](behavior-contracts.md)。自动测试通过不是“需求理解必然正确”，也不代替物理设备。
 
-- 本轮：[UIR-10优化与发布验收](features/uir10-blue-offline/checklist.md)。
+- 本轮开发发布：[VID-2](features/vid2-editor/checklist.md)。
+- 上轮本地优化：[UIR-11](features/uir11-latest-buttons/checklist.md)。
+- 上次发布：[UIR-10优化与发布验收](features/uir10-blue-offline/checklist.md)。
 - 近期产品行为：[IF-1](features/independent-tool-frontend/checklist.md)、[DS-1](features/desktop-startup/checklist.md)。
 - 实际命令/证据/失败/限制：docs/verification相应报告。
 - 旧完整验收与各历史发布：[原清单](history/gp1-before/checklist.md)。

@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
         hooks.progress = [](int n, const QString &s) { Modyn::progress(n, 100, s); };
         hooks.reserve = [](const QStringList &p) { Modyn::reserve(p); };
         hooks.commit = [] { Modyn::critical(); };
+        hooks.resume = [] { Modyn::committing = false; Modyn::progress(0,100,"下一片段准备中"); };
         return Modyn::result(Video::execute(Modyn::request.value("action").toString(), input,
                                             QCoreApplication::applicationDirPath(),
                                             Modyn::request.value("data_root").toString(), hooks));

@@ -31,6 +31,7 @@ private:
  void receive(const QJsonObject&);
  void send(const QString&,const QJsonObject&);
  void bootstrap();
+ void grantArtifacts(const QJsonObject &);
  QString grant(const QString&);
  bool allowed(const QString&) const;
  ToolDefinition tool;

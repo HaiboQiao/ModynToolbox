@@ -220,6 +220,7 @@ private slots:
    const auto interaction=evaluate(page->browser(),R"JS((()=>{
     const panel=document.querySelector('#export-settings');
     if(panel&&getComputedStyle(panel).display==='none')document.querySelector('#settings-toggle').click();
+    document.querySelectorAll('details').forEach(d=>d.open=true);
     const controls=[...document.querySelectorAll('input[type=number],select')].filter(n=>!n.disabled);
     if(!controls.length)return 'no parameter control';
     let spacer=document.createElement('div');spacer.style.height='2500px';document.body.append(spacer);
@@ -294,6 +295,64 @@ private slots:
   QVERIFY(Files::writeObject(qEnvironmentVariable("MODYN_RESOURCE_REPORT",source+"/.local/logs/IF1-resource-profile.json"),{{"samples",samples},{"scan_100_ms",double(scanMs)},{"heartbeat_10ms_p95_observed_ms",double(p95)},{"note","Background native windows; working sets include shared pages and must not be interpreted as unique physical memory. Full Workbench plus manually retained background tool surfaces. The separate cold process run avoids earlier-test caches. No hardware-wide memory guarantee."}}));
  }
 
+ void videoEditorV2Workflow() {
+  qputenv("MODYN_BACKGROUND_VALIDATION","1");const auto source=qEnvironmentVariable("MODYN_SOURCE_ROOT");QTemporaryDir root;QVERIFY(root.isValid());
+  const auto package=Files::readObject(source+"/.local/tools/video-clip/latest.json",4096).value("package").toString();QString error;
+  const auto tool=definitionFromManifest(package,Files::readObject(package+"/manifest.json",65536),&error);QVERIFY2(error.isEmpty(),qPrintable(error));
+  const auto data=root.path()+"/data",sample=root.path()+"/editor.mp4";
+  QCOMPARE(QProcess::execute(package+"/backend/ffmpeg.exe",{"-v","error","-f","lavfi","-i","testsrc2=size=320x180:rate=25","-t","6","-c:v","libx264","-preset","ultrafast","-threads","2",sample}),0);
+  Workbench window({tool},{data,{},QCoreApplication::applicationDirPath()+"/ModynToolbox.WorkerHost.exe"});window.setAttribute(Qt::WA_ShowWithoutActivating);window.setWindowFlag(Qt::Tool);window.move(-20000,-20000);window.show();
+  auto *page=qobject_cast<WebToolView*>(window.panel(1));QVERIFY(page);auto *browser=page->browser();QVERIFY(waitExpression(browser,"Boolean(window.videoEditor)"));
+  page->restore({{"frontend_state_version",1},{"ui_state",QJsonObject{{"file",QJsonObject{{"path",sample}}},{"params",QJsonObject{{"start_s",1},{"end_s",3},{"output_dir",root.path()+"/outputs"}}}}},{"input",QJsonObject{{"files",QJsonArray{sample}}}}});
+  QVERIFY(waitExpression(browser,"document.querySelector('#player').readyState>=2&&window.videoEditor.range().end===3"));
+  auto execute=[&](const QString &script){const auto before=page->jobSummary().value("id");evaluate(browser,script);QElapsedTimer t;t.start();while(t.elapsed()<90000){const auto j=page->jobSummary();if(j.value("id")!=before&&QStringList{"succeeded","failed","cancelled"}.contains(j.value("state").toString()))return j.value("state").toString();QTest::qWait(20);}return QString("timeout");};
+  QCOMPARE(execute("document.querySelector('#refresh-thumbs').click()"),QString("succeeded"));
+  QVERIFY(waitExpression(browser,"document.querySelectorAll('#thumbnail-strip img').length===16&&[...document.querySelectorAll('#thumbnail-strip img')].every(n=>n.naturalWidth===160&&n.naturalHeight===90)"));
+  evaluate(browser,"document.querySelector('#length_s').value='00:00:01.500';document.querySelector('#length_s').dispatchEvent(new Event('change',{bubbles:true}))");
+  QVERIFY(waitExpression(browser,"Math.abs(window.videoEditor.range().end-2.5)<.001"));
+  evaluate(browser,"document.querySelector('#reset').click();document.querySelector('#undo').click()");QVERIFY(waitExpression(browser,"window.videoEditor.range().end===2.5"));
+  evaluate(browser,"document.querySelector('#player').muted=true;document.querySelector('#preview').click()");QVERIFY(waitExpression(browser,"document.querySelector('#player').paused&&document.querySelector('#player').currentTime>=2.4"));
+  evaluate(browser,"document.querySelector('#tab-list').click();document.querySelector('#add-clip').click()");QVERIFY(waitExpression(browser,"document.querySelectorAll('.clip-row').length===2"));
+  evaluate(browser,"document.querySelector('#tab-edit').click();document.querySelector('#filename').value='frozen-name';document.querySelector('#filename').dispatchEvent(new Event('change',{bubbles:true}))");
+  QCOMPARE(execute("document.querySelector('#export').click();document.querySelector('#filename').value='later-name'"),QString("succeeded"));
+  QVERIFY(waitExpression(browser,"document.querySelectorAll('.queue-row .succeeded').length===2"));
+  auto records=QDir(data+"/tools/video-clip/batches").entryInfoList({"*.json"},QDir::Files,QDir::Time);QVERIFY(!records.isEmpty());
+  const auto journal=Files::readObject(records.first().filePath(),2*1024*1024);const auto rows=journal.value("rows").toArray();QCOMPARE(rows.size(),2);for(const auto &v:rows){const auto path=v.toObject().value("file").toString();QVERIFY(QFileInfo::exists(path));QVERIFY(path.contains("frozen-name"));QVERIFY(!path.contains("later-name"));}
+  auto jobs=window.jobScheduler()->records().size();window.detachSession(1);window.attachSession(1);QCOMPARE(window.jobScheduler()->records().size(),jobs);
+  const auto longVideo=root.path()+"/long.mp4";
+  QCOMPARE(QProcess::execute(package+"/backend/ffmpeg.exe",{"-v","error","-f","lavfi","-i","testsrc2=size=960x540:rate=25","-t","70","-c:v","libx264","-preset","ultrafast","-threads","2",longVideo}),0);
+  const auto before=page->jobSummary().value("id");
+  window.runAction(1,"batch-export",{{"files",QJsonArray{longVideo}},{"params",QJsonObject{{"mode",QStringLiteral("精确裁剪")},{"quality",QStringLiteral("较高画质")},{"output_dir",root.path()+"/cancel"}}},{"clips",QJsonArray{QJsonObject{{"id","first"},{"start_ms",0},{"end_ms",500}},QJsonObject{{"id","second"},{"start_ms",1000},{"end_ms",69000}}}}});
+  QElapsedTimer timer;timer.start();bool second=false;
+  while(timer.elapsed()<30000){auto j=page->jobSummary();if(j.value("id")!=before&&j.value("message").toString().contains(QStringLiteral("片段 2/2"))){second=true;break;}QTest::qWait(20);}
+  QVERIFY(second);emit page->cancelRequested();
+  QTRY_COMPARE_WITH_TIMEOUT(page->jobSummary().value("state").toString(),QString("cancelled"),20000);
+  records=QDir(data+"/tools/video-clip/batches").entryInfoList({"*.json"},QDir::Files,QDir::Time);auto cancelled=Files::readObject(records.first().filePath(),2*1024*1024);auto cancelledRows=cancelled.value("rows").toArray();QCOMPARE(cancelledRows.first().toObject().value("state").toString(),QString("succeeded"));QVERIFY(QFileInfo::exists(cancelledRows.first().toObject().value("file").toString()));
+  evaluate(browser,"document.querySelector('#filename').value='must-not-change-retry'");
+  QCOMPARE(execute("document.querySelector('#retry').click()"),QString("succeeded"));
+  records=QDir(data+"/tools/video-clip/batches").entryInfoList({"*.json"},QDir::Files,QDir::Time);
+  const auto retried=Files::readObject(records.first().filePath(),2*1024*1024).value("rows").toArray();QCOMPARE(retried.size(),1);
+  QCOMPARE(retried.first().toObject().value("start_ms").toInt(),1000);QCOMPARE(retried.first().toObject().value("end_ms").toInt(),69000);
+  QVERIFY(!retried.first().toObject().value("file").toString().contains("must-not-change-retry"));QVERIFY(QFileInfo::exists(cancelledRows.first().toObject().value("file").toString()));
+  QVERIFY(waitExpression(browser,"document.querySelector('#file-info').textContent.includes('editor.mp4')"));
+  evaluate(browser,"document.querySelector('.queue-row button').click()");QVERIFY(waitExpression(browser,"document.querySelector('#artifact-dialog').open&&document.querySelector('#artifact-video').readyState>=1"));evaluate(browser,"document.querySelector('#artifact-close').click()");
+  const auto neighbor=root.path()+"/cancel/not-an-artifact.txt";QFile secret(neighbor);QVERIFY(secret.open(QIODevice::WriteOnly));secret.write("not granted");secret.close();
+  const auto argument=QString::fromUtf8(QJsonDocument(QJsonArray{neighbor}).toJson(QJsonDocument::Compact));
+  evaluate(browser,"import('./modyn.js').then(m=>m.modyn.url("+argument+"[0]).then(()=>window.neighborDenied=false,()=>window.neighborDenied=true))");QVERIFY(waitExpression(browser,"window.neighborDenied===true"));
+  QVERIFY(Files::writeObject(source+"/.local/logs/VID2-native-workflow.json",{{"success",true},{"thumbnails",16},{"multiple_outputs",2},{"frozen_parameters",true},{"cancel_after_first_commit",true},{"completed_file_retained",true},{"retry_uses_original_snapshot",true},{"output_preview",true},{"neighbor_file_not_granted",true},{"detach_does_not_resubmit",true}}));
+ }
+
+ void translationButtonsRespectFontPreference() {
+  qputenv("MODYN_BACKGROUND_VALIDATION","1");const auto source=qEnvironmentVariable("MODYN_SOURCE_ROOT");QTemporaryDir root;
+  const auto package=Files::readObject(source+"/.local/tools/translate/latest.json",4096).value("package").toString();QString error;
+  const auto tool=definitionFromManifest(package,Files::readObject(package+"/manifest.json",65536),&error);QVERIFY(error.isEmpty());
+  Workbench window({tool},{root.path()+"/data",{}, {}});window.setAttribute(Qt::WA_ShowWithoutActivating);window.setWindowFlag(Qt::Tool);window.move(-20000,-20000);window.show();
+  auto *page=qobject_cast<WebToolView *>(window.panel(1));QVERIFY(page);auto *browser=page->browser();QVERIFY(waitExpression(browser,"Boolean(document.querySelector('button.primary'))"));
+  QVERIFY(waitExpression(browser,"Boolean(window.translationTool)"));QTest::qWait(200);
+  page->notifyTheme({{"fontSize",18}});
+  QVERIFY2(waitExpression(browser,"(()=>{const b=document.querySelector('button.primary'),s=getComputedStyle(b);return s.fontSize==='18px'&&s.lineHeight==='24px'&&b.getBoundingClientRect().height>=40&&document.scrollingElement.scrollWidth<=innerWidth+1})()"),qPrintable(evaluate(browser,"(()=>{const b=document.querySelector('button.primary'),s=getComputedStyle(b);return JSON.stringify({font:s.fontSize,line:s.lineHeight,height:b.getBoundingClientRect().height,root:getComputedStyle(document.documentElement).fontSize})})()")));
+ }
+
  void blueVideoCompactTimeline() {
   qputenv("MODYN_BACKGROUND_VALIDATION","1");Theme::apply();const auto source=qEnvironmentVariable("MODYN_SOURCE_ROOT");QTemporaryDir root;QVERIFY(root.isValid());
   const auto package=Files::readObject(source+"/.local/tools/video-clip/latest.json",4096).value("package").toString();QString error;
@@ -310,6 +369,7 @@ private slots:
    window.resize(size);QTest::qWait(150);
    const auto check=QString(R"JS((()=>{const ids=['add','trim-track','start_s','end_s','export'];return ids.every(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.x>=-1&&r.right<=innerWidth+1&&r.y>=0&&r.bottom<=innerHeight+1})&&document.scrollingElement.scrollWidth<=innerWidth+1&&document.scrollingElement.scrollHeight<=innerHeight+1})())JS");
    QVERIFY2(waitExpression(browser,check),qPrintable(evaluate(browser,"JSON.stringify({w:innerWidth,h:innerHeight,scroll:document.scrollingElement.scrollHeight,export:document.querySelector('#export').getBoundingClientRect().toJSON()})")));
+   QVERIFY(waitExpression(browser,R"JS((()=>{const b=document.querySelector('#export'),s=getComputedStyle(b),r=b.getBoundingClientRect();return s.fontFamily.includes('Microsoft YaHei')&&s.fontSize==='14px'&&s.lineHeight==='20px'&&Number(s.fontWeight)<=500&&r.height>=32&&r.height<=40&&r.width>b.scrollWidth-1})())JS"));
    bool captured=false;browser->capture(source+"/.local/logs/UIR10-video-"+QString::number(size.width())+".png",[&](bool ok){captured=ok;});QTRY_VERIFY_WITH_TIMEOUT(captured,10000);
   }
   QVERIFY(nativeInput(browser,"Emulation.setFocusEmulationEnabled",{{"enabled",true}}));
@@ -318,9 +378,9 @@ private slots:
    const auto y=coords.value("y").toDouble();const auto a=coords.value("left").toDouble()+coords.value("width").toDouble()*from;const auto b=coords.value("left").toDouble()+coords.value("width").toDouble()*to;
    return nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mousePressed"},{"x",a},{"y",y},{"button","left"},{"buttons",1},{"clickCount",1}})&&nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mouseMoved"},{"x",b},{"y",y},{"button","left"},{"buttons",1}})&&nativeInput(browser,"Input.dispatchMouseEvent",{{"type","mouseReleased"},{"x",b},{"y",y},{"button","left"},{"buttons",0}});
   };
-  QVERIFY(drag("#in-range",0,.2));QVERIFY2(waitExpression(browser,"Number(document.querySelector('#start_s').value)>5"),qPrintable(evaluate(browser,"document.querySelector('#start_s').value")));
+  QVERIFY(drag("#in-range",0,.2));QVERIFY2(waitExpression(browser,"window.videoEditor.parseTime(document.querySelector('#start_s').value)>5"),qPrintable(evaluate(browser,"document.querySelector('#start_s').value")));
   QVERIFY(drag("#playhead",0,.4));QVERIFY(waitExpression(browser,"document.querySelector('#player').currentTime>20&&document.querySelector('#player').currentTime<30"));
-  QVERIFY(drag("#out-range",1,.7));QVERIFY(waitExpression(browser,"Number(document.querySelector('#end_s').value)<55&&Number(document.querySelector('#end_s').value)>25"));
+  QVERIFY(drag("#out-range",1,.7));QVERIFY(waitExpression(browser,"window.videoEditor.parseTime(document.querySelector('#end_s').value)<55&&window.videoEditor.parseTime(document.querySelector('#end_s').value)>25"));
   evaluate(browser,"document.querySelector('#start_s').value='12.345';document.querySelector('#start_s').dispatchEvent(new Event('change',{bubbles:true}))");
   QVERIFY(waitExpression(browser,"Math.abs(Number(document.querySelector('#in-range').value)-12.345)<0.01"));
   evaluate(browser,"document.querySelector('#settings-toggle').click()");QVERIFY(waitExpression(browser,"document.querySelector('#export-settings').classList.contains('open')"));

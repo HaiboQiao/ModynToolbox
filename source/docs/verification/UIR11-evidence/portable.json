@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "steps": 34,
+  "business_steps": 30,
+  "restore_steps": 4,
+  "seconds": 21.18,
+  "path": "<private preview verification>/ModynToolbox",
+  "report": "<private preview verification>/business-report.json",
+  "restore_report": "<private preview verification>/restore-report.json",
+  "isolated_path": "C:\\WINDOWS\\System32",
+  "system_python_used_by_app": false,
+  "bundled_fixed_runtime_observed": true,
+  "runtime_version": "157.0.4341.60",
+  "tools_tested": [
+    "image",
+    "translate",
+    "video-clip"
+  ],
+  "screenshots": [
+    "video.png",
+    "translate.png"
+  ]
+}

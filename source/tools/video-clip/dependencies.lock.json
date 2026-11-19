@@ -1,13 +1,13 @@
 {
-  "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.2.0/ModynToolbox-media-engine-9.0.2-modyn1-windows-x64.zip",
-  "version": "9.0.2-modyn1",
-  "sha256": "4ac59d4b688c62f329ecfc1ad47d94ec6f732f8b51f2e0672a5b35dd9f48e673",
+  "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-media-engine-9.0.2-modyn2-windows-x64.zip",
+  "version": "9.0.2-modyn2",
+  "sha256": "1a8acdf149dd11fb6ab63f261e314dc6330074945e530998d73b68400d8f3e85",
   "files": {
-    "ffmpeg.exe": "f2c118ddba560d0a2e84363ff849cdddfdcf6989191fcfd836766b596c25056b",
-    "ffprobe.exe": "326c8f582713500fddc515d1fd7b9bdb5b0e4ced6de4f6c073e6591c642380b9"
+    "ffmpeg.exe": "261a6d15e888c53a13cfbd44ae570cf6be24d4a0a3c8190f20ed6c352c12cd30",
+    "ffprobe.exe": "3517f4052e50b39272fd2533cc11a36358ed9ae254e686bb34753682a8605256"
   },
   "publisher": "ModynToolbox rebuildable source build",
   "source_inputs": "engine/inputs.lock.json",
-  "source_bundle": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.2.0/ModynToolbox-1.2.0-third-party-source.zip",
+  "source_bundle": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-third-party-source.zip",
   "license": "GPL-3.0-or-later"
 }

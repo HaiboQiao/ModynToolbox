@@ -35,7 +35,7 @@ void Theme::apply() {
     palette.setColor(QPalette::HighlightedText, panel);
     qApp->setPalette(palette);
     auto style = QStringLiteral(R"(
-        QWidget { color:@text; font-family:'Microsoft YaHei UI','Segoe UI'; font-size:14px; }
+        QWidget { color:@text; font-family:'Microsoft YaHei','Segoe UI'; font-size:14px; }
         QMainWindow, QWidget#workbenchRoot { background:@background; }
         QWidget#titleBar { background:qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #fcfdff,stop:1 @navigation); border-bottom:1px solid @border; }
         QLabel#appTitle { font-size:14px; font-weight:600; }
@@ -75,9 +75,9 @@ void Theme::apply() {
         QPushButton::menu-indicator { image:none; width:0px; }
         QComboBox::down-arrow { image:none; }
         QComboBox::drop-down { width:26px; border:0; }
-        QPlainTextEdit { font-family:Consolas,'Microsoft YaHei UI'; font-size:13px; }
+        QPlainTextEdit { font-family:Consolas,'Microsoft YaHei'; font-size:13px; }
         QLineEdit:focus,QPlainTextEdit:focus,QComboBox:focus,QSpinBox:focus { border-color:@accent; }
-        QPushButton { background:@panel; border:1px solid @border; border-radius:7px; padding:@controlPaddingpx 12px; min-height:@controlContentpx; }
+        QPushButton { font-weight:400; background:@panel; border:1px solid @border; border-radius:7px; padding:@controlPaddingpx 12px; min-height:@controlContentpx; }
         QPushButton:hover { background:#edf4ff; border-color:#9ebfe9; }
         QPushButton:pressed { background:@selection; }
         QPushButton:focus { border-color:@accent; }

@@ -1,5 +1,7 @@
 import {modyn} from './modyn.js';
 export {modyn};export const $=id=>document.getElementById(id);
+export function useContext(value){context=value;}
+export function resetContext(){context={};lastResult={};}
 export let busy=false;export let context={};export let lastResult={};export let bootState={};
 export function status(text,error=false){if($('status')){$('status').textContent=text;$('status').classList.toggle('error',error);}}
 export function table(result,target='results'){const root=$(target);if(!root)return;root.replaceChildren();if(!result.rows?.length){root.textContent=result.message||'暂无结果';return;}const t=document.createElement('table'),head=t.createTHead().insertRow();for(const c of result.columns||[]){const th=document.createElement('th');th.textContent=c.label;head.append(th);}const body=t.createTBody();for(const row of result.rows){const tr=body.insertRow();for(const c of result.columns||[]){tr.insertCell().textContent=String(row[c.key]??'');}}root.append(t);}
@@ -9,7 +11,7 @@ export function start(restore,snapshot,renderResult){
  modyn.on("theme",theme);
  modyn.on('bootstrap',b=>{theme(b.theme||{});bootState=b;context=b.result?.context||{};lastResult=b.result||{};restore(b.state||{},b.input||{});if(Object.keys(lastResult).length)renderResult(lastResult,true);status(b.job?.message||'就绪');if(b.job?.state)applyJob(b.job);});
  modyn.on('result',r=>{lastResult=r;if(r.context)context=r.context;renderResult(r);status(r.message||'处理完成',r.status==='failed');save();});
- function applyJob(j){status(j.message||j.state,j.state==='failed');busy=['preparing','queued','running','cancelling'].includes(j.state);document.querySelectorAll('button:not(#cancel),input,select,textarea').forEach(b=>{if(busy){if(!b.hasAttribute('data-job-lock')){b.dataset.jobLock=b.disabled?'1':'0';b.disabled=true;}}else if(b.hasAttribute('data-job-lock')){b.disabled=b.dataset.jobLock==='1';delete b.dataset.jobLock;}});document.dispatchEvent(new CustomEvent('toolBusy',{detail:{busy}}));if($('cancel'))$('cancel').disabled=!busy||!j.cancellable;if($('progress')){$('progress').value=j.done||0;$('progress').max=j.total||1;if(j.state==='succeeded'){$('progress').max=1;$('progress').value=1;}}}
+ function applyJob(j){status(j.message||j.state,j.state==='failed');busy=['preparing','queued','running','cancelling'].includes(j.state);document.querySelectorAll('[data-submit]').forEach(b=>{if(busy){if(!b.hasAttribute('data-job-lock')){b.dataset.jobLock=b.disabled?'1':'0';b.disabled=true;}}else if(b.hasAttribute('data-job-lock')){b.disabled=b.dataset.jobLock==='1';delete b.dataset.jobLock;}});document.dispatchEvent(new CustomEvent('toolBusy',{detail:{busy}}));if($('cancel'))$('cancel').disabled=!busy||!j.cancellable;if($('progress')){$('progress').value=j.done||0;$('progress').max=j.total||1;if(j.state==='succeeded'){$('progress').max=1;$('progress').value=1;}}}
  modyn.on('job',applyJob);
  let timer;function save(){clearTimeout(timer);timer=setTimeout(()=>{const s=snapshot();modyn.checkpoint(s.state,s.input).catch(e=>status('当前编辑尚未保存：'+e.message,true));},250);}document.addEventListener('input',save);document.addEventListener('change',save);
  if($('cancel'))$('cancel').onclick=()=>modyn.cancel().catch(e=>status(e.message,true));

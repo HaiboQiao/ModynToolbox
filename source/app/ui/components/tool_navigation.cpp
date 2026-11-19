@@ -116,11 +116,11 @@ void ToolNavigation::mouseReleaseEvent(QMouseEvent *event) {
     else if (create)
         emit createRequested(tool);
     else if (click)
-        emit openRequested(tool, session);
+        emit openRequested(tool, index.parent().isValid() ? session : 0);
 }
 void ToolNavigation::openCurrent() {
     if (auto *item = currentItem())
-        emit openRequested(item->data(0, ToolRole).toString(), item->data(0, SessionRole).toInt());
+        emit openRequested(item->data(0, ToolRole).toString(), item->parent() ? item->data(0, SessionRole).toInt() : 0);
 }
 void ToolNavigation::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Escape && pressed.isValid()) {

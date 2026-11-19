@@ -1,53 +1,25 @@
-# 视频裁剪 1.3.6
+# 视频裁剪 1.4.1
 
-当前工具拥有自己的完整Web前端：同轨双端范围拖柄、独立播放位置竖线、播放器当前位置设起/终点、行内秒数（0.001秒输入单位）及紧凑导出设置。拖动播放头不改变剪辑区间；拖区间不等于拖播放头。小窗口默认收起导出设置并保留导入/时间轴/导出按钮，输出结果按需展开。默认精确裁剪直接导出，快速截取需先准备并确认实际区间；参数修改后需重新准备。无效区间标出且禁止导出，后端仍做独立身份/参数复验。
+完整独立Web前端与C++后端；宿主只提供通用窗口/作业/文件能力，不绘制视频业务布局。支持蓝白响应式分区、16张有限缩略图、时间轴缩放/平移、独立播放头、HH:MM:SS.mmm（也接受秒数）、按时长、撤销重做、选段/循环预览、分割/命名/多片段。
 
-Web页面的播放器/时间轴持有焦点时支持空格、I/O，输入框编辑不会被这些快捷键干扰。隐藏页面时暂停预览，后台导出继续。原文件不覆盖，取消/恢复/源身份检查沿用既有核心。
+## 导出
+默认精确裁剪；单片段快速截取必须先准备并确认实际关键帧区间，不能改尺寸/帧率/码率。多片段队列使用精确模式，每段独立输出，不自动拼接。MP4/MOV支持原尺寸/最长边1920/1280、画质或视频码率、源帧率或指定10/12/15/24/25/30/50/60fps；只选一条音轨，也可静音。GIF无音频，≤30秒/≤15fps/最长边640。PNG保存当前播放位置的画面，源时长末尾可能没有可解码帧时需向前定位。
 
-以下为核心/独立CLI及旧Qt界面的历史能力说明，旧HH:MM:SS输入描述仅属于旧Qt路径；当前完整页面为秒数精确输入。
+画质模式不承诺大小，码率概览仅理论值。毫秒输入不等于任意素材毫秒输出；快模式受关键帧限制。字幕/章节/附件不保留，精确模式仍拒绝HDR/高位深/交错素材，避免静默错误颜色。原文件只读、同名自动编号、输出先临时写入校验后原子不覆盖提交。
 
-# 视频裁剪
+## 队列与恢复
+选择多个片段后导出由后端单个作业顺序执行；切换/分离/页面回收不拥有队列执行权。提交后更改编辑不影响已冻结作业。每段提交后写工具自身batches记录，取消保留已完成输出、清理当前临时文件。上次队列只读取记录，不自动执行；明确重试未完成项使用原文件/选段/设置快照并复核原身份。中断发生于提交与记录之间时需用户核对实际输出，不删除未知文件。
 
-ModynToolbox 独立工具，工具包 1.0.0。视频分析、裁剪、编码和输出事务在本目录的原生进程运行，前端通过 integration/ui.json 使用公共 UI v2。需要宿主1.2.0及UI v2，旧1.1.0不兼容。
+草稿仅用户明确启用后跨启动保存，恢复不提交任务。内部editorVersion=2可读已知旧单选区，未来未知状态只读保留。工具包/数据分离，旧会话固定旧包。
 
-## 使用
+## 结构与依赖
+frontend/index.html/base.css/tool.js与editor-state.js为工具自有界面；core/video.cpp负责原有媒体/事务及新格式，core/batch.cpp负责队列；integration/adapter.cpp仅协议适配。缓存位于data/tools/video-clip/cache/thumbs，16张160×90 JPEG，最多32份/约64MiB，不是业务唯一副本。队列执行记录位于batches，源路径属于作业记录，不能当作默认输入草稿。
 
-选择或拖入一个视频，等待分析。用时间轴手柄、起终点输入或“设为起点/终点”选段。默认精确裁剪、较高画质、原尺寸、保留选定音轨，另存为 MP4。需要减小文件时选择均衡/较小文件，或限制最长边1920/1280。输入文件始终只读，输出同名自动编号，不覆盖已有文件。
+处理引擎9.0.2-modyn2自带静态x264/zlib，PNG/JPEG/GIF可用且禁用网络，不使用系统FFmpeg。inputs.lock.json/dependencies.lock.json锁定对应源码与二进制。精确源码/构建/许可随发行附带。source/.local为项目私有构建和验证目录。
 
-快速截取只复制受支持的 H.264/AAC 流，需要先预览关键帧调整区间，再确认导出。精确模式重新编码，时间输入到毫秒不代表帧精度达到毫秒。压缩不能保证每种源文件都变小，结果“较完整原视频”包含裁剪减少内容的影响。
+## 开发验证
+从source运行python tools/video-clip/build.py；真实核心回归tests/verify_video.py与新能力tests/verify_editor.py。原生后台集成包括app/tests/integration/test_web_frontend.cpp中的videoEditorV2Workflow和blueVideoCompactTimeline。CLI：ModynVideoCli.exe <probe|prepare|export|snapshot|thumbnails|batch-export|batch-status> input.json [cancel-after-ms] [data-root]。
 
-空格播放/暂停，I/O标记起终点，仅视频区域拥有相应焦点时生效。时间输入格式为HH:MM:SS.mmm，编辑时间时暂停预览。一个会话一个视频，可以加号创建其他会话，拖出独立窗口；离开时暂停，后台导出继续。会话草稿遵循宿主设置，恢复后重新分析并核对源身份。
+当前仍一次编辑一个视频；多源批量、静音检测和场景检测属于后续P2。物理DPI/IME/异机/复杂媒体需各自证据，不以自动生成样本替代。发布需当前用户明确授权，按docs/release-policy.md执行。
 
-## 输出和目录
-
-- 默认源目录下 ModynToolbox Exports，可自行选择输出位置和基础文件名。
-- core 包含媒体探测、处理计划、进程及文件事务；standalone 是 CLI，integration 是薄协议适配和UI声明。
-- 数据归属 data/tools/video-clip。暂存登记在 temporaries，作业在 jobs，最终视频属于用户选择的输出位置。
-- .local/tools/video-clip 保存依赖、原生构建和完整工具包；不把系统FFmpeg或Python作为运行依赖。
-
-## 构建与验证
-
-从源码工程根执行，先按 docs/development.md 恢复 Qt 6.8.3 SDK，包含 Multimedia、MultimediaWidgets 所需模块及 ShaderTools。
-
-```powershell
-python tools/video-clip/build.py
-python tools/video-clip/tests/verify_video.py
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1 tools
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1 test
-```
-
-build.py 根据 dependencies.lock.json 下载/校验 FFmpeg 9.0.2-modyn1，构建 ModynVideo.exe 与 ModynVideoCli.exe，调用通用打包器生成完整工具包。CLI接受动作和input.json路径，输入结构与工具协议相同。验证文件、报告与合成视频都位于 .local/video-tests，不触碰用户视频。
-
-```powershell
-.local/tools/video-clip/native/Release/ModynVideoCli.exe probe input.json
-python tools/video-clip/tests/verify_host.py --binary .local/build/windows-complete/bin/Debug/ModynToolbox.App.exe
-```
-
-## 当前边界
-
-首版优先SDR 8-bit本地视频；已加入无音轨、多音轨选择、旋转、可变帧率与非零时间起点测试。精确模式拒绝HDR/高位深/交错，避免静默改变颜色。仅输出一个视频与一个选择的音轨，字幕、附件和章节不继承。素材时长最多7天，单次编码绝对时限24小时，内存预算2GiB，复杂4K素材需单独评估。预览使用宿主Qt Multimedia，共享宿主UI故障域；导出引擎属于独立受控进程树。
-
-许可证及构建来源见 licenses/README.md 和依赖锁。对外发布需要用户明确指令及发布规程要求。本轮开发实际证据集中 docs/verification/VID-1-video-tool.md，未执行项按报告保留。
-
-
-补充专项可运行tests/verify_directory.py（传--binary）验证热放目录/F5和移除，tests/verify_cancel.py验证实际编码写出后取消；资源采样tests/measure_video.py传--package。物理/容量未验范围见总验证报告。
+最低宿主1.6.0：本版输出预览依赖通用后端artifacts精确文件授权。旧宿主不应将新包当成完全兼容工具；旧会话继续固定旧包。

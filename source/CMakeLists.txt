@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(ModynToolbox VERSION 1.5.0 LANGUAGES CXX)
+project(ModynToolbox VERSION 1.6.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -166,3 +166,6 @@ set_tests_properties(translation_host PROPERTIES TIMEOUT 120 DEPENDS translation
 
 add_test(NAME translation_offline COMMAND "${Python3_EXECUTABLE}" -B "${CMAKE_SOURCE_DIR}/tools/translate/tests/verify_offline.py")
 set_tests_properties(translation_offline PROPERTIES TIMEOUT 150 DEPENDS translation_core)
+
+add_test(NAME video_editor_v2 COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/tools/video-clip/tests/verify_editor.py")
+set_tests_properties(video_editor_v2 PROPERTIES TIMEOUT 180 DEPENDS video_core)

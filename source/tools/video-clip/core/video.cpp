@@ -270,11 +270,19 @@ QJsonObject prepare(const Source &s, const QJsonObject &m, const QJsonObject &p,
         if (actual < 0)
             fail(QStringLiteral("附近未找到可用关键帧，请使用精确裁剪"));
     }
+    const auto format = p.value("format").toString("mp4").toLower();
+    if (!QStringList{"mp4","mov","gif","png"}.contains(format)) fail(QStringLiteral("不支持的输出格式"));
+    const int fps = int(time(p,"fps",0)), bitrate = int(time(p,"bitrate_kbps",0));
+    if (!QList<int>{0,10,12,15,24,25,30,50,60}.contains(fps) || bitrate > 100000)
+        fail(QStringLiteral("帧率或码率超出范围"));
+    if (fast && (format=="gif" || format=="png" || fps || bitrate || p.value("size").toString("原尺寸")!="原尺寸"))
+        fail(QStringLiteral("快速截取不能更改尺寸、帧率、码率或导出GIF/截图，请选择精确裁剪"));
+    if (format=="gif" && (end-start>30000 || fps>15)) fail(QStringLiteral("GIF限30秒、每秒最多15帧、最长边640"));
     auto name = p.value("filename").toString().trimmed();
     if (name.isEmpty())
         name = QFileInfo(s.path).completeBaseName() + "_clip";
-    if (name.endsWith(".mp4", Qt::CaseInsensitive))
-        name.chop(4);
+    for (const auto &ext : QStringList{".mp4",".mov",".gif",".png"})
+        if (name.endsWith(ext,Qt::CaseInsensitive)) { name.chop(4); break; }
     if (name.isEmpty() || name.size() > 120 || name.endsWith('.') || name.endsWith(' ') ||
         name.contains(QRegularExpression("[<>:\"/\\\\|?*\\x00-\\x1f]")) ||
         QRegularExpression("^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\\.|$)",
@@ -311,6 +319,7 @@ QJsonObject prepare(const Source &s, const QJsonObject &m, const QJsonObject &p,
             {"requested_start_ms", double(start)},
             {"end_ms", double(end)},
             {"fast", fast},
+            {"format",format},
             {"output_dir", QDir::cleanPath(directory)},
             {"filename", name},
             {"audio_index", audio},
@@ -365,10 +374,10 @@ struct Temporary {
             QFile::remove(journal);
     }
 };
-QString publish(const QString &temp, const QString &directory, const QString &base) {
+QString publish(const QString &temp, const QString &directory, const QString &base, const QString &format) {
     for (int i = 0; i < 1; ++i) {
         auto target =
-            QDir(directory).filePath(base + (i ? QString(" (%1)").arg(i) : QString()) + ".mp4");
+            QDir(directory).filePath(base + (i ? QString(" (%1)").arg(i) : QString()) + "." + format);
 #ifdef Q_OS_WIN
         if (MoveFileExW(reinterpret_cast<LPCWSTR>(QDir::toNativeSeparators(temp).utf16()),
                         reinterpret_cast<LPCWSTR>(QDir::toNativeSeparators(target).utf16()),
@@ -390,6 +399,7 @@ QString publish(const QString &temp, const QString &directory, const QString &ba
 } // namespace
 QJsonObject execute(const QString &action, const QJsonObject &input, const QString &bin,
                     const QString &dataRoot, const Hooks &h) {
+    if (action.startsWith("batch-")) return executeBatch(action,input,bin,dataRoot,h);
     QJsonObject context;
     try {
         recoverTemporaries(dataRoot);
@@ -401,11 +411,36 @@ QJsonObject execute(const QString &action, const QJsonObject &input, const QStri
         auto previous = input.value("context").toObject();
         auto media = probe(source, bin, h);
         context["media"] = media;
-        if (action == "probe")
-            return {{"status", "succeeded"},
-                    {"message", QStringLiteral("视频分析完成")},
-                    {"context", context}};
-        if (action != "prepare" && action != "export")
+        if (action == "probe" || action == "thumbnails") {
+            QJsonArray images;
+            if ((params.value("with_thumbnails").toBool() || action=="thumbnails") && media.value("precise_supported").toBool()) {
+                const auto duration=qint64(media.value("duration_ms").toDouble());
+                auto left=time(params,"view_start_ms",0),right=time(params,"view_end_ms",duration);
+                if(left>=right || right>duration) fail(QStringLiteral("缩略图区间无效"));
+                const auto key=fingerprint({{"left",double(left)},{"right",double(right)},{"profile","jpeg-160x90-16-v1"}},source.identity);
+                const auto cache=dataRoot+"/cache/thumbs"; const auto path=cache+"/"+key+".json";
+                if(!dataRoot.isEmpty()) {QFile f(path);if(f.open(QIODevice::ReadOnly)&&f.size()<2*1024*1024)images=QJsonDocument::fromJson(f.readAll()).object().value("images").toArray();}
+                if(images.isEmpty()) {
+                    for(int i=0;i<16;++i) {check(h);auto ms=left+(right-left-1)*i/16;
+                        auto bytes=run(bin+"/ffmpeg.exe",{"-hide_banner","-v","error","-nostdin","-ss",seconds(ms),"-threads","2","-i",source.path,"-frames:v","1","-vf","scale=160:90:force_original_aspect_ratio=decrease,pad=160:90:(ow-iw)/2:(oh-ih)/2","-threads","2","-c:v","mjpeg","-q:v","6","-f","image2pipe","pipe:1"},h);
+                        if(bytes.isEmpty()||bytes.size()>100000)fail(QStringLiteral("缩略图无效或超过限额"));
+                        images.append(QJsonObject{{"ms",double(ms)},{"url","data:image/jpeg;base64,"+QString::fromLatin1(bytes.toBase64())}});h.progress(i*6,QStringLiteral("正在生成时间轴缩略图 %1/16").arg(i+1));
+                    }
+                    if(!dataRoot.isEmpty()&&QDir().mkpath(cache)) {
+                        auto names=QDir(cache).entryInfoList({"*.json"},QDir::Files|QDir::NoSymLinks,QDir::Time|QDir::Reversed);qint64 size=0;for(const auto &f:names)size+=f.size();
+                        while(!names.isEmpty()&&(names.size()>=32||size>62*1024*1024)){auto f=names.takeFirst();if(QRegularExpression("^[0-9a-f]{64}\\.json$").match(f.fileName()).hasMatch()){if(QFile::remove(f.filePath()))size-=f.size();}}
+                        QSaveFile f(path);if(f.open(QIODevice::WriteOnly)){f.write(QJsonDocument(QJsonObject{{"images",images}}).toJson(QJsonDocument::Compact));f.commit();}
+                    }
+                }
+            }
+            return {{"status","succeeded"},{"message",QStringLiteral("视频分析完成")},{"context",context},{"thumbnails",images}};
+        }
+        if(action=="snapshot") {
+            auto pos=time(params,"position_ms",0),duration=qint64(media.value("duration_ms").toDouble());
+            if(pos>=duration)fail(QStringLiteral("截图位置必须在视频时长内"));
+            params["format"]="png";params["mode"]=QStringLiteral("精确裁剪");params["start_ms"]=double(pos);params["end_ms"]=double(qMin(duration,pos+40));params["remove_audio"]=true;params["fps"]=0;params["bitrate_kbps"]=0;
+        }
+        if (action != "prepare" && action != "export" && action != "snapshot")
             fail(QStringLiteral("未知媒体操作"));
         auto previousMedia = previous.value("media").toObject();
         if (!previousMedia.isEmpty() && previousMedia.value("identity") != source.identity)
@@ -416,6 +451,8 @@ QJsonObject execute(const QString &action, const QJsonObject &input, const QStri
             return {
                 {"status", "succeeded"}, {"message", plan.value("message")}, {"context", context}};
         const bool fast = plan.value("fast").toBool();
+        const auto format=plan.value("format").toString("mp4");
+        const bool image=format=="png",gif=format=="gif";
         if (fast &&
             previous.value("plan").toObject().value("fingerprint") != plan.value("fingerprint"))
             fail(QStringLiteral("请先预览快速截取区间，再确认导出"));
@@ -466,13 +503,21 @@ QJsonObject execute(const QString &action, const QJsonObject &input, const QStri
                          seconds(end - start),
                          "-map",
                          "0:" + QString::number(media.value("video_index").toInt())};
-        int audio = plan.value("audio_index").toInt(-1);
+        int audio = (image||gif)?-1:plan.value("audio_index").toInt(-1);
         if (audio >= 0)
             args << "-map" << "0:" + QString::number(audio);
         else
             args << "-an";
         args << "-map_metadata" << "-1" << "-map_chapters" << "-1";
-        if (fast)
+        if(image) {
+            args.removeAt(args.indexOf("-t")+1);args.removeOne("-t");
+            args << "-frames:v" << "1" << "-threads" << "2" << "-c:v" << "png";
+        } else if(gif) {
+            const auto fps=params.value("fps").toInt(0)?params.value("fps").toInt():12;
+            const auto filter=QString("[0:%1]fps=%2,scale=w='min(iw,640)':h='min(ih,640)':force_original_aspect_ratio=decrease,split[a][b];[a]palettegen=max_colors=192[p];[b][p]paletteuse=dither=bayer[gifout]").arg(media.value("video_index").toInt()).arg(fps);
+            args[args.indexOf("-map")+1]="[gifout]";
+            args << "-filter_complex" << filter << "-filter_complex_threads" << "1" << "-threads" << "2" << "-loop" << "0";
+        } else if (fast)
             args << "-c" << "copy" << "-avoid_negative_ts" << "make_zero";
         else {
             auto quality = params.value("quality").toString(QStringLiteral("较高画质"));
@@ -497,18 +542,24 @@ QJsonObject execute(const QString &action, const QJsonObject &input, const QStri
                      : quality == qualities[1] ? "23"
                                                : "28")
                  << "-pix_fmt" << "yuv420p";
+            if(params.value("fps").toInt())args << "-r" << QString::number(params.value("fps").toInt());
+            if(params.value("bitrate_kbps").toInt()) {
+                const int at=args.indexOf("-crf");if(at>=0){args.removeAt(at+1);args.removeAt(at);}
+                args << "-b:v" << QString::number(params.value("bitrate_kbps").toInt())+"k";
+            }
             if (audio >= 0)
                 args << "-c:a" << "aac" << "-b:a" << "128k";
         }
-        args << "-movflags" << "+faststart" << "-progress" << "pipe:1" << "-f" << "mp4"
-             << temp.path;
+        if(format=="mp4"||format=="mov")args << "-movflags" << "+faststart";
+        args << "-progress" << "pipe:1" << "-f" << (image?QString("image2"):format) << temp.path;
         run(bin + "/ffmpeg.exe", args, h, 86400000, end - start);
         h.progress(98, QStringLiteral("正在校验输出视频"));
         Source output(temp.path);
         auto validationHooks = h;
         validationHooks.progress = [](int, const QString &) {};
-        auto checked = probe(output, bin, validationHooks);
-        if (QFileInfo(temp.path).size() <= 0 || checked.value("duration_ms").toDouble() <= 0)
+        auto checked = image ? QJsonObject{{"duration_ms",0}} : probe(output, bin, validationHooks);
+        if(image){const auto info=object(run(bin+"/ffprobe.exe",{"-v","error","-show_entries","stream=width,height,codec_name","-of","json",temp.path},validationHooks)).value("streams").toArray();if(info.isEmpty()||info.first().toObject().value("codec_name").toString()!="png"||info.first().toObject().value("width").toInt()<=0)fail(QStringLiteral("截图校验失败"));}
+        if (QFileInfo(temp.path).size() <= 0 || (!image && checked.value("duration_ms").toDouble() <= 0))
             fail(QStringLiteral("输出视频校验失败"));
         // Source output's read handle must close before renaming.
         auto actualDuration = checked.value("duration_ms");
@@ -516,19 +567,19 @@ QJsonObject execute(const QString &action, const QJsonObject &input, const QStri
         QString chosenBase = plan.value("filename").toString();
         const auto originalBase = chosenBase;
         int suffix = 0;
-        while (QFileInfo::exists(QDir(directory).filePath(chosenBase + ".mp4"))) {
+        while (QFileInfo::exists(QDir(directory).filePath(chosenBase + "." + format))) {
             if (++suffix > 9999)
                 fail(QStringLiteral("同名输出过多"));
             chosenBase = originalBase + QString(" (%1)").arg(suffix);
         }
-        h.reserve({QDir(directory).filePath(chosenBase + ".mp4")});
+        h.reserve({QDir(directory).filePath(chosenBase + "." + format)});
         h.commit();
         // Close the temporary's validation handle before the atomic no-replace move.
 #ifdef Q_OS_WIN
         CloseHandle(output.handle);
         output.handle = INVALID_HANDLE_VALUE;
 #endif
-        const auto path = publish(temp.path, directory, chosenBase);
+        const auto path = publish(temp.path, directory, chosenBase, format);
         temp.path.clear();
         auto bytes = QFileInfo(path).size();
         QJsonArray columns{

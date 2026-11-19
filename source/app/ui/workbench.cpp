@@ -385,10 +385,24 @@ int Workbench::open(const QString &toolId, bool fresh) {
 }
 void Workbench::openTool(const QString &toolId) {
     currentTool = toolId;
-    if (recentSessions.contains(toolId))
-        activateSession(recentSessions.value(toolId));
-    else
+    const auto latest = std::find_if(definitions.cbegin(), definitions.cend(),
+                                     [&](const auto &tool) { return tool.id == toolId; });
+    // Opening a tool means its latest installed compatible package. Explicit session
+    // navigation still resumes the exact pinned package and never migrates its state.
+    int target = 0;
+    for (auto it = sessions.cbegin(); it != sessions.cend(); ++it) {
+        if (it->toolId != toolId || it->missing || latest == definitions.cend() ||
+            it->tool.version != latest->version)
+            continue;
+        if (!target || it->lastUse >= sessions.constFind(target)->lastUse)
+            target = it.key();
+    }
+    if (target)
+        activateSession(target);
+    else if (latest != definitions.cend())
         addSession();
+    else if (recentSessions.contains(toolId))
+        activateSession(recentSessions.value(toolId));
 }
 void Workbench::activateSession(int id) {
     auto it = sessions.find(id);
@@ -964,7 +978,11 @@ void Workbench::initializeServices() {
         restoring = false;
         if (!sessions.isEmpty()) {
             pairedId = restoredPair;
-            activateSession(restoredActive ? restoredActive : sessions.firstKey());
+            const int restored = restoredActive ? restoredActive : sessions.firstKey();
+            if (sessions[restored].floating)
+                activateSession(restored);
+            else
+                openTool(sessions[restored].toolId);
         }
     }
     syncNavigation(activeId);

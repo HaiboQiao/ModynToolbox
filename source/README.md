@@ -3,7 +3,7 @@
 
 开发先读[当前背景](docs/project-baseline.md)、[行为契约](docs/behavior-contracts.md)、[变更规则](docs/change-policy.md)与[交接提示](docs/handoff.md)。不依赖聊天或个人Skill。
 
-当前发行线1.5.0已进入完整工具前端架构：工具作者自行绘制全部业务页面，宿主保留导航/会话/窗口/作业服务。默认图片压缩、视频裁剪、文本翻译三工具；发行附件和公开复验状态见仓库 [1.5.0发布记录](../releases/1.5.0/README.md)。开发入口先读[独立前端指南](docs/independent-frontend.md)，架构实测见[IF-1报告](docs/verification/IF-1-independent-frontend.md)，当前蓝色界面/本地翻译见[UIR-10](docs/verification/UIR10-blue-offline.md)。
+当前发行线1.6.0已进入完整工具前端架构：工具作者自行绘制全部业务页面，宿主保留导航/会话/窗口/作业服务。默认图片压缩、视频裁剪、文本翻译三工具；发行附件和公开复验状态见仓库 [1.6.0发布记录](../releases/1.6.0/README.md)。开发入口先读[独立前端指南](docs/independent-frontend.md)，架构实测见[IF-1报告](docs/verification/IF-1-independent-frontend.md)，当前蓝色界面/本地翻译见[UIR-10](docs/verification/UIR10-blue-offline.md)。
 
 1.3.0引入的动态字段和接入兼容继续保留，见[EXT-1](docs/features/host-extensibility/design.md)。
 
@@ -101,3 +101,5 @@ powershell -NoProfile -File scripts/dev.ps1 test
 `python scripts/change-guard.py validate`检查当前指引/验收索引；开发修改前start保存内容基线，改后review/verify/finish。`dev.ps1 test -GuardTask <任务>`可按本轮影响选择回归，普通run无需创建任务。允许范围、旧验证失效、保护测试复核与限制见变更规则。GP-1只改开发保护，不会替用户启用系统项或发布新版本。
 
 1.5.0支持随包本地中英模型、紧凑单时间轴视频页和动作/键盘焦点修复；签名状态、验证和SmartScreen边界见对应发布说明。工具安装通用上限512MiB/4096文件，普通复制默认预算保持原值。
+
+本轮视频裁剪工作台、多片段与输出预览的实现/边界见[VID-2](docs/verification/VID2-editor.md)。本轮公开状态以releases/1.6.0回执为准。

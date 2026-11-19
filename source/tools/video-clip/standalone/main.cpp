@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     if (a.size() > 3)
         hooks.cancelled = [&] { return elapsed.elapsed() > a[3].toInt(); };
     const auto result =
-        Video::execute(a[1], input, QCoreApplication::applicationDirPath(), {}, hooks);
+        Video::execute(a[1], input, QCoreApplication::applicationDirPath(), a.size()>4?a[4]:QString(), hooks);
     std::cout << QJsonDocument(result).toJson(QJsonDocument::Compact).constData() << std::endl;
     return result.value("status") == "succeeded" ? 0 : 1;
 }

@@ -1,0 +1,67 @@
+{
+  "success": true,
+  "tests": [
+    {
+      "name": "mov_fps_bitrate",
+      "passed": true,
+      "seconds": 0.238
+    },
+    {
+      "name": "gif_real_decode",
+      "passed": true,
+      "seconds": 0.382
+    },
+    {
+      "name": "snapshot_png",
+      "passed": true,
+      "seconds": 0.304
+    },
+    {
+      "name": "thumbnails_cache_16",
+      "passed": true,
+      "seconds": 0.844
+    },
+    {
+      "name": "bad_format",
+      "passed": true,
+      "seconds": 0.082
+    },
+    {
+      "name": "bad_fps",
+      "passed": true,
+      "seconds": 0.083
+    },
+    {
+      "name": "bad_bitrate",
+      "passed": true,
+      "seconds": 0.084
+    },
+    {
+      "name": "fast_resize",
+      "passed": true,
+      "seconds": 0.119
+    },
+    {
+      "name": "gif_fps_limit",
+      "passed": true,
+      "seconds": 0.083
+    },
+    {
+      "name": "batch_outputs_persistent_no_overwrite",
+      "passed": true,
+      "seconds": 1.002
+    },
+    {
+      "name": "batch_preflight_all_before_write",
+      "passed": true,
+      "seconds": 0.158
+    },
+    {
+      "name": "retry_source_identity_guard",
+      "passed": true,
+      "seconds": 0.083
+    }
+  ],
+  "source_unchanged": true,
+  "root": "D:\\Workspace\\01_Projects\\ModynToolbox\\source\\.local\\video-editor-v2\\e6588cea"
+}

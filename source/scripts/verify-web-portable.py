@@ -80,6 +80,22 @@ def verify(source):
         if step.get('op')=='open':active=step['tool']
         if active in available:filtered.append(step)
     steps=filtered
+    if 'video-clip' in available:
+        # Exercise the shipped editor and worker, not an SDK mock or a developer CLI.
+        steps += [
+            {'op':'web_wait','script':"Boolean(window.videoEditor)&&!document.querySelector('#export').disabled"},
+            {'op':'web_eval','script':"document.querySelector('#snapshot').click()"},
+            {'op':'web_wait','script':"document.querySelector('#results').textContent.includes('.png')&&!document.querySelector('#snapshot').disabled"},
+            {'op':'web_eval','script':"document.querySelector('#add-clip').click();document.querySelector('#export').click()"},
+            {'op':'web_wait','script':"document.querySelectorAll('.queue-row').length===2&&Array.from(document.querySelectorAll('.queue-row')).every(n=>n.textContent.includes('已完成')&&n.textContent.includes('.mp4'))"},
+            {'op':'detach'},{'op':'attach'},
+            {'op':'web_wait','script':"document.querySelectorAll('.queue-row').length===2&&window.videoEditor.clips().clips.length===2"},
+            {'op':'web_eval','script':"document.querySelector('#gif-preset').click();document.querySelector('#export').click()"},
+            {'op':'web_wait','script':"document.querySelectorAll('.queue-row').length===2&&Array.from(document.querySelectorAll('.queue-row')).every(n=>n.textContent.includes('已完成')&&n.textContent.includes('.gif'))"},
+            {'op':'web_eval','script':"document.querySelector('.queue-row button').click()"},
+            {'op':'web_wait','script':"document.querySelector('#artifact-dialog').open&&document.querySelector('#artifact-image').naturalWidth>0"},
+            {'op':'web_eval','script':"document.querySelector('#artifact-close').click()"},
+            {'op':'web_capture','path':str(base/'video.png'),'full':True}]
     if 'translate' in available:
         steps += [{'op':'open','tool':'translate'},{'op':'web_wait','script':'Boolean(window.translationTool)'},
             {'op':'web_eval','script':"document.querySelector('#provider').value='local';document.querySelector('#source').value='en';document.querySelector('#target').value='zh';document.querySelector('#input').value='Please save the file.';document.querySelector('#input').dispatchEvent(new Event('input',{bubbles:true}));window.translationTool.run()"},
