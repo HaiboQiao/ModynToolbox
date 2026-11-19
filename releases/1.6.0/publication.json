@@ -1,0 +1,72 @@
+{
+  "version": "1.6.0",
+  "source_commit": "744e34695f545573b0ba7dacb5b314cb1ace5ae5",
+  "tag": "v1.6.0",
+  "release_id": 450806055,
+  "url": "https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.6.0",
+  "published_at": "2026-11-19T02:35:34Z",
+  "assets": [
+    {
+      "name": "ModynToolbox-1.6.0-source.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-source.zip",
+      "size": 7576453,
+      "digest": "sha256:f3023d845956a83c1075f88b2afb98e7f9adea0c47db49f55df92a2756f5ed03"
+    },
+    {
+      "name": "ModynToolbox-1.6.0-third-party-source.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-third-party-source.zip",
+      "size": 112472366,
+      "digest": "sha256:68b6423bb4e1edea5eff53acfefa377dfdacc0cadd1e7084350a64fd577091a8"
+    },
+    {
+      "name": "ModynToolbox-1.6.0-tool-sdk.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-tool-sdk.zip",
+      "size": 2201834,
+      "digest": "sha256:5d57fffc2ee59f7806698c12179c4b08939d1059bda87233ff51de84f8965c56"
+    },
+    {
+      "name": "ModynToolbox-1.6.0-windows-x64.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-windows-x64.zip",
+      "size": 578452505,
+      "digest": "sha256:43210c9412bcc7eba76f7b4707874488c015c14655a901100e8ee24f1e12ef5f"
+    },
+    {
+      "name": "ModynToolbox-media-engine-9.0.2-modyn2-windows-x64.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-media-engine-9.0.2-modyn2-windows-x64.zip",
+      "size": 26367267,
+      "digest": "sha256:1a8acdf149dd11fb6ab63f261e314dc6330074945e530998d73b68400d8f3e85"
+    },
+    {
+      "name": "ModynToolbox-tool-image-1.3.3-windows-x64.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-image-1.3.3-windows-x64.zip",
+      "size": 19517757,
+      "digest": "sha256:41bcc70472b745973ccca08456e7b10f5e3334951440eec384fc87d6a7154c4d"
+    },
+    {
+      "name": "ModynToolbox-tool-translate-1.1.5-windows-x64.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-translate-1.1.5-windows-x64.zip",
+      "size": 191955885,
+      "digest": "sha256:89ae326d94c732ca7e2b8b5c493c695654ebd564906025f4759e26452d87f130"
+    },
+    {
+      "name": "ModynToolbox-tool-video-clip-1.4.2-windows-x64.zip",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-video-clip-1.4.2-windows-x64.zip",
+      "size": 29874723,
+      "digest": "sha256:266b30cb02feb83eb65597cb32ac512ac370560b75ec464fb95fa442e41065d6"
+    },
+    {
+      "name": "release-manifest.json",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/release-manifest.json",
+      "size": 3441,
+      "digest": "sha256:616b3c2526400db8d6c1fd49b62255aefe77a785418913e45f636515b2fc5f22"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "url": "https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/SHA256SUMS.txt",
+      "size": 966,
+      "digest": "sha256:5578781cc301682482af1d3a33cec614b70f95ff0b8baecaea8ab60642194343"
+    }
+  ],
+  "public_download_verified": true,
+  "downloaded_assets": 10
+}

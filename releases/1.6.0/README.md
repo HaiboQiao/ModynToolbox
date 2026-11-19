@@ -33,3 +33,9 @@ Windows x64 · 视频裁剪工作台与默认新版入口。完整解压后双�
 目前无可信代码签名身份，随包signing-report.json如实记录。Windows仍可能出现SmartScreen发布者未知提示；没有关闭保护或用自签名伪装。源码/Release/Debug、原生小窗/队列/取消/输出预览、正式ZIP与匿名下载实际验证结果在发布回执和源码报告归档，不把自动后台测试当全部设备通过。
 
 只有用户明确要求才按[发布规程](../../source/docs/release-policy.md)发布并同步源码与运行资产。
+
+## 公开发布回执
+
+固定源提交 `744e34695f545573b0ba7dacb5b314cb1ace5ae5`，标签 `v1.6.0`，公开时间 `2026-11-19T02:35:34Z`。全部10附件上传及匿名下载SHA256核对通过；下载版便携48步与视频/目录/真实编码取消通过。完整包 551.66MiB。
+
+[机器回执](publication.json)、[资产清单](release-manifest.json)、[SHA256](SHA256SUMS.txt)、[实现与验证](../../source/docs/verification/VID2-editor.md)。未配置可信签名，SmartScreen仍可能提示；物理设备边界保留。

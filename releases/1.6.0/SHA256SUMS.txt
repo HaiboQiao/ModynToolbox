@@ -1,0 +1,9 @@
+f3023d845956a83c1075f88b2afb98e7f9adea0c47db49f55df92a2756f5ed03  ModynToolbox-1.6.0-source.zip
+68b6423bb4e1edea5eff53acfefa377dfdacc0cadd1e7084350a64fd577091a8  ModynToolbox-1.6.0-third-party-source.zip
+5d57fffc2ee59f7806698c12179c4b08939d1059bda87233ff51de84f8965c56  ModynToolbox-1.6.0-tool-sdk.zip
+43210c9412bcc7eba76f7b4707874488c015c14655a901100e8ee24f1e12ef5f  ModynToolbox-1.6.0-windows-x64.zip
+1a8acdf149dd11fb6ab63f261e314dc6330074945e530998d73b68400d8f3e85  ModynToolbox-media-engine-9.0.2-modyn2-windows-x64.zip
+41bcc70472b745973ccca08456e7b10f5e3334951440eec384fc87d6a7154c4d  ModynToolbox-tool-image-1.3.3-windows-x64.zip
+89ae326d94c732ca7e2b8b5c493c695654ebd564906025f4759e26452d87f130  ModynToolbox-tool-translate-1.1.5-windows-x64.zip
+266b30cb02feb83eb65597cb32ac512ac370560b75ec464fb95fa442e41065d6  ModynToolbox-tool-video-clip-1.4.2-windows-x64.zip
+616b3c2526400db8d6c1fd49b62255aefe77a785418913e45f636515b2fc5f22  release-manifest.json
