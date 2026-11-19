@@ -6,7 +6,7 @@ Windows x64 · 视频裁剪工作台与默认新版入口。完整解压后双�
 
 - [完整便携版](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-windows-x64.zip)
 - [源码快照](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-source.zip)、[独立工具SDK](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-tool-sdk.zip)
-- 独立工具：[视频裁剪1.4.1](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-video-clip-1.4.1-windows-x64.zip)、[图片压缩1.3.3](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-image-1.3.3-windows-x64.zip)、[本地翻译1.1.5](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-translate-1.1.5-windows-x64.zip)
+- 独立工具：[视频裁剪1.4.2](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-video-clip-1.4.2-windows-x64.zip)、[图片压缩1.3.3](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-image-1.3.3-windows-x64.zip)、[本地翻译1.1.5](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-tool-translate-1.1.5-windows-x64.zip)
 - [媒体引擎9.0.2-modyn2](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-media-engine-9.0.2-modyn2-windows-x64.zip)、[精确对应源码及构建记录](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/ModynToolbox-1.6.0-third-party-source.zip)
 - [SHA256](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/SHA256SUMS.txt)、[发布清单](https://github.com/HaiboQiao/ModynToolbox/releases/download/v1.6.0/release-manifest.json)
 

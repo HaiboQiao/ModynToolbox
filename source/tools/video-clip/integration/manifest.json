@@ -3,7 +3,7 @@
   "protocol_version": 1,
   "min_host_version": "1.6.0",
   "tool_id": "video-clip",
-  "package_version": "1.4.1",
+  "package_version": "1.4.2",
   "name": "视频裁剪",
   "description": "预览选段、精确裁剪、快速截取及压缩，原视频保持只读。",
   "icon": "files",

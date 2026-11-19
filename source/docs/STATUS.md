@@ -3,7 +3,7 @@
 
 先读[当前背景](project-baseline.md)、[行为契约](behavior-contracts.md)及[变更规则](change-policy.md)。本文件只记当前摘要，详细过程在worklog和verification。
 
-- 当前开发1.6.0/VID-2：视频1.4.1成熟化工作台、图片1.3.3、翻译1.1.5，汇集UIR11并按当前用户指令开发后发布。目标媒体/原生队列回归通过；全量/正式资产/公开下载继续执行，[证据](verification/VID2-editor.md)。
+- 当前开发1.6.0/VID-2：视频1.4.2成熟化工作台、图片1.3.3、翻译1.1.5，汇集UIR11并按当前用户指令开发后发布。最终Release21/Debug21/SDK20及候选便携48步通过；正式资产/公开下载继续执行，[证据](verification/VID2-editor.md)。
 - 上一轮UIR-11当时为本地未发布优化：工具名称/正常主区重启默认最新版，旧分支固定版本与草稿保持；优化公共与内置工具按钮字体比例。工具本地补丁：图片1.3.2、视频1.3.7、翻译1.1.5。最终Release20/20（142.52秒）及完整本地预览34步（21.180秒）通过，已更新本地预览入口，验证见[UIR-11](verification/UIR11-latest-buttons.md)。当前运行的旧Debug EXE锁定，未关闭用户窗口，退出后Run-Dev会编译最新源码。
 - 上一公开版1.5.0：蓝色公共壳/图标，图片1.3.1、视频1.3.6、本地翻译1.1.3。已完成用户明确授权的优化与公开发布；[v1.5.0](https://github.com/HaiboQiao/ModynToolbox/releases/tag/v1.5.0)，全部10附件上传/匿名下载SHA256一致，公开下载包便携34步及视频专项通过。固定源提交/标签见releases/1.5.0回执。上一已验证公开版1.4.1记录见[REL-5](verification/REL-5-publication.md)。
 - UIR-10源码验证：最终Release20/20（138.22秒）、Debug20/20（216.42秒）、冻结SDK20步通过；实际禁网中英模型推理、视频三尺寸/真实拖动及鼠标/键盘公共动作状态通过，详见[证据](verification/UIR10-blue-offline.md)。正式便携/公开下载复验均已完成，独立翻译ZIP运行中目录接入8步、不改宿主。任务见[UIR-10](features/uir10-blue-offline/task.md)。
